@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar - Constellation Detection</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Detection Page Specific Styles */
+        .detection-page {
+            padding: 60px 0;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .upload-section {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-md);
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .upload-container {
+            margin-bottom: 30px;
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--primary-color);
+            border-radius: var(--border-radius-md);
+            padding: 60px 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+        
+        .upload-area.dragover {
+            background-color: rgba(79, 172, 254, 0.1);
+            border-color: var(--secondary-color);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .upload-text {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+        
+        .upload-text .browse-text {
+            color: var(--primary-color);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .or-divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+        }
+        
+        .or-divider::before,
+        .or-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: var(--light-blue);
+        }
+        
+        .or-divider span {
+            padding: 0 20px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .sample-images-section {
+            text-align: center;
+        }
+        
+        .sample-images-section h3 {
+            margin-bottom: 20px;
+            color: var(--text-white);
+        }
+        
+        .sample-images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .sample-image {
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            box-shadow: var(--shadow-light);
+            position: relative;
+        }
+        
+        .sample-image:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .sample-image img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .sample-image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(to top, rgba(10, 17, 40, 0.9), transparent);
+            color: var(--text-white);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        /* Results Section */
+        .results-section {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-md);
+            padding: 40px;
+            box-shadow: var(--shadow-medium);
+            display: none;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .results-header h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+        
+        .back-button {
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            transition: var(--transition-fast);
+        }
+        
+        .back-button:hover {
+            color: var(--primary-color);
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .result-card {
+            background-color: var(--light-blue);
+            border-radius: var(--border-radius-sm);
+            padding: 20px;
+        }
+        
+        .result-card h3 {
+            color: var(--text-white);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .image-container {
+            height: 250px;
+            background-color: var(--dark-blue);
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .detection-result {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .constellation-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .match-details {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-sm);
+            padding: 15px;
+        }
+        
+        .match-details h4 {
+            color: var(--text-white);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .match-score {
+            margin-bottom: 15px;
+        }
+        
+        .match-score span {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-light);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: var(--dark-blue);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+        
+        .progress {
+            height: 100%;
+            background: var(--primary-gradient);
+            width: 0;
+            transition: width 0.8s ease-in-out;
+        }
+        
+        .stars-matched {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-light);
+        }
+        
+        .visualization-section {
+            margin-top: 30px;
+        }
+        
+        .visualization-section h3 {
+            color: var(--text-white);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .visualization-container {
+            background-color: var(--dark-blue);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+            margin-bottom: 15px;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .visualization-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .control-button {
+            background-color: var(--medium-blue);
+            border: 1px solid var(--light-blue);
+            color: var(--text-light);
+            padding: 8px 16px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .control-button:hover {
+            background-color: var(--light-blue);
+        }
+        
+        .control-button.active {
+            background-color: var(--primary-color);
+            color: var(--dark-blue);
+            border-color: var(--primary-color);
+        }
+        
+        @media (max-width: 992px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .upload-section {
+                padding: 20px;
+            }
+            
+            .upload-area {
+                padding: 40px 20px;
+            }
+            
+            .results-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars Background -->
+    <div class="stars-background" id="stars-container"></div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="home.html">
+                        <span class="logo-text">Stellar</span>
+                    </a>
+                </div>
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="home.html">Home</a></li>
+                        <li class="nav-item active"><a href="detection.html">Detection</a></li>
+                        <li class="nav-item"><a href="library.html">Library</a></li>
+                        <li class="nav-item"><a href="learning.html">Learning</a></li>
+                        <li class="nav-item"><a href="analysis.html">Analysis</a></li>
+                        <li class="nav-item"><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <a href="login.html" class="btn btn-outline">Login</a>
+                    <a href="signup.html" class="btn btn-primary">Sign Up</a>
+                    <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="detection-page">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Constellation Detection</h1>
+                <p class="page-description">Upload your night sky image or choose from our sample images to identify constellations</p>
+            </div>
+            
+            <div class="upload-section">
+                <div class="upload-container">
+                    <div class="upload-area" id="upload-area">
+                        <div class="upload-icon" id="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <p class="upload-text">Drag & drop your image here or <span class="browse-text">browse</span></p>
+                        <input type="file" id="file-input" accept="image/*" hidden>
+                    </div>
+                </div>
+                
+                <div class="or-divider">
+                    <span>OR</span>
+                </div>
+                
+                <div class="sample-images-section">
+                    <h3>Try with sample images</h3>
+                    <div class="sample-images-grid">
+                        <div class="sample-image" data-src="test_data/Andromeda.png">
+                            <img src="test_data/Andromeda.png" alt="Andromeda">
+                            <div class="sample-image-overlay">Andromeda</div>
+                        </div>
+                        <div class="sample-image" data-src="test_data/Orion.png">
+                            <img src="test_data/Orion.png" alt="Orion">
+                            <div class="sample-image-overlay">Orion</div>
+                        </div>
+                        <div class="sample-image" data-src="test_data/UrsaMajor.png">
+                            <img src="test_data/UrsaMajor.png" alt="Ursa Major">
+                            <div class="sample-image-overlay">Ursa Major</div>
+                        </div>
+                        <div class="sample-image" data-src="test_data/Leo.png">
+                            <img src="test_data/Leo.png" alt="Leo">
+                            <div class="sample-image-overlay">Leo</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="results-section" id="results-section">
+                <div class="results-header">
+                    <h2>Detection Results</h2>
+                    <button id="back-button" class="back-button">
+                        <i class="fas fa-arrow-left"></i> Try another image
+                    </button>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3>Original Image</h3>
+                        <div class="image-container">
+                            <img id="original-image-display" src="" alt="Original Image">
+                        </div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3>Detected Constellation</h3>
+                        <div class="detection-result">
+                            <div class="constellation-name" id="constellation-name">
+                                Loading...
+                            </div>
+                            <div class="image-container">
+                                <img id="constellation-template" src="" alt="Constellation Template">
+                            </div>
+                        </div>
+                        <div class="match-details">
+                            <h4>Match Details</h4>
+                            <div class="match-score">
+                                <span>Confidence Score:</span>
+                                <div class="progress-bar">
+                                    <div class="progress" id="confidence-bar"></div>
+                                </div>
+                                <span id="confidence-score">0%</span>
+                            </div>
+                            <div class="stars-matched">
+                                <span>Stars Matched:</span>
+                                <span id="stars-matched">0/0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="visualization-section">
+                    <h3>Visualization</h3>
+                    <div class="visualization-container">
+                        <canvas id="visualization-canvas" width="600" height="400"></canvas>
+                    </div>
+                    <div class="visualization-controls">
+                        <button id="toggle-stars" class="control-button active">Stars</button>
+                        <button id="toggle-lines" class="control-button active">Lines</button>
+                        <button id="toggle-labels" class="control-button">Labels</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">Stellar</span>
+                    <p>Discover the wonders of the night sky</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h3>Navigation</h3>
+                        <ul>
+                            <li><a href="home.html">Home</a></li>
+                            <li><a href="detection.html">Detection</a></li>
+                            <li><a href="library.html">Library</a></li>
+                            <li><a href="learning.html">Learning</a></li>
+                            <li><a href="analysis.html">Analysis</a></li>
+                            <li><a href="about.html">About</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Tutorials</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Legal</h3>
+                        <ul>
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Cookie Policy</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Connect</h3>
+                        <ul class="social-links">
+                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                            <li><a href="#"><i class="fab fa-github"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Stellar Constellation Detection. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add detection-page class to body
+            document.body.classList.add('detection-page');
+            
+            // Initialize stars background
+            initStarsBackground();
+            
+            // Initialize mobile menu
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mainNav = document.querySelector('.main-nav');
+            
+            mobileMenuToggle.addEventListener('click', function() {
+                mainNav.classList.toggle('active');
+                this.classList.toggle('active');
+            });
+            
+            // Initialize detection functionality
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const uploadIcon = document.getElementById('upload-icon');
+            const uploadText = document.querySelector('.upload-text');
+            const resultsSection = document.getElementById('results-section');
+            const backButton = document.getElementById('back-button');
+            const sampleImages = document.querySelectorAll('.sample-image');
+            
+            // Handle file upload via drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                if (e.dataTransfer.files.length) {
+                    handleFileUpload(e.dataTransfer.files[0]);
+                }
+            });
+            
+            // Handle file upload via click
+            uploadArea.addEventListener('click', () => {
+                fileInput.click();
+            });
+            
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files.length) {
+                    handleFileUpload(fileInput.files[0]);
+                }
+            });
+            
+            // Handle sample images
+            sampleImages.forEach(sample => {
+                sample.addEventListener('click', () => {
+                    const imageSrc = sample.getAttribute('data-src');
+                    if (imageSrc) {
+                        handleSampleImageSelection(imageSrc);
+                    }
+                });
+            });
+            
+            // Handle back button
+            backButton.addEventListener('click', () => {
+                resultsSection.style.display = 'none';
+                uploadArea.parentElement.parentElement.style.display = 'block';
+                
+                // Reset upload area
+                uploadIcon.style.display = 'block';
+                uploadText.style.display = 'block';
+                uploadArea.style.backgroundImage = 'none';
+            });
+            
+            // Handle visualization controls
+            const toggleStarsBtn = document.getElementById('toggle-stars');
+            const toggleLinesBtn = document.getElementById('toggle-lines');
+            const toggleLabelsBtn = document.getElementById('toggle-labels');
+            
+            toggleStarsBtn.addEventListener('click', () => {
+                toggleStarsBtn.classList.toggle('active');
+                updateVisualization();
+            });
+            
+            toggleLinesBtn.addEventListener('click', () => {
+                toggleLinesBtn.classList.toggle('active');
+                updateVisualization();
+            });
+            
+            toggleLabelsBtn.addEventListener('click', () => {
+                toggleLabelsBtn.classList.toggle('active');
+                updateVisualization();
+            });
+            
+            /**
+             * Handle file upload
+             * @param {File} file - The uploaded file
+             */
+            function handleFileUpload(file) {
+                if (!file.type.match('image.*')) {
+                    alert('Please upload an image file');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    // Display uploaded image in upload area
+                    uploadIcon.style.display = 'none';
+                    uploadText.style.display = 'none';
+                    uploadArea.style.backgroundImage = `url(${e.target.result})`;
+                    uploadArea.style.backgroundSize = 'cover';
+                    uploadArea.style.backgroundPosition = 'center';
+                    
+                    // Simulate processing (in a real app, this would call the backend)
+                    setTimeout(() => {
+                        showResults(e.target.result);
+                    }, 1500);
+                };
+                
+                reader.readAsDataURL(file);
+            }
+            
+            /**
+             * Handle sample image selection
+             * @param {string} imageSrc - The source of the selected sample image
+             */
+            function handleSampleImageSelection(imageSrc) {
+                // Display selected sample image in upload area
+                uploadIcon.style.display = 'none';
+                uploadText.style.display = 'none';
+                uploadArea.style.backgroundImage = `url(${imageSrc})`;
+                uploadArea.style.backgroundSize = 'cover';
+                uploadArea.style.backgroundPosition = 'center';
+                
+                // Simulate processing (in a real app, this would call the backend)
+                setTimeout(() => {
+                    showResults(imageSrc);
+                }, 1500);
+            }
+            
+            /**
+             * Show detection results
+             * @param {string} imageSrc - The source of the processed image
+             */
+            function showResults(imageSrc) {
+                // Hide upload section and show results section
+                uploadArea.parentElement.parentElement.style.display = 'none';
+                resultsSection.style.display = 'block';
+                
+                // Set original image
+                document.getElementById('original-image-display').src = imageSrc;
+                
+                // Get constellation name from image path if it's a sample image
+                let constellationName = '';
+                if (imageSrc.includes('/')) {
+                    const parts = imageSrc.split('/');
+                    const filename = parts[parts.length - 1];
+                    constellationName = filename.split('.')[0];
+                } else {
+                    // Simulate detection result for uploaded images
+                    const constellations = [
+                        'Orion', 'UrsaMajor', 'Leo', 'Pegasus'
+                    ];
+                    constellationName = constellations[Math.floor(Math.random() * constellations.length)];
+                }
+                
+                const confidenceScore = Math.floor(Math.random() * 30) + 70; // Random score between 70-99
+                
+                // Update result details
+                document.getElementById('constellation-name').textContent = formatConstellationName(constellationName);
+                document.getElementById('constellation-template').src = `Templates/${constellationName}.png`;
+                document.getElementById('confidence-score').textContent = `${confidenceScore}%`;
+                
+                // Animate confidence bar
+                setTimeout(() => {
+                    document.getElementById('confidence-bar').style.width = `${confidenceScore}%`;
+                }, 100);
+                
+                // Simulate stars matched
+                const totalStars = Math.floor(Math.random() * 5) + 5; // Random between 5-9
+                const matchedStars = Math.floor(totalStars * (confidenceScore / 100));
+                document.getElementById('stars-matched').textContent = `${matchedStars}/${totalStars}`;
+                
+                // Initialize visualization
+                initVisualization(constellationName);
+            }
+            
+            /**
+             * Initialize visualization canvas
+             * @param {string} constellationName - The name of the detected constellation
+             */
+            function initVisualization(constellationName) {
+                const canvas = document.getElementById('visualization-canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Set background
+                ctx.fillStyle = '#0a1128';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw visualization based on constellation
+                // This is a simplified visualization - in a real app, this would use actual star coordinates
+                const stars = generateStarCoordinates(constellationName);
+                const lines = generateConstellationLines(stars);
+                
+                // Store stars and lines for later use
+                canvas.stars = stars;
+                canvas.lines = lines;
+                canvas.constellationName = constellationName;
+                
+                // Initial draw
+                updateVisualization();
+            }
+            
+            /**
+             * Update visualization based on control buttons
+             */
+            function updateVisualization() {
+                const canvas = document.getElementById('visualization-canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Set background
+                ctx.fillStyle = '#0a1128';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                const showStars = document.getElementById('toggle-stars').classList.contains('active');
+                const showLines = document.getElementById('toggle-lines').classList.contains('active');
+                const showLabels = document.getElementById('toggle-labels').classList.contains('active');
+                
+                // Draw lines first (if enabled)
+                if (showLines && canvas.lines) {
+                    ctx.strokeStyle = '#4facfe';
+                    ctx.lineWidth = 2;
+                    
+                    canvas.lines.forEach(line => {
+                        ctx.beginPath();
+                        ctx.moveTo(line.start.x, line.start.y);
+                        ctx.lineTo(line.end.x, line.end.y);
+                        ctx.stroke();
+                    });
+                }
+                
+                // Draw stars (if enabled)
+                if (showStars && canvas.stars) {
+                    canvas.stars.forEach(star => {
+                        // Draw glow
+                        const gradient = ctx.createRadialGradient(
+                            star.x, star.y, 0,
+                            star.x, star.y, star.size * 2
+                        );
+                        gradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+                        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                        
+                        ctx.fillStyle = gradient;
+                        ctx.beginPath();
+                        ctx.arc(star.x, star.y, star.size * 2, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Draw star
+                        ctx.fillStyle = '#ffffff';
+                        ctx.beginPath();
+                        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                }
+                
+                // Draw labels (if enabled)
+                if (showLabels && canvas.stars) {
+                    ctx.fillStyle = '#b3c5ef';
+                    ctx.font = '12px Montserrat';
+                    ctx.textAlign = 'center';
+                    
+                    // Main constellation label
+                    ctx.fillStyle = '#4facfe';
+                    ctx.font = '16px Montserrat';
+                    ctx.fillText(formatConstellationName(canvas.constellationName), canvas.width / 2, 30);
+                    
+                    // Star labels
+                    ctx.fillStyle = '#b3c5ef';
+                    ctx.font = '12px Montserrat';
+                    canvas.stars.forEach((star, index) => {
+                        ctx.fillText(`Star ${index + 1}`, star.x, star.y - star.size - 10);
+                    });
+                }
+            }
+            
+            /**
+             * Generate random star coordinates based on constellation name
+             * @param {string} constellationName - The name of the constellation
+             * @returns {Array} - Array of star objects with coordinates and size
+             */
+            function generateStarCoordinates(constellationName) {
+                // In a real app, these would be actual coordinates from the backend
+                const stars = [];
+                const centerX = 300;
+                const centerY = 200;
+                const radius = 150;
+                
+                // Number of stars based on constellation
+                let starCount = 7;
+                if (constellationName === 'UrsaMajor') starCount = 7;
+                else if (constellationName === 'Orion') starCount = 9;
+                else if (constellationName === 'Leo') starCount = 6;
+                else if (constellationName === 'Andromeda') starCount = 8;
+                else starCount = Math.floor(Math.random() * 5) + 5;
+                
+                // Generate star positions based on constellation pattern
+                for (let i = 0; i < starCount; i++) {
+                    let x, y;
+                    
+                    // Different patterns for different constellations
+                    if (constellationName === 'UrsaMajor') {
+                        // Big Dipper pattern
+                        if (i < 4) {
+                            // Bowl
+                            const angle = (Math.PI / 3) * i + Math.PI / 6;
+                            x = centerX + radius * 0.7 * Math.cos(angle);
+                            y = centerY + radius * 0.5 * Math.sin(angle);
+                        } else {
+                            // Handle
+                            x = centerX + radius * 0.7 * Math.cos(Math.PI / 6) + (i - 3) * 40;
+                            y = centerY + radius * 0.5 * Math.sin(Math.PI / 6) - (i - 3) * 20;
+                        }
+                    } else if (constellationName === 'Orion') {
+                        // Orion pattern
+                        if (i === 0) {
+                            // Betelgeuse (top left)
+                            x = centerX - radius * 0.5;
+                            y = centerY - radius * 0.6;
+                        } else if (i === 1) {
+                            // Rigel (bottom right)
+                            x = centerX + radius * 0.5;
+                            y = centerY + radius * 0.6;
+                        } else if (i === 2) {
+                            // Bellatrix (top right)
+                            x = centerX + radius * 0.5;
+                            y = centerY - radius * 0.6;
+                        } else if (i === 3) {
+                            // Saiph (bottom left)
+                            x = centerX - radius * 0.5;
+                            y = centerY + radius * 0.6;
+                        } else {
+                            // Belt stars
+                            x = centerX + (i - 6) * 30;
+                            y = centerY;
+                        }
+                    } else {
+                        // Random pattern for other constellations
+                        const angle = (Math.PI * 2 / starCount) * i;
+                        const distance = radius * (0.5 + Math.random() * 0.5);
+                        x = centerX + distance * Math.cos(angle);
+                        y = centerY + distance * Math.sin(angle);
+                    }
+                    
+                    // Random star size
+                    const size = Math.random() * 2 + 2;
+                    
+                    stars.push({ x, y, size });
+                }
+                
+                return stars;
+            }
+            
+            /**
+             * Generate constellation lines connecting stars
+             * @param {Array} stars - Array of star objects
+             * @returns {Array} - Array of line objects with start and end coordinates
+             */
+            function generateConstellationLines(stars) {
+                const lines = [];
+                
+                // Connect stars to form constellation
+                for (let i = 0; i < stars.length - 1; i++) {
+                    lines.push({
+                        start: { x: stars[i].x, y: stars[i].y },
+                        end: { x: stars[i + 1].x, y: stars[i + 1].y }
+                    });
+                }
+                
+                // Add some additional connections for more complex constellations
+                if (stars.length > 3) {
+                    lines.push({
+                        start: { x: stars[0].x, y: stars[0].y },
+                        end: { x: stars[stars.length - 1].x, y: stars[stars.length - 1].y }
+                    });
+                    
+                    if (stars.length > 5) {
+                        lines.push({
+                            start: { x: stars[1].x, y: stars[1].y },
+                            end: { x: stars[4].x, y: stars[4].y }
+                        });
+                    }
+                }
+                
+                return lines;
+            }
+            
+            /**
+             * Format constellation name (convert camelCase to space-separated)
+             * @param {string} name - The constellation name in camelCase
+             * @returns {string} - The formatted constellation name
+             */
+            function formatConstellationName(name) {
+                return name.replace(/([A-Z])/g, ' $1').trim();
+            }
+        });
+    </script>
+</body>
+</html>

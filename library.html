@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar - Constellation Library</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Library Page Specific Styles */
+        .library-page {
+            padding: 60px 0;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .library-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .filter-group label {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .filter-select {
+            background-color: var(--medium-blue);
+            border: 1px solid var(--light-blue);
+            color: var(--text-white);
+            padding: 10px 15px;
+            border-radius: var(--border-radius-sm);
+            font-family: 'Montserrat', sans-serif;
+            min-width: 200px;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--medium-blue);
+            border: 1px solid var(--light-blue);
+            border-radius: var(--border-radius-sm);
+            padding: 5px 15px;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: var(--text-white);
+            padding: 5px 0;
+            width: 100%;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .search-bar input:focus {
+            outline: none;
+        }
+        
+        .search-bar button {
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .search-bar button:hover {
+            color: var(--primary-color);
+        }
+        
+        .constellation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .constellation-card {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            transition: var(--transition-fast);
+            box-shadow: var(--shadow-light);
+            cursor: pointer;
+        }
+        
+        .constellation-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .constellation-image {
+            height: 200px;
+            overflow: hidden;
+            background-color: var(--dark-blue);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .constellation-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .constellation-content {
+            padding: 20px;
+        }
+        
+        .constellation-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .constellation-content p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .constellation-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-light);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--light-blue);
+            padding-top: 15px;
+        }
+        
+        .constellation-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Constellation Details */
+        .constellation-details {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-md);
+            padding: 40px;
+            box-shadow: var(--shadow-medium);
+            display: none;
+        }
+        
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .details-header h2 {
+            color: var(--primary-color);
+            font-size: 2rem;
+        }
+        
+        .back-to-grid {
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            transition: var(--transition-fast);
+        }
+        
+        .back-to-grid:hover {
+            color: var(--primary-color);
+        }
+        
+        .details-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .details-image {
+            background-color: var(--dark-blue);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 350px;
+        }
+        
+        .details-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .details-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .info-item {
+            background-color: var(--light-blue);
+            border-radius: var(--border-radius-sm);
+            padding: 15px;
+        }
+        
+        .info-item h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .info-item p {
+            color: var(--text-light);
+        }
+        
+        .details-section {
+            background-color: var(--light-blue);
+            border-radius: var(--border-radius-sm);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .details-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .details-section p {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+        
+        .stars-list {
+            list-style-type: disc;
+            padding-left: 20px;
+            color: var(--text-light);
+        }
+        
+        .stars-list li {
+            margin-bottom: 10px;
+        }
+        
+        .stars-list li strong {
+            color: var(--text-white);
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 40px;
+        }
+        
+        .pagination-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .pagination-item:hover {
+            background-color: var(--light-blue);
+            color: var(--text-white);
+        }
+        
+        .pagination-item.active {
+            background-color: var(--primary-color);
+            color: var(--dark-blue);
+        }
+        
+        /* Tabs for constellation details */
+        .details-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--light-blue);
+            margin-bottom: 20px;
+        }
+        
+        .details-tab {
+            padding: 10px 20px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            border-bottom: 2px solid transparent;
+        }
+        
+        .details-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @media (max-width: 992px) {
+            .details-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .library-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+            
+            .filter-select {
+                width: 100%;
+            }
+            
+            .search-bar {
+                max-width: 100%;
+            }
+            
+            .constellation-details {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars Background -->
+    <div class="stars-background" id="stars-container"></div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="home.html">
+                        <span class="logo-text">Stellar</span>
+                    </a>
+                </div>
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="home.html">Home</a></li>
+                        <li class="nav-item"><a href="detection.html">Detection</a></li>
+                        <li class="nav-item active"><a href="library.html">Library</a></li>
+                        <li class="nav-item"><a href="learning.html">Learning</a></li>
+                        <li class="nav-item"><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <a href="login.html" class="btn btn-outline">Login</a>
+                    <a href="signup.html" class="btn btn-primary">Sign Up</a>
+                    <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="library-page">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Constellation Library</h1>
+                <p class="page-description">Explore and learn about different constellations in our comprehensive library</p>
+            </div>
+            
+            <div class="library-controls">
+                <div class="filter-group">
+                    <label for="constellation-filter">Filter by:</label>
+                    <select id="constellation-filter" class="filter-select">
+                        <option value="all">All Constellations</option>
+                        <option value="northern">Northern Hemisphere</option>
+                        <option value="southern">Southern Hemisphere</option>
+                        <option value="zodiac">Zodiac</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="constellation-sort">Sort by:</label>
+                    <select id="constellation-sort" class="filter-select">
+                        <option value="name">Name (A-Z)</option>
+                        <option value="size">Size</option>
+                        <option value="brightness">Brightness</option>
+                        <option value="popularity">Popularity</option>
+                    </select>
+                </div>
+                
+                <div class="search-bar">
+                    <input type="text" placeholder="Search constellations..." id="constellation-search">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+            
+            <div class="constellation-grid" id="constellation-grid">
+                <!-- Constellation cards will be loaded here dynamically -->
+            </div>
+            
+            <div class="constellation-details" id="constellation-details">
+                <div class="details-header">
+                    <h2 id="details-title">Constellation Name</h2>
+                    <button class="back-to-grid" id="back-to-grid">
+                        <i class="fas fa-arrow-left"></i> Back to Library
+                    </button>
+                </div>
+                
+                <div class="details-content">
+                    <div class="details-image">
+                        <img id="details-image" src="assets/placeholder-constellation.svg" alt="Constellation">
+                    </div>
+                    
+                    <div class="details-info">
+                        <div class="info-item">
+                            <h4>Description</h4>
+                            <p id="details-description">Constellation description goes here.</p>
+                        </div>
+                        
+                        <div class="info-item">
+                            <h4>Quick Facts</h4>
+                            <p><strong>Brightest Star:</strong> <span id="details-brightest-star">Star name</span></p>
+                            <p><strong>Visibility:</strong> <span id="details-visibility">Visibility period</span></p>
+                            <p><strong>Area:</strong> <span id="details-area">Area in square degrees</span></p>
+                            <p><strong>Classification:</strong> <span id="details-classification">Classification</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="details-tabs">
+                    <div class="details-tab active" data-tab="stars">Stars</div>
+                    <div class="details-tab" data-tab="deep-sky">Deep Sky Objects</div>
+                    <div class="details-tab" data-tab="mythology">Mythology</div>
+                    <div class="details-tab" data-tab="history">History</div>
+                </div>
+                
+                <div class="tab-content active" id="stars-tab">
+                    <div class="details-section">
+                        <h3>Notable Stars</h3>
+                        <ul class="stars-list" id="details-stars">
+                            <!-- Stars will be loaded here dynamically -->
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="deep-sky-tab">
+                    <div class="details-section">
+                        <h3>Deep Sky Objects</h3>
+                        <ul class="stars-list" id="details-deep-sky">
+                            <!-- Deep sky objects will be loaded here dynamically -->
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="mythology-tab">
+                    <div class="details-section">
+                        <h3>Mythology</h3>
+                        <p id="details-mythology">Mythology information goes here.</p>
+                    </div>
+                </div>
+                            <li><a href="analysis.html">Analysis</a></li>
+                
+                <div class="tab-content" id="history-tab">
+                    <div class="details-section">
+                        <h3>Historical Significance</h3>
+                        <p id="details-history">Historical information goes here.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pagination" id="pagination">
+                <div class="pagination-item active">1</div>
+                <div class="pagination-item">2</div>
+                <div class="pagination-item">3</div>
+                <div class="pagination-item"><i class="fas fa-ellipsis-h"></i></div>
+                <div class="pagination-item"><i class="fas fa-chevron-right"></i></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">Stellar</span>
+                    <p>Explore the wonders of the night sky</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h3>Navigation</h3>
+                        <ul>
+                            <li><a href="home.html">Home</a></li>
+                            <li><a href="detection.html">Detection</a></li>
+                            <li><a href="library.html">Library</a></li>
+                            <li><a href="learning.html">Learning</a></li>
+                            <li><a href="about.html">About</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Tutorials</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Legal</h3>
+                        <ul>
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Cookie Policy</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Connect</h3>
+                        <ul class="social-links">
+                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                            <li><a href="#"><i class="fab fa-github"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Stellar Constellation Detection. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/constellation-data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add library-page class to body
+            document.body.classList.add('library-page');
+            
+            // Initialize stars background
+            initStarsBackground();
+            
+            // Initialize mobile menu
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mainNav = document.querySelector('.main-nav');
+            
+            mobileMenuToggle.addEventListener('click', function() {
+                mainNav.classList.toggle('active');
+                this.classList.toggle('active');
+            });
+            
+            // Load constellation data
+            loadConstellations();
+            
+            // Initialize filter and sort functionality
+            document.getElementById('constellation-filter').addEventListener('change', filterConstellations);
+            document.getElementById('constellation-sort').addEventListener('change', sortConstellations);
+            document.getElementById('constellation-search').addEventListener('input', searchConstellations);
+            
+            // Initialize tabs for constellation details
+            const detailsTabs = document.querySelectorAll('.details-tab');
+            detailsTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs and content
+                    detailsTabs.forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    document.getElementById(`${this.dataset.tab}-tab`).classList.add('active');
+                });
+            });
+            
+            // Back to grid button
+            document.getElementById('back-to-grid').addEventListener('click', function() {
+                document.getElementById('constellation-grid').style.display = 'grid';
+                document.getElementById('constellation-details').style.display = 'none';
+            });
+            
+            /**
+             * Load constellation data
+             */
+            function loadConstellations() {
+                const grid = document.getElementById('constellation-grid');
+                
+                constellationData.forEach(constellation => {
+                    const card = document.createElement('div');
+                    card.className = 'constellation-card';
+                    card.setAttribute('data-name', constellation.name);
+                    card.setAttribute('data-classification', constellation.classification);
+                    card.setAttribute('data-size', constellation.size);
+                    card.setAttribute('data-brightness', constellation.brightness);
+                    card.setAttribute('data-popularity', constellation.popularity);
+                    
+                    card.innerHTML = `
+                        <div class="constellation-image">
+                            <img src="Templates/${constellation.name}.svg" alt="${formatConstellationName(constellation.name)}" onerror="this.src='assets/placeholder-constellation.svg'">
+                        </div>
+                        <div class="constellation-content">
+                            <h3>${formatConstellationName(constellation.name)}</h3>
+                            <p>${constellation.description.substring(0, 100)}${constellation.description.length > 100 ? '...' : ''}</p>
+                            <div class="constellation-meta">
+                                <span><i class="fas fa-star"></i> ${constellation.brightestStar}</span>
+                                <span><i class="fas fa-calendar-alt"></i> ${constellation.visibility}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    card.addEventListener('click', function() {
+                        showConstellationDetails(constellation);
+                    });
+                    
+                    grid.appendChild(card);
+                });
+            }
+            
+            /**
+             * Show constellation details
+             * @param {Object} constellation - The constellation object
+             */
+            function showConstellationDetails(constellation) {
+                // Hide grid and show details
+                document.getElementById('constellation-grid').style.display = 'none';
+                document.getElementById('constellation-details').style.display = 'block';
+                
+                // Update details content
+                document.getElementById('details-title').textContent = formatConstellationName(constellation.name);
+                document.getElementById('details-image').src = `Templates/${constellation.name}.svg`;
+                document.getElementById('details-image').alt = formatConstellationName(constellation.name);
+                document.getElementById('details-image').onerror = function() {
+                    this.src = 'assets/placeholder-constellation.svg';
+                };
+                
+                document.getElementById('details-description').textContent = constellation.description;
+                document.getElementById('details-brightest-star').textContent = constellation.brightestStar;
+                document.getElementById('details-visibility').textContent = constellation.visibility;
+                document.getElementById('details-area').textContent = constellation.area;
+                document.getElementById('details-classification').textContent = getClassificationText(constellation.classification);
+                
+                // Update stars list
+                const starsList = document.getElementById('details-stars');
+                starsList.innerHTML = '';
+                
+                if (constellation.stars && constellation.stars.length > 0) {
+                    constellation.stars.forEach(star => {
+                        const li = document.createElement('li');
+                        li.innerHTML = star;
+                        starsList.appendChild(li);
+                    });
+                } else {
+                    starsList.innerHTML = '<li>No detailed star information available.</li>';
+                }
+                
+                // Update deep sky objects
+                const deepSkyList = document.getElementById('details-deep-sky');
+                deepSkyList.innerHTML = '';
+                
+                if (constellation.deepSkyObjects && constellation.deepSkyObjects.length > 0) {
+                    constellation.deepSkyObjects.forEach(object => {
+                        const li = document.createElement('li');
+                        li.innerHTML = object;
+                        deepSkyList.appendChild(li);
+                    });
+                } else {
+                    deepSkyList.innerHTML = '<li>No detailed deep sky object information available.</li>';
+                }
+                
+                // Update mythology and history
+                document.getElementById('details-mythology').textContent = constellation.mythology || 'No mythology information available.';
+                document.getElementById('details-history').textContent = constellation.history || 'No historical information available.';
+                
+                // Reset active tab
+                document.querySelectorAll('.details-tab').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                document.querySelector('.details-tab[data-tab="stars"]').classList.add('active');
+                document.getElementById('stars-tab').classList.add('active');
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }
+            
+            /**
+             * Filter constellations based on selected filter option
+             */
+            function filterConstellations() {
+                const filterValue = document.getElementById('constellation-filter').value;
+                const cards = document.querySelectorAll('.constellation-card');
+                
+                cards.forEach(card => {
+                    const classification = card.getAttribute('data-classification');
+                    
+                    if (filterValue === 'all' || classification === filterValue) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+            
+            /**
+             * Sort constellations based on selected sort option
+             */
+            function sortConstellations() {
+                const sortValue = document.getElementById('constellation-sort').value;
+                const grid = document.getElementById('constellation-grid');
+                const cards = Array.from(document.querySelectorAll('.constellation-card'));
+                
+                cards.sort((a, b) => {
+                    if (sortValue === 'name') {
+                        return a.getAttribute('data-name').localeCompare(b.getAttribute('data-name'));
+                    } else if (sortValue === 'size') {
+                        return parseInt(b.getAttribute('data-size')) - parseInt(a.getAttribute('data-size'));
+                    } else if (sortValue === 'brightness') {
+                        return parseInt(b.getAttribute('data-brightness')) - parseInt(a.getAttribute('data-brightness'));
+                    } else if (sortValue === 'popularity') {
+                        return parseInt(b.getAttribute('data-popularity')) - parseInt(a.getAttribute('data-popularity'));
+                    }
+                    return 0;
+                });
+                
+                // Remove all cards and re-append in sorted order
+                cards.forEach(card => {
+                    grid.appendChild(card);
+                });
+            }
+            
+            /**
+             * Search constellations based on search input
+             */
+            function searchConstellations() {
+                const searchValue = document.getElementById('constellation-search').value.toLowerCase();
+                const cards = document.querySelectorAll('.constellation-card');
+                
+                cards.forEach(card => {
+                    const name = card.getAttribute('data-name').toLowerCase();
+                    const formattedName = formatConstellationName(name).toLowerCase();
+                    
+                    if (formattedName.includes(searchValue) || name.includes(searchValue)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+            
+            /**
+             * Format constellation name (convert camelCase to space-separated)
+             * @param {string} name - The constellation name in camelCase
+             * @returns {string} - The formatted constellation name
+             */
+            function formatConstellationName(name) {
+                return name.replace(/([A-Z])/g, ' $1').trim();
+            }
+            
+            /**
+             * Get classification text
+             * @param {string} classification - The classification code
+             * @returns {string} - The formatted classification text
+             */
+            function getClassificationText(classification) {
+                if (classification === 'northern') {
+                    return 'Northern Hemisphere';
+                } else if (classification === 'southern') {
+                    return 'Southern Hemisphere';
+                } else if (classification === 'zodiac') {
+                    return 'Zodiac';
+                }
+                return classification;
+            }
+            
+            /**
+             * Create stars background
+             */
+            function initStarsBackground() {
+                const starsContainer = document.getElementById('stars-container');
+                const starCount = 150;
+                
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    
+                    // Random position
+                    const x = Math.random() * 100;
+                    const y = Math.random() * 100;
+                    
+                    // Random size
+                    const size = Math.random() * 3 + 1;
+                    
+                    // Random animation duration and delay
+                    const duration = Math.random() * 3 + 2;
+                    const delay = Math.random() * 5;
+                    
+                    // Random opacity
+                    const opacity = Math.random() * 0.7 + 0.3;
+                    
+                    star.style.left = `${x}%`;
+                    star.style.top = `${y}%`;
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.animationDelay = `${delay}s`;
+                    star.style.setProperty('--duration', `${duration}s`);
+                    star.style.setProperty('--opacity', opacity);
+                    
+                    starsContainer.appendChild(star);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar - Constellation Analysis</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- D3.js for advanced visualizations -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        /* Analysis Page Specific Styles */
+        .analysis-page {
+            padding: 60px 0;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .analysis-section {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-md);
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .section-description {
+            color: var(--text-light);
+            margin-top: 10px;
+            font-size: 1rem;
+            max-width: 800px;
+        }
+        
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .analysis-card {
+            background-color: var(--light-blue);
+            border-radius: var(--border-radius-sm);
+            padding: 20px;
+            height: 100%;
+        }
+        
+        .analysis-card h3 {
+            color: var(--text-white);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .analysis-card p {
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+        
+        .chart-container {
+            background-color: var(--dark-blue);
+            border-radius: var(--border-radius-sm);
+            padding: 20px;
+            height: 300px;
+            position: relative;
+        }
+        
+        .chart-container.large {
+            height: 400px;
+        }
+        
+        .chart-container.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            color: var(--text-light);
+        }
+        
+        .data-table th {
+            background-color: var(--medium-blue);
+            color: var(--primary-color);
+            text-align: left;
+            padding: 12px;
+            font-weight: 600;
+        }
+        
+        .data-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(79, 172, 254, 0.1);
+        }
+        
+        .data-table tr:hover {
+            background-color: rgba(79, 172, 254, 0.05);
+        }
+        
+        .data-table .highlight {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .tabs-container {
+            margin-bottom: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--light-blue);
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            border-bottom: 2px solid transparent;
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .star-map {
+            width: 100%;
+            height: 400px;
+            background-color: var(--dark-blue);
+            border-radius: var(--border-radius-sm);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .controls-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .control-label {
+            color: var(--text-light);
+            font-weight: 500;
+            min-width: 100px;
+        }
+        
+        .control-select {
+            background-color: var(--medium-blue);
+            border: 1px solid var(--light-blue);
+            color: var(--text-white);
+            padding: 8px 15px;
+            border-radius: var(--border-radius-sm);
+            font-family: 'Montserrat', sans-serif;
+            min-width: 180px;
+        }
+        
+        .control-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .control-button {
+            background-color: var(--medium-blue);
+            border: 1px solid var(--light-blue);
+            color: var(--text-light);
+            padding: 8px 16px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .control-button:hover {
+            background-color: var(--light-blue);
+        }
+        
+        .control-button.active {
+            background-color: var(--primary-color);
+            color: var(--dark-blue);
+            border-color: var(--primary-color);
+        }
+        
+        .info-box {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-sm);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .info-box h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .info-box p {
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        
+        .info-box ul {
+            color: var(--text-light);
+            padding-left: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .info-box li {
+            margin-bottom: 5px;
+        }
+        
+        .metric-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .metric-card {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-sm);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .metric-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .heatmap-container {
+            height: 400px;
+            background-color: var(--dark-blue);
+            border-radius: var(--border-radius-sm);
+            padding: 20px;
+            position: relative;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background-color: var(--dark-blue);
+            border: 1px solid var(--light-blue);
+            border-radius: var(--border-radius-sm);
+            padding: 10px;
+            color: var(--text-white);
+            font-size: 0.9rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 100;
+            max-width: 200px;
+        }
+        
+        .tooltip h4 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+        
+        .tooltip p {
+            margin: 0;
+            color: var(--text-light);
+        }
+        
+        .legend {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+        
+        .comparison-slider {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+            border-radius: var(--border-radius-sm);
+        }
+        
+        .comparison-slider .before,
+        .comparison-slider .after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .comparison-slider .before {
+            z-index: 1;
+            clip-path: polygon(0 0, var(--position) 0, var(--position) 100%, 0 100%);
+        }
+        
+        .comparison-slider .slider-handle {
+            position: absolute;
+            top: 0;
+            left: var(--position);
+            width: 4px;
+            height: 100%;
+            background-color: var(--primary-color);
+            z-index: 3;
+            cursor: ew-resize;
+        }
+        
+        .comparison-slider .slider-handle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .comparison-slider .slider-handle::after {
+            content: '↔';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--dark-blue);
+            font-weight: bold;
+        }
+        
+        .comparison-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        
+        .comparison-labels span {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 992px) {
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-container.full-width {
+                grid-column: auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .analysis-section {
+                padding: 20px;
+            }
+            
+            .controls-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .control-group {
+                width: 100%;
+            }
+            
+            .control-select {
+                width: 100%;
+            }
+            
+            .metric-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .metric-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars Background -->
+    <div class="stars-background" id="stars-container"></div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="home.html">
+                        <span class="logo-text">Stellar</span>
+                    </a>
+                </div>
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="home.html">Home</a></li>
+                        <li class="nav-item"><a href="detection.html">Detection</a></li>
+                        <li class="nav-item"><a href="library.html">Library</a></li>
+                        <li class="nav-item"><a href="learning.html">Learning</a></li>
+                        <li class="nav-item active"><a href="analysis.html">Analysis</a></li>
+                        <li class="nav-item"><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <a href="login.html" class="btn btn-outline">Login</a>
+                    <a href="signup.html" class="btn btn-primary">Sign Up</a>
+                    <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="analysis-page">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Constellation Analysis</h1>
+                <p class="page-description">Advanced analytics and visualizations for constellation detection</p>
+            </div>
+            
+            <!-- Detection Summary Section -->
+            <div class="analysis-section">
+                <div class="section-header">
+                    <h2 class="section-title">Detection Summary</h2>
+                </div>
+                <p class="section-description">Overview of the most recent constellation detection results and performance metrics.</p>
+                
+                <div class="metric-cards">
+                    <div class="metric-card">
+                        <div class="metric-value">87%</div>
+                        <div class="metric-label">Average Detection Accuracy</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">12</div>
+                        <div class="metric-label">Constellations Detected</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">93%</div>
+                        <div class="metric-label">Star Identification Rate</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">0.8s</div>
+                        <div class="metric-label">Average Processing Time</div>
+                    </div>
+                </div>
+                
+                <div class="analysis-grid">
+                    <div class="analysis-card">
+                        <h3>Detection Accuracy by Constellation</h3>
+                        <div class="chart-container">
+                            <canvas id="accuracy-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="analysis-card">
+                        <h3>Detection Frequency</h3>
+                        <div class="chart-container">
+                            <canvas id="frequency-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="analysis-card">
+                    <h3>Recent Detection History</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Constellation</th>
+                                <th>Confidence Score</th>
+                                <th>Stars Matched</th>
+                                <th>Processing Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2023-11-15 21:34</td>
+                                <td class="highlight">Orion</td>
+                                <td>94%</td>
+                                <td>7/9</td>
+                                <td>0.7s</td>
+                            </tr>
+                            <tr>
+                                <td>2023-11-15 20:12</td>
+                                <td class="highlight">Ursa Major</td>
+                                <td>89%</td>
+                                <td>6/7</td>
+                                <td>0.8s</td>
+                            </tr>
+                            <tr>
+                                <td>2023-11-14 22:45</td>
+                                <td class="highlight">Cassiopeia</td>
+                                <td>92%</td>
+                                <td>5/5</td>
+                                <td>0.6s</td>
+                            </tr>
+                            <tr>
+                                <td>2023-11-14 21:18</td>
+                                <td class="highlight">Leo</td>
+                                <td>85%</td>
+                                <td>5/6</td>
+                                <td>0.9s</td>
+                            </tr>
+                            <tr>
+                                <td>2023-11-13 23:05</td>
+                                <td class="highlight">Cygnus</td>
+                                <td>91%</td>
+                                <td>6/7</td>
+                                <td>0.7s</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Detailed Analysis Section -->
+            <div class="analysis-section">
+                <div class="section-header">
+                    <h2 class="section-title">Detailed Analysis</h2>
+                </div>
+                <p class="section-description">Explore detailed metrics and visualizations for specific constellations.</p>
+                
+                <div class="controls-container">
+                    <div class="control-group">
+                        <span class="control-label">Constellation:</span>
+                        <select id="constellation-select" class="control-select">
+                            <option value="Orion">Orion</option>
+                            <option value="UrsaMajor">Ursa Major</option>
+                            <option value="Cassiopeia">Cassiopeia</option>
+                            <option value="Leo">Leo</option>
+                            <option value="Cygnus">Cygnus</option>
+                            <option value="Lyra">Lyra</option>
+                            <option value="Scorpius">Scorpius</option>
+                            <option value="Pegasus">Pegasus</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <span class="control-label">Time Period:</span>
+                        <select id="time-period-select" class="control-select">
+                            <option value="day">Last 24 Hours</option>
+                            <option value="week" selected>Last 7 Days</option>
+                            <option value="month">Last 30 Days</option>
+                            <option value="year">Last 12 Months</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="tabs-container">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="performance">Performance Metrics</div>
+                        <div class="tab" data-tab="star-mapping">Star Mapping</div>
+                        <div class="tab" data-tab="comparison">Detection Comparison</div>
+                        <div class="tab" data-tab="environmental">Environmental Factors</div>
+                    </div>
+                    
+                    <!-- Performance Metrics Tab -->
+                    <div class="tab-content active" id="performance-tab">
+                        <div class="info-box">
+                            <h4>Performance Overview - Orion</h4>
+                            <p>Analysis of detection performance for Orion constellation over the selected time period. The metrics show consistent high accuracy with occasional variations due to environmental factors.</p>
+                        </div>
+                        
+                        <div class="analysis-grid">
+                            <div class="analysis-card">
+                                <h3>Detection Accuracy Over Time</h3>
+                                <div class="chart-container">
+                                    <canvas id="accuracy-time-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="analysis-card">
+                                <h3>Star Match Rate</h3>
+                                <div class="chart-container">
+                                    <canvas id="star-match-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="analysis-card">
+                                <h3>Processing Time Distribution</h3>
+                                <div class="chart-container">
+                                    <canvas id="processing-time-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="analysis-card">
+                                <h3>Error Types Distribution</h3>
+                                <div class="chart-container">
+                                    <canvas id="error-types-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-card">
+                            <h3>Performance Metrics by Image Conditions</h3>
+                            <div class="chart-container full-width large">
+                                <canvas id="conditions-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Star Mapping Tab -->
+                    <div class="tab-content" id="star-mapping-tab">
+                        <div class="info-box">
+                            <h4>Star Mapping Analysis - Orion</h4>
+                            <p>Visual representation of star detection and mapping for Orion constellation. The heatmap shows the frequency and accuracy of star identification across the constellation pattern.</p>
+                        </div>
+                        
+                        <div class="controls-container">
+                            <div class="control-group">
+                                <button id="toggle-stars-btn" class="control-button active">Stars</button>
+                                <button id="toggle-lines-btn" class="control-button active">Lines</button>
+                                <button id="toggle-labels-btn" class="control-button">Labels</button>
+                                <button id="toggle-heatmap-btn" class="control-button">Heatmap</button>
+                            </div>
+                        </div>
+                        
+                        <div class="star-map" id="star-map">
+                            <!-- Star map will be rendered here using D3.js -->
+                        </div>
+                        
+                        <div class="legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #ffffff;"></div>
+                                <span>Detected Stars</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #4facfe;"></div>
+                                <span>Constellation Lines</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: rgba(255, 0, 0, 0.5);"></div>
+                                <span>Frequently Missed</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: rgba(0, 255, 0, 0.5);"></div>
+                                <span>High Accuracy</span>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-grid">
+                            <div class="analysis-card">
+                                <h3>Star Detection Accuracy</h3>
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Star Name</th>
+                                            <th>Detection Rate</th>
+                                            <th>Avg. Position Error</th>
+                                            <th>Brightness</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="highlight">Betelgeuse</td>
+                                            <td>98%</td>
+                                            <td>0.3px</td>
+                                            <td>High</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="highlight">Rigel</td>
+                                            <td>97%</td>
+                                            <td>0.4px</td>
+                                            <td>High</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="highlight">Bellatrix</td>
+                                            <td>92%</td>
+                                            <td>0.7px</td>
+                                            <td>Medium</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="highlight">Mintaka</td>
+                                            <td>89%</td>
+                                            <td>0.8px</td>
+                                            <td>Medium</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="highlight">Alnilam</td>
+                                            <td>91%</td>
+                                            <td>0.6px</td>
+                                            <td>Medium</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="highlight">Alnitak</td>
+                                            <td>88%</td>
+                                            <td>0.9px</td>
+                                            <td>Medium</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="highlight">Saiph</td>
+                                            <td>85%</td>
+                                            <td>1.1px</td>
+                                            <td>Medium</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="analysis-card">
+                                <h3>Pattern Recognition Analysis</h3>
+                                <div class="chart-container">
+                                    <canvas id="pattern-recognition-chart"></canvas>
+                                </div>
+                                <p>The radar chart shows the algorithm's performance in recognizing different aspects of the constellation pattern, including star positions, relative distances, and overall shape.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Comparison Tab -->
+                    <div class="tab-content" id="comparison-tab">
+                        <div class="info-box">
+                            <h4>Detection Comparison - Orion</h4>
+                            <p>Compare detection results across different algorithms, image conditions, and time periods to evaluate performance improvements and identify areas for optimization.</p>
+                        </div>
+                        
+                        <div class="controls-container">
+                            <div class="control-group">
+                                <span class="control-label">Compare By:</span>
+                                <select id="comparison-type-select" class="control-select">
+                                    <option value="algorithm">Algorithm Version</option>
+                                    <option value="conditions">Image Conditions</option>
+                                    <option value="time">Time Period</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <span class="control-label">Metric:</span>
+                                <select id="comparison-metric-select" class="control-select">
+                                    <option value="accuracy">Overall Accuracy</option>
+                                    <option value="stars">Star Match Rate</option>
+                                    <option value="time">Processing Time</option>
+                                    <option value="errors">Error Rate</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-card">
+                            <h3>Comparative Performance</h3>
+                            <div class="chart-container full-width large">
+                                <canvas id="comparison-chart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-grid">
+                            <div class="analysis-card">
+                                <h3>Before/After Comparison</h3>
+                                <div class="comparison-slider" style="--position: 50%">
+                                    <div class="before" style="background-image: url('assets/comparison-before.jpg');"></div>
+                                    <div class="after" style="background-image: url('assets/comparison-after.jpg');"></div>
+                                    <div class="slider-handle" id="slider-handle"></div>
+                                </div>
+                                <div class="comparison-labels">
+                                    <span>Original Image</span>
+                                    <span>Processed Detection</span>
+                                </div>
+                            </div>
+                            <div class="analysis-card">
+                                <h3>Algorithm Improvement Over Time</h3>
+                                <div class="chart-container">
+                                    <canvas id="algorithm-improvement-chart"></canvas>
+                                </div>
+                                <p>This chart shows the progressive improvement in detection accuracy as the algorithm has evolved through different versions and updates.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Environmental Factors Tab -->
+                    <div class="tab-content" id="environmental-tab">
+                        <div class="info-box">
+                            <h4>Environmental Impact Analysis - Orion</h4>
+                            <p>Analysis of how environmental factors such as light pollution, weather conditions, and time of day affect the detection accuracy for Orion constellation.</p>
+                        </div>
+                        
+                        <div class="analysis-grid">
+                            <div class="analysis-card">
+                                <h3>Light Pollution Impact</h3>
+                                <div class="chart-container">
+                                    <canvas id="light-pollution-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="analysis-card">
+                                <h3>Weather Conditions Impact</h3>
+                                <div class="chart-container">
+                                    <canvas id="weather-impact-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="analysis-card">
+                                <h3>Time of Day Analysis</h3>
+                                <div class="chart-container">
+                                    <canvas id="time-of-day-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="analysis-card">
+                                <h3>Seasonal Variations</h3>
+                                <div class="chart-container">
+                                    <canvas id="seasonal-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-card">
+                            <h3>Environmental Factors Heatmap</h3>
+                            <div class="heatmap-container" id="environmental-heatmap">
+                                <!-- Heatmap will be rendered here using D3.js -->
+                            </div>
+                            <div class="legend">
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background-color: #0a4c95;"></div>
+                                    <span>Low Impact</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background-color: #4facfe;"></div>
+                                    <span>Medium Impact</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background-color: #00f2fe;"></div>
+                                    <span>High Impact</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Algorithm Performance Section -->
+            <div class="analysis-section">
+                <div class="section-header">
+                    <h2 class="section-title">Algorithm Performance</h2>
+                </div>
+                <p class="section-description">Detailed analysis of the constellation detection algorithm's performance across different metrics and conditions.</p>
+                
+                <div class="analysis-grid">
+                    <div class="analysis-card">
+                        <h3>Processing Time by Image Size</h3>
+                        <div class="chart-container">
+                            <canvas id="processing-size-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="analysis-card">
+                        <h3>Memory Usage</h3>
+                        <div class="chart-container">
+                            <canvas id="memory-usage-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="analysis-card">
+                    <h3>Algorithm Performance Metrics</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Current Value</th>
+                                <th>Previous Value</th>
+                                <th>Change</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="highlight">Overall Accuracy</td>
+                                <td>87%</td>
+                                <td>82%</td>
+                                <td>+5%</td>
+                                <td><i class="fas fa-arrow-up" style="color: #4CAF50;"></i> Improved</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">False Positive Rate</td>
+                                <td>3.2%</td>
+                                <td>5.8%</td>
+                                <td>-2.6%</td>
+                                <td><i class="fas fa-arrow-up" style="color: #4CAF50;"></i> Improved</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">False Negative Rate</td>
+                                <td>4.5%</td>
+                                <td>7.1%</td>
+                                <td>-2.6%</td>
+                                <td><i class="fas fa-arrow-up" style="color: #4CAF50;"></i> Improved</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">Avg. Processing Time</td>
+                                <td>0.8s</td>
+                                <td>1.2s</td>
+                                <td>-0.4s</td>
+                                <td><i class="fas fa-arrow-up" style="color: #4CAF50;"></i> Improved</td>
+                            </tr>
+                            <tr>
+                                <td class="highlight">Memory Usage</td>
+                                <td>245MB</td>
+                                <td>310MB</td>
+                                <td>-65MB</td>
+                                <td><i class="fas fa-arrow-up" style="color: #4CAF50;"></i> Improved</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="analysis-card">
+                    <h3>Performance Across Different Devices</h3>
+                    <div class="chart-container full-width large">
+                        <canvas id="devices-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">Stellar</span>
+                    <p>Explore the wonders of the night sky</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h3>Navigation</h3>
+                        <ul>
+                            <li><a href="home.html">Home</a></li>
+                            <li><a href="detection.html">Detection</a></li>
+                            <li><a href="library.html">Library</a></li>
+                            <li><a href="learning.html">Learning</a></li>
+                            <li><a href="analysis.html">Analysis</a></li>
+                            <li><a href="about.html">About</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Tutorials</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Legal</h3>
+                        <ul>
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Cookie Policy</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Connect</h3>
+                        <ul class="social-links">
+                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                            <li><a href="#"><i class="fab fa-github"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Stellar Constellation Detection. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/constellation-data.js"></script>
+    <script src="js/analysis.js"></script>
+</body>
+</html>
