@@ -42,12 +42,6 @@ Stellar is a web-based platform that allows users to identify constellations in 
 - Integration with astronomical databases for more detailed information
 - Augmented reality features for interactive stargazing
 
-## Contributors
-
-- Dr. Sarah Chen - Founder & Lead Astronomer
-- Michael Rodriguez - Lead Developer
-- Dr. James Wilson - Educational Director
-- Aisha Patel - UX/UI Designer
 
 ## License
 
