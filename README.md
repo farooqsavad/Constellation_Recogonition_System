@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Stellar - Constellation Detection Platform
 
 Stellar is a web-based platform that allows users to identify constellations in night sky images using advanced image processing and machine learning techniques. The platform also provides educational resources about astronomy and constellations.
