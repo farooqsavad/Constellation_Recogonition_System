@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="#0a1128"/>
+  
+  <!-- Stars -->
+  <circle cx="100" cy="150" r="7" fill="#ffffff" opacity="0.9"/> <!-- Schedar (Alpha Cassiopeiae) -->
+  <circle cx="150" cy="100" r="6" fill="#ffffff" opacity="0.8"/> <!-- Caph (Beta Cassiopeiae) -->
+  <circle cx="200" cy="150" r="5" fill="#ffffff" opacity="0.7"/> <!-- Gamma Cassiopeiae -->
+  <circle cx="250" cy="100" r="6" fill="#ffffff" opacity="0.8"/> <!-- Ruchbah (Delta Cassiopeiae) -->
+  <circle cx="300" cy="150" r="5" fill="#ffffff" opacity="0.7"/> <!-- Segin (Epsilon Cassiopeiae) -->
+  
+  <!-- Constellation Lines -->
+  <g stroke="#4facfe" stroke-width="2" opacity="0.8">
+    <line x1="100" y1="150" x2="150" y2="100"/> <!-- Schedar to Caph -->
+    <line x1="150" y1="100" x2="200" y2="150"/> <!-- Caph to Gamma -->
+    <line x1="200" y1="150" x2="250" y2="100"/> <!-- Gamma to Ruchbah -->
+    <line x1="250" y1="100" x2="300" y2="150"/> <!-- Ruchbah to Segin -->
+  </g>
+  
+  <!-- Labels -->
+  <text x="100" y="135" font-family="Montserrat, sans-serif" font-size="10" fill="#b3c5ef" text-anchor="middle">Schedar</text>
+  <text x="150" y="85" font-family="Montserrat, sans-serif" font-size="10" fill="#b3c5ef" text-anchor="middle">Caph</text>
+  <text x="200" y="135" font-family="Montserrat, sans-serif" font-size="10" fill="#b3c5ef" text-anchor="middle">Gamma</text>
+  <text x="250" y="85" font-family="Montserrat, sans-serif" font-size="10" fill="#b3c5ef" text-anchor="middle">Ruchbah</text>
+  <text x="300" y="135" font-family="Montserrat, sans-serif" font-size="10" fill="#b3c5ef" text-anchor="middle">Segin</text>
+  
+  <!-- Constellation Name -->
+  <text x="200" y="370" font-family="Montserrat, sans-serif" font-size="20" fill="#4facfe" text-anchor="middle">Cassiopeia</text>
+</svg>

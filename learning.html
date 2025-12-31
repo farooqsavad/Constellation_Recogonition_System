@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar - Learning Center</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/reveal-animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Learning Page Specific Styles */
+        .learning-page {
+            padding: 60px 0;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .learning-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .category-card {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            transition: var(--transition-fast);
+            box-shadow: var(--shadow-light);
+            cursor: pointer;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .category-image {
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .category-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .category-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(10, 17, 40, 0.2), rgba(10, 17, 40, 0.8));
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+        }
+        
+        .category-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            color: var(--dark-blue);
+        }
+        
+        .category-content {
+            padding: 20px;
+        }
+        
+        .category-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .category-content p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .faq-section {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-md);
+            padding: 40px;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .faq-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .faq-header h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .faq-header p {
+            color: var(--text-light);
+            font-size: 1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            border-bottom: 1px solid var(--light-blue);
+            margin-bottom: 15px;
+        }
+        
+        .faq-question {
+            padding: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .faq-question h3 {
+            font-size: 1.1rem;
+            color: var(--text-white);
+            font-weight: 500;
+        }
+        
+        .faq-question .icon {
+            color: var(--primary-color);
+            transition: var(--transition-fast);
+        }
+        
+        .faq-answer {
+            padding: 0 0 15px;
+            color: var(--text-light);
+            line-height: 1.6;
+            display: none;
+        }
+        
+        .faq-item.active .faq-question h3 {
+            color: var(--primary-color);
+        }
+        
+        .faq-item.active .faq-question .icon {
+            transform: rotate(180deg);
+        }
+        
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+        
+        /* Additional styles for the learning page content */
+        .content-section {
+            margin-bottom: 60px;
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-md);
+            padding: 40px;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .content-block {
+            margin-bottom: 40px;
+        }
+        
+        .content-block h3 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .content-block h4 {
+            font-size: 1.3rem;
+            color: var(--text-white);
+            margin: 25px 0 15px;
+        }
+        
+        .content-block p {
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        
+        .content-block ul, .content-block ol {
+            color: var(--text-light);
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .content-block li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .constellation-highlight {
+            margin-top: 30px;
+            border: 1px solid var(--light-blue);
+            border-radius: var(--border-radius-md);
+            padding: 20px;
+            background-color: rgba(22, 37, 82, 0.5);
+        }
+        
+        .constellation-highlight h4 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .constellation-info {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        
+        .constellation-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .constellation-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius-sm);
+        }
+        
+        .constellation-details p {
+            margin-bottom: 10px;
+        }
+        
+        .constellation-details ul {
+            margin-bottom: 15px;
+        }
+        
+        .section-header {
+            margin-bottom: 30px;
+        }
+        
+        .section-header h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .section-header p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .constellation-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .content-section {
+                padding: 20px;
+            }
+            
+            .faq-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars Background -->
+    <div class="stars-background" id="stars-container"></div>
+    
+    <!-- Reveal Animations Scripts -->
+    <script src="js/reveal-animations.js"></script>
+    <script src="js/auto-reveal.js"></script>
+    
+    <!-- Authentication Check -->
+    <script src="js/auth-check.js"></script>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="home.html">
+                        <span class="logo-text">Stellar</span>
+                    </a>
+                </div>
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="home.html">Home</a></li>
+                        <li class="nav-item"><a href="detection.html">Detection</a></li>
+                        <li class="nav-item"><a href="library.html">Library</a></li>
+                        <li class="nav-item active"><a href="learning.html">Learning</a></li>
+                        <li class="nav-item"><a href="analysis.html">Analysis</a></li>
+                        <li class="nav-item"><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="learning-page">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Handbook of Stars and Constellations</h1>
+                <p class="page-description">Explore the wonders of the night sky with our comprehensive guide to astronomy and constellation identification</p>
+            </div>
+            
+            <div class="learning-categories">
+                <div class="category-card">
+                    <div class="category-image">
+<img src="Constellation_Templates/Orion.svg" alt="Introduction to Astronomy">
+                        <div class="category-overlay">
+                            <div class="category-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="category-content">
+                        <h3>Introduction to Astronomy</h3>
+                        <p>Learn the fundamentals of astronomy, celestial objects, and the universe.</p>
+                        <a href="#intro-astronomy" class="btn btn-text">Read More</a>
+                    </div>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-image">
+<img src="Constellation_Templates/UrsaMajor.svg" alt="Constellation Basics">
+                        <div class="category-overlay">
+                            <div class="category-icon">
+                                <i class="fas fa-map-marked-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="category-content">
+                        <h3>Constellation Basics</h3>
+                        <p>Understand what constellations are, their history, and how they're defined in modern astronomy.</p>
+                        <a href="#constellation-basics" class="btn btn-text">Read More</a>
+                    </div>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-image">
+                        <img src="assets/placeholder-constellation.svg" alt="Stargazing Guide">
+                        <div class="category-overlay">
+                            <div class="category-icon">
+                                <i class="fas fa-binoculars"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="category-content">
+                        <h3>Stargazing Guide</h3>
+                        <p>Master the art of stargazing with practical tips, tools, and techniques for observing the night sky.</p>
+                        <a href="#stargazing-guide" class="btn btn-text">Read More</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Introduction to Astronomy Section -->
+            <section id="intro-astronomy" class="content-section">
+                <div class="section-header">
+                    <h2>Introduction to Astronomy</h2>
+                    <p>The science of celestial objects, space, and the physical universe as a whole</p>
+                </div>
+                
+                <div class="content-block">
+                    <h3>What is Astronomy?</h3>
+                    <p>Astronomy is the scientific study of celestial objects (such as stars, planets, comets, and galaxies), the physics, chemistry, and evolution of objects in the universe, and phenomena that originate outside the Earth's atmosphere. It is one of the oldest sciences, with roots in ancient civilizations that observed patterns in the night sky.</p>
+                    
+                    <p>Modern astronomy is divided into several branches:</p>
+                    <ul>
+                        <li><strong>Observational Astronomy:</strong> The acquisition and analysis of data using telescopes and other astronomical instruments</li>
+                        <li><strong>Theoretical Astronomy:</strong> The development of analytical models to describe astronomical objects and phenomena</li>
+                        <li><strong>Astrophysics:</strong> The study of the physics of the universe, including the physical properties of celestial objects</li>
+                        <li><strong>Cosmology:</strong> The study of the origin, evolution, and fate of the universe</li>
+                        <li><strong>Astrobiology:</strong> The study of the origin, evolution, and distribution of life in the universe</li>
+                    </ul>
+                </div>
+                
+                <div class="content-block">
+                    <h3>The Celestial Sphere</h3>
+                    <p>The celestial sphere is an imaginary sphere of arbitrarily large radius, concentric with Earth. All objects in the sky can be conceived as being projected upon the inner surface of the celestial sphere, as if it were the underside of a dome.</p>
+                    
+                    <p>Key elements of the celestial sphere include:</p>
+                    <ul>
+                        <li><strong>Celestial Poles:</strong> The two points where Earth's axis of rotation, extended to infinity, intersects the celestial sphere</li>
+                        <li><strong>Celestial Equator:</strong> The great circle on the celestial sphere that is in the same plane as Earth's equator</li>
+                        <li><strong>Ecliptic:</strong> The apparent path of the Sun across the celestial sphere over the course of a year</li>
+                        <li><strong>Zodiac:</strong> A band of the celestial sphere extending 8° on either side of the ecliptic, within which the planets move</li>
+                    </ul>
+                </div>
+                
+                <div class="content-block">
+                    <h3>Stars and Their Properties</h3>
+                    <p>Stars are luminous spheres of plasma held together by gravity. They are the fundamental building blocks of galaxies, and their properties can tell us much about the universe.</p>
+                    
+                    <p>Key properties of stars include:</p>
+                    <ul>
+                        <li><strong>Magnitude:</strong> A measure of a star's brightness as seen from Earth. The lower the magnitude, the brighter the star.</li>
+                        <li><strong>Color:</strong> Indicates the star's temperature. Blue stars are hottest, followed by white, yellow, orange, and red.</li>
+                        <li><strong>Spectral Class:</strong> A classification system based on a star's spectrum, which reveals its temperature and composition.</li>
+                        <li><strong>Distance:</strong> Measured in light-years, the distance light travels in one year (approximately 9.5 trillion kilometers).</li>
+                        <li><strong>Mass:</strong> Determines a star's life cycle and eventual fate.</li>
+                    </ul>
+                    
+                    <p>The Hertzsprung-Russell (H-R) diagram plots stars according to their luminosity and temperature, revealing different types of stars and their evolutionary stages.</p>
+                </div>
+            </section>
+            
+            <!-- Constellation Basics Section -->
+            <section id="constellation-basics" class="content-section">
+                <div class="section-header">
+                    <h2>Constellation Basics</h2>
+                    <p>Understanding the patterns of stars that have guided humanity for millennia</p>
+                </div>
+                
+                <div class="content-block">
+                    <h3>What are Constellations?</h3>
+                    <p>Constellations are groups of stars that form recognizable patterns in the night sky. Throughout history, different cultures have identified various patterns and associated them with mythological figures, animals, or objects.</p>
+                    
+                    <p>In modern astronomy, a constellation refers not just to the pattern of stars, but to a specific region of the sky. The International Astronomical Union (IAU) officially recognizes 88 constellations, which together cover the entire celestial sphere.</p>
+                    
+                    <p>It's important to note that the stars in a constellation are not necessarily close to each other in space. They may be at vastly different distances from Earth and only appear to form patterns from our perspective.</p>
+                </div>
+                
+                <div class="content-block">
+                    <h3>History of Constellations</h3>
+                    <p>The history of constellations spans thousands of years and multiple civilizations:</p>
+                    
+                    <ul>
+                        <li><strong>Ancient Mesopotamia (3000 BCE):</strong> Some of the earliest recorded constellations, including many that would later influence Greek astronomy</li>
+                        <li><strong>Ancient Egypt:</strong> Developed their own system of constellations, often tied to their religious beliefs</li>
+                        <li><strong>Ancient Greece:</strong> Formalized many of the constellations we recognize today, with Ptolemy's Almagest (2nd century CE) cataloging 48 constellations</li>
+                        <li><strong>Islamic Golden Age:</strong> Preserved and expanded upon Greek astronomical knowledge</li>
+                        <li><strong>European Renaissance:</strong> Added new constellations, particularly for the southern sky which was not visible to ancient Greek astronomers</li>
+                        <li><strong>Modern Era:</strong> The IAU standardized the 88 official constellations in 1922, with final boundaries established in 1928</li>
+                    </ul>
+                </div>
+                
+                <div class="content-block">
+                    <h3>Types of Constellations</h3>
+                    <p>Constellations can be categorized in several ways:</p>
+                    
+                    <h4>By Visibility</h4>
+                    <ul>
+                        <li><strong>Circumpolar Constellations:</strong> Visible throughout the year from a particular latitude because they never set below the horizon (e.g., Ursa Major and Ursa Minor for Northern Hemisphere observers)</li>
+                        <li><strong>Seasonal Constellations:</strong> Visible only during certain times of the year due to Earth's orbit around the Sun</li>
+                    </ul>
+                    
+                    <h4>By Location</h4>
+                    <ul>
+                        <li><strong>Northern Constellations:</strong> Located in the northern celestial hemisphere</li>
+                        <li><strong>Southern Constellations:</strong> Located in the southern celestial hemisphere</li>
+                        <li><strong>Equatorial Constellations:</strong> Located near the celestial equator and visible from most places on Earth</li>
+                    </ul>
+                    
+                    <h4>By Type</h4>
+                    <ul>
+                        <li><strong>Zodiacal Constellations:</strong> The 12 constellations that lie along the ecliptic, through which the Sun appears to pass during the year</li>
+                        <li><strong>Ptolemaic Constellations:</strong> The 48 ancient constellations described by Ptolemy</li>
+                        <li><strong>Modern Constellations:</strong> Those added after Ptolemy, primarily during the 16th to 18th centuries</li>
+                    </ul>
+                </div>
+                
+                <div class="content-block">
+                    <h3>Notable Constellations</h3>
+                    
+                    <div class="constellation-highlight">
+                        <h4>Orion (The Hunter)</h4>
+                        <div class="constellation-info">
+                            <div class="constellation-image">
+<img src="Constellation_Templates/Orion.svg" alt="Orion Constellation">
+                            </div>
+                            <div class="constellation-details">
+                                <p><strong>Visibility:</strong> Visible worldwide, best seen during winter in the Northern Hemisphere and summer in the Southern Hemisphere</p>
+                                <p><strong>Notable Features:</strong></p>
+                                <ul>
+                                    <li><strong>Betelgeuse (Alpha Orionis):</strong> A red supergiant marking Orion's right shoulder. It's approximately 700 light-years away and about 1,000 times the diameter of our Sun. Its distinctive reddish color is visible to the naked eye.</li>
+                                    <li><strong>Rigel (Beta Orionis):</strong> A blue supergiant marking Orion's left foot. Despite being designated "beta," it's actually brighter than Betelgeuse. It's about 860 light-years away and 120,000 times more luminous than our Sun.</li>
+                                    <li><strong>Orion's Belt:</strong> Three bright stars in a row (Alnitak, Alnilam, and Mintaka). These stars are between 800 and 1,400 light-years away and form one of the most recognizable asterisms in the night sky.</li>
+                                    <li><strong>Orion Nebula (M42):</strong> A diffuse nebula visible below Orion's Belt. It's one of the brightest nebulae and can be seen with the naked eye. It's a stellar nursery where new stars are being formed.</li>
+                                    <li><strong>Saiph (Kappa Orionis):</strong> A blue supergiant marking Orion's right foot.</li>
+                                    <li><strong>Bellatrix (Gamma Orionis):</strong> A blue giant marking Orion's left shoulder.</li>
+                                </ul>
+                                <p><strong>Mythology:</strong> In Greek mythology, Orion was a mighty hunter and the son of Poseidon. There are several myths about his death, the most common being that he was killed by a scorpion sent by Gaia (or in some versions, by Artemis). Zeus placed him in the sky as a constellation, along with the scorpion (Scorpius) on the opposite side of the sky so they would never meet. The constellation depicts him holding a shield and club, with a sword hanging from his belt.</p>
+                                <p><strong>Historical Significance:</strong> Orion has been recognized by cultures worldwide for thousands of years. The ancient Egyptians associated it with Osiris, the god of the afterlife. The three stars of Orion's Belt have been incorporated into numerous ancient structures, including the pyramids of Giza, which some believe were aligned to mirror these stars.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="constellation-highlight">
+                        <h4>Ursa Major (The Great Bear)</h4>
+                        <div class="constellation-info">
+                            <div class="constellation-image">
+<img src="Constellation_Templates/UrsaMajor.svg" alt="Ursa Major Constellation">
+                            </div>
+                            <div class="constellation-details">
+                                <p><strong>Visibility:</strong> Circumpolar for most Northern Hemisphere observers, best seen during spring</p>
+                                <p><strong>Notable Features:</strong></p>
+                                <ul>
+                                    <li><strong>The Big Dipper (or Plough):</strong> An asterism formed by seven bright stars (Dubhe, Merak, Phecda, Megrez, Alioth, Mizar, and Alkaid). This is one of the most recognizable patterns in the northern sky.</li>
+                                    <li><strong>Dubhe and Merak:</strong> The "Pointer Stars" that help locate Polaris, the North Star. Drawing a line from Merak through Dubhe and extending it about five times the distance between them leads to Polaris.</li>
+                                    <li><strong>Mizar and Alcor:</strong> A famous double star visible to the naked eye. Mizar itself is a quadruple star system, while Alcor is a binary star. Together they form a sextuple system.</li>
+                                    <li><strong>Alioth (Epsilon Ursae Majoris):</strong> The brightest star in Ursa Major and the 31st brightest star in the night sky.</li>
+                                    <li><strong>M81 and M82:</strong> Two galaxies visible with binoculars or small telescopes, located near the "bowl" of the Big Dipper.</li>
+                                </ul>
+                                <p><strong>Mythology:</strong> In Greek mythology, the constellation represents Callisto, a nymph who was transformed into a bear by Zeus's jealous wife, Hera. Zeus later placed her in the sky as the Great Bear. Her son, Arcas, was transformed into Ursa Minor (the Little Bear). In Native American traditions, the bowl of the Big Dipper was seen as a bear, with the handle stars representing hunters chasing it.</p>
+                                <p><strong>Historical Significance:</strong> Ursa Major has been used for navigation for thousands of years, particularly by finding the North Star using the Pointer Stars. It's mentioned in Homer's Iliad and Odyssey and has been recognized by numerous cultures worldwide. In some Native American traditions, the Big Dipper was seen as a celestial bear, with the handle representing hunters following it.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="constellation-highlight">
+                        <h4>Cassiopeia (The Queen)</h4>
+                        <div class="constellation-info">
+                            <div class="constellation-image">
+<img src="Constellation_Templates/Cassiopeia.svg" alt="Cassiopeia Constellation">
+                            </div>
+                            <div class="constellation-details">
+                                <p><strong>Visibility:</strong> Circumpolar for most Northern Hemisphere observers, best seen during autumn and winter</p>
+                                <p><strong>Notable Features:</strong></p>
+                                <ul>
+                                    <li><strong>W or M Shape:</strong> Cassiopeia's five brightest stars form a distinctive W or M shape, depending on its orientation in the sky.</li>
+                                    <li><strong>Schedar (Alpha Cassiopeiae):</strong> An orange giant star about 228 light-years away. It's the brightest star in the constellation.</li>
+                                    <li><strong>Caph (Beta Cassiopeiae):</strong> A yellow-white giant about 54 light-years away.</li>
+                                    <li><strong>Gamma Cassiopeiae:</strong> A variable star that occasionally outshines both Schedar and Caph. It's a rapidly rotating star that throws off shells of material.</li>
+                                    <li><strong>Tycho's Supernova Remnant:</strong> The remains of a supernova observed by Tycho Brahe in 1572, which helped disprove the ancient belief that the heavens were unchanging.</li>
+                                    <li><strong>M52:</strong> An open star cluster visible with binoculars.</li>
+                                </ul>
+                                <p><strong>Mythology:</strong> In Greek mythology, Cassiopeia was the vain queen of Ethiopia who boasted that she and her daughter Andromeda were more beautiful than the Nereids (sea nymphs). This angered Poseidon, who sent a sea monster (represented by the constellation Cetus) to ravage the coast. To appease the monster, Andromeda was chained to a rock as a sacrifice, but was rescued by Perseus. Cassiopeia was placed in the sky as punishment, doomed to circle the celestial pole forever, spending half the year upside down.</p>
+                                <p><strong>Historical Significance:</strong> Cassiopeia has been recognized since ancient times and was one of the 48 constellations listed by Ptolemy in his Almagest in the 2nd century CE. Its distinctive shape makes it one of the most easily recognizable constellations, and it's often used as a starting point for finding other objects in the northern sky.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="constellation-highlight">
+                        <h4>Cygnus (The Swan)</h4>
+                        <div class="constellation-info">
+                            <div class="constellation-image">
+<img src="Constellation_Templates/Cygnus.svg" alt="Cygnus Constellation">
+                            </div>
+                            <div class="constellation-details">
+                                <p><strong>Visibility:</strong> Best seen during summer and autumn in the Northern Hemisphere</p>
+                                <p><strong>Notable Features:</strong></p>
+                                <ul>
+                                    <li><strong>Northern Cross:</strong> The main stars of Cygnus form a large cross, with Deneb at the top and Albireo at the bottom.</li>
+                                    <li><strong>Deneb (Alpha Cygni):</strong> A blue-white supergiant and one of the most luminous known stars. It's approximately 2,600 light-years away and forms one corner of the Summer Triangle asterism.</li>
+                                    <li><strong>Albireo (Beta Cygni):</strong> A beautiful double star with contrasting colors (gold and blue), often described as one of the most beautiful double stars in the sky. It's visible through small telescopes.</li>
+                                    <li><strong>Sadr (Gamma Cygni):</strong> Located at the center of the cross, surrounded by a complex of nebulosity.</li>
+                                    <li><strong>Cygnus X-1:</strong> A famous X-ray source that was the first widely accepted black hole candidate.</li>
+                                    <li><strong>North America Nebula (NGC 7000):</strong> A large emission nebula near Deneb that resembles the continent of North America.</li>
+                                </ul>
+                                <p><strong>Mythology:</strong> In Greek mythology, Cygnus represents the form Zeus took to seduce Leda, the queen of Sparta. Another myth associates it with Orpheus, who was transformed into a swan after his death and placed next to his lyre (the constellation Lyra) in the sky. In yet another story, it represents Cycnus, a friend of Phaethon who was transformed into a swan while mourning his friend's death.</p>
+                                <p><strong>Historical Significance:</strong> Cygnus lies along the Milky Way and contains many deep-sky objects. The constellation has been known since ancient times and was included in Ptolemy's 48 constellations. It's home to the most massive stellar black hole discovered in our galaxy, Cygnus X-1. The constellation also contains the first exoplanet discovered around a Sun-like star, 51 Pegasi b.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="constellation-highlight">
+                        <h4>Lyra (The Lyre)</h4>
+                        <div class="constellation-info">
+                            <div class="constellation-image">
+<img src="Constellation_Templates/Lyra.svg" alt="Lyra Constellation">
+                            </div>
+                            <div class="constellation-details">
+                                <p><strong>Visibility:</strong> Best seen during summer in the Northern Hemisphere</p>
+                                <p><strong>Notable Features:</strong></p>
+                                <ul>
+                                    <li><strong>Vega (Alpha Lyrae):</strong> The fifth brightest star in the night sky and the second brightest in the northern celestial hemisphere. It's a blue-white main sequence star about 25 light-years away and forms one corner of the Summer Triangle asterism.</li>
+                                    <li><strong>Epsilon Lyrae:</strong> Known as the "Double Double," this is a quadruple star system. With the naked eye, it appears as a single star, binoculars reveal it as a double star, and a telescope shows that each of these stars is itself a double.</li>
+                                    <li><strong>Ring Nebula (M57):</strong> A famous planetary nebula, visible as a small, smoky ring through telescopes. It's the glowing remains of a sun-like star.</li>
+                                    <li><strong>Sheliak (Beta Lyrae):</strong> An eclipsing binary star system whose brightness varies noticeably over a 13-day period.</li>
+                                </ul>
+                                <p><strong>Mythology:</strong> In Greek mythology, Lyra represents the lyre (a stringed musical instrument) of Orpheus, the legendary musician who could charm all living things with his music. After Orpheus was killed, his lyre was thrown into a river. Zeus sent an eagle to retrieve it, and both the lyre and the eagle (represented by the constellation Aquila) were placed in the sky.</p>
+                                <p><strong>Historical Significance:</strong> Lyra has been recognized as a constellation since ancient times and was included in Ptolemy's 48 constellations. Vega was the North Star around 12,000 BCE and will be again around 13,000 CE due to the precession of Earth's axis. In 1777, Johann Bode created Telescopium Herschelii out of some of Lyra's stars to honor William Herschel, but this constellation is no longer recognized.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Stargazing Guide Section -->
+            <section id="stargazing-guide" class="content-section">
+                <div class="section-header">
+                    <h2>Stargazing Guide</h2>
+                    <p>Practical tips and techniques for observing the night sky</p>
+                </div>
+                
+                <div class="content-block">
+                    <h3>Getting Started with Stargazing</h3>
+                    <p>Stargazing is an accessible hobby that requires minimal equipment to begin. Here are some tips for getting started:</p>
+                    
+                    <h4>Finding the Right Location</h4>
+                    <p>Light pollution is the biggest obstacle to effective stargazing. To maximize your experience:</p>
+                    <ul>
+                        <li>Find a location away from city lights</li>
+                        <li>Choose a spot with a clear view of the horizon</li>
+                        <li>Higher elevations often provide better viewing conditions</li>
+                        <li>Check light pollution maps online to find dark sky areas near you</li>
+                    </ul>
+                    
+                    <h4>Timing Your Observations</h4>
+                    <ul>
+                        <li>The best stargazing occurs during a new moon when moonlight won't interfere</li>
+                        <li>Allow 20-30 minutes for your eyes to fully adapt to darkness</li>
+                        <li>Different constellations are visible during different seasons</li>
+                        <li>Astronomical twilight (when the Sun is 18° below the horizon) offers the darkest skies</li>
+                    </ul>
+                    
+                    <h4>Essential Equipment</h4>
+                    <ul>
+                        <li><strong>Star Chart or App:</strong> Helps identify celestial objects</li>
+                        <li><strong>Red Flashlight:</strong> Preserves night vision while allowing you to read charts</li>
+                        <li><strong>Comfortable Chair:</strong> Prevents neck strain during extended viewing</li>
+                        <li><strong>Warm Clothing:</strong> Temperatures drop at night, even in summer</li>
+                        <li><strong>Binoculars:</strong> A good first optical aid before investing in a telescope</li>
+                    </ul>
+                </div>
+                
+                <div class="content-block">
+                    <h3>Navigating the Night Sky</h3>
+                    <p>Learning to navigate the night sky is a fundamental skill for any stargazer. Here are some techniques:</p>
+                    
+                    <h4>Finding North</h4>
+                    <p>In the Northern Hemisphere, Polaris (the North Star) indicates the direction of north. To find it:</p>
+                    <ol>
+                        <li>Locate the Big Dipper in Ursa Major</li>
+                        <li>Find the two stars at the end of the Big Dipper's bowl (Dubhe and Merak)</li>
+                        <li>Draw an imaginary line from Merak through Dubhe and extend it about five times the distance between them</li>
+                        <li>This line leads to Polaris, which is the last star in the handle of the Little Dipper</li>
+                    </ol>
+                    
+                    <h4>Star Hopping</h4>
+                    <p>Star hopping is a technique where you use bright, easily identifiable stars or constellations as stepping stones to locate fainter objects:</p>
+                    <ol>
+                        <li>Start with a bright, familiar constellation</li>
+                        <li>Use patterns or imaginary lines to "hop" to nearby stars</li>
+                        <li>Gradually work your way to your target object</li>
+                    </ol>
+                    <p>For example, to find the Andromeda Galaxy, start with the Great Square of Pegasus, then hop to the constellation Andromeda.</p>
+                </div>
+                
+                <div class="content-block">
+                    <h3>Seasonal Stargazing Highlights</h3>
+                    
+                    <h4>Winter Sky (Northern Hemisphere)</h4>
+                    <ul>
+                        <li><strong>Orion:</strong> One of the most recognizable constellations, featuring bright stars and the Orion Nebula</li>
+                        <li><strong>Taurus:</strong> Contains the Pleiades (Seven Sisters) and Hyades star clusters</li>
+                        <li><strong>Canis Major:</strong> Home to Sirius, the brightest star in the night sky</li>
+                        <li><strong>Gemini:</strong> Features the bright twin stars Castor and Pollux</li>
+                    </ul>
+                    
+                    <h4>Spring Sky</h4>
+                    <ul>
+                        <li><strong>Leo:</strong> A zodiacal constellation with the bright star Regulus</li>
+                        <li><strong>Ursa Major:</strong> Contains the Big Dipper, most prominent in spring evenings</li>
+                        <li><strong>Boötes:</strong> Features Arcturus, one of the brightest stars in the night sky</li>
+                        <li><strong>Virgo:</strong> Home to the Virgo Cluster of galaxies</li>
+                    </ul>
+                    
+                    <h4>Summer Sky</h4>
+                    <ul>
+                        <li><strong>Cygnus:</strong> The Northern Cross, lying in the Milky Way</li>
+                        <li><strong>Lyra:</strong> Contains Vega, one of the brightest stars</li>
+                        <li><strong>Aquila:</strong> Features the bright star Altair</li>
+                        <li><strong>Sagittarius:</strong> Marks the center of the Milky Way galaxy</li>
+                    </ul>
+                    
+                    <h4>Autumn Sky</h4>
+                    <ul>
+                        <li><strong>Pegasus:</strong> Features the Great Square of Pegasus</li>
+                        <li><strong>Andromeda:</strong> Contains the Andromeda Galaxy, the nearest major galaxy to the Milky Way</li>
+                        <li><strong>Cassiopeia:</strong> A distinctive W-shaped constellation</li>
+                        <li><strong>Perseus:</strong> Contains the famous Double Cluster</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <div class="faq-section">
+                <div class="faq-header">
+                    <h2>Frequently Asked Questions</h2>
+                    <p>Common questions about astronomy and constellation observation</p>
+                </div>
+                
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What equipment do I need to start stargazing?</h3>
+                            <div class="icon"><i class="fas fa-chevron-down"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>To start stargazing, you don't need much equipment. A good pair of binoculars (7×50 or 10×50) is often better than a cheap telescope for beginners. Additionally, a star chart or a stargazing app on your phone can help you identify celestial objects. A red flashlight will allow you to read charts without ruining your night vision. As you progress, you might want to invest in a quality telescope, but it's not necessary for beginners.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>How many constellations are there?</h3>
+                            <div class="icon"><i class="fas fa-chevron-down"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>There are 88 officially recognized constellations in modern astronomy, as defined by the International Astronomical Union (IAU). These constellations cover the entire celestial sphere and are used by astronomers to map the night sky. Of these, 48 are ancient constellations described by Ptolemy in his Almagest, while the remaining 40 were added later, primarily during the 16th to 18th centuries as exploration of the southern hemisphere expanded.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>What's the difference between a constellation and an asterism?</h3>
+                            <div class="icon"><i class="fas fa-chevron-down"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>A constellation is an officially recognized area of the celestial sphere with defined boundaries, as established by the International Astronomical Union. An asterism, on the other hand, is a recognizable pattern of stars that is not an official constellation. Asterisms can be part of a constellation or span multiple constellations. Famous examples include the Big Dipper (part of Ursa Major), the Summer Triangle (spans Lyra, Cygnus, and Aquila), and the Teapot (part of Sagittarius).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Why do stars twinkle?</h3>
+                            <div class="icon"><i class="fas fa-chevron-down"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Stars appear to twinkle (astronomers call this "stellar scintillation") because their light passes through different layers of Earth's atmosphere. These layers have different temperatures, densities, and movements, which cause the starlight to refract (bend) in slightly different ways as it travels. This creates the twinkling effect we observe. Planets, which are much closer to Earth and appear as small discs rather than points of light, generally don't twinkle as much because their light comes from multiple points, averaging out the atmospheric effects.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>How far away are the stars we see?</h3>
+                            <div class="icon"><i class="fas fa-chevron-down"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>The stars we can see with the naked eye vary greatly in distance, but all are within our Milky Way galaxy. The closest star to Earth (besides the Sun) is Proxima Centauri, about 4.24 light-years away. Most stars visible to the naked eye are within a few hundred to a few thousand light-years. For example, Sirius (the brightest star in the night sky) is about 8.6 light-years away, while Deneb in Cygnus is approximately 2,600 light-years distant. This means that when we look at stars, we're seeing them as they were when their light began its journey to Earth—a few years to thousands of years ago.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">Stellar</span>
+                    <p>Discover the wonders of the night sky</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h3>Navigation</h3>
+                        <ul>
+                            <li><a href="home.html">Home</a></li>
+                            <li><a href="detection.html">Detection</a></li>
+                            <li><a href="library.html">Library</a></li>
+                            <li><a href="learning.html">Learning</a></li>
+                            <li><a href="analysis.html">Analysis</a></li>
+                            <li><a href="about.html">About</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Tutorials</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Legal</h3>
+                        <ul>
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Cookie Policy</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Connect</h3>
+                        <ul class="social-links">
+                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                            <li><a href="#"><i class="fab fa-github"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Stellar Constellation Detection. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize stars background
+            initStarsBackground();
+            
+            // Initialize mobile menu
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mainNav = document.querySelector('.main-nav');
+            
+            mobileMenuToggle.addEventListener('click', function() {
+                mainNav.classList.toggle('active');
+                this.classList.toggle('active');
+            });
+            
+            // Initialize FAQ accordion
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                
+                question.addEventListener('click', () => {
+                    // Close all other items
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                        }
+                    });
+                    
+                    // Toggle current item
+                    item.classList.toggle('active');
+                });
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            /**
+             * Create stars background
+             */
+            function initStarsBackground() {
+                const starsContainer = document.getElementById('stars-container');
+                if (!starsContainer) return;
+                
+                const starCount = 150;
+                
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    
+                    // Random position
+                    const x = Math.random() * 100;
+                    const y = Math.random() * 100;
+                    
+                    // Random size
+                    const size = Math.random() * 3 + 1;
+                    
+                    // Random animation duration and delay
+                    const duration = Math.random() * 3 + 2;
+                    const delay = Math.random() * 5;
+                    
+                    // Random opacity
+                    const opacity = Math.random() * 0.7 + 0.3;
+                    
+                    star.style.left = `${x}%`;
+                    star.style.top = `${y}%`;
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.animationDelay = `${delay}s`;
+                    star.style.setProperty('--duration', `${duration}s`);
+                    star.style.setProperty('--opacity', opacity);
+                    
+                    starsContainer.appendChild(star);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

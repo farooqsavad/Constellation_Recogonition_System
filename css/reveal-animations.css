@@ -1,0 +1,387 @@
+/* Enhanced Reveal Animations CSS with Bidirectional Support */
+
+/* Base styles for elements that will be revealed */
+.reveal-element {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 1.2s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+                visibility 0s linear 1.2s;
+    will-change: opacity, transform;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Class added when element is in viewport */
+.reveal-element.revealed {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    transition: opacity 1.2s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+                visibility 0s linear;
+    pointer-events: auto;
+}
+
+/* Different animation delays for staggered effects */
+.reveal-delay-100 {
+    transition-delay: 0.1s;
+}
+
+.reveal-delay-200 {
+    transition-delay: 0.2s;
+}
+
+.reveal-delay-300 {
+    transition-delay: 0.3s;
+}
+
+.reveal-delay-400 {
+    transition-delay: 0.4s;
+}
+
+.reveal-delay-500 {
+    transition-delay: 0.5s;
+}
+
+.reveal-delay-600 {
+    transition-delay: 0.6s;
+}
+
+.reveal-delay-700 {
+    transition-delay: 0.7s;
+}
+
+/* Different animation styles with enhanced effects */
+.reveal-fade-in {
+    opacity: 0;
+    transform: translateY(0);
+    transition: opacity 1.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+                visibility 0s linear 1.2s;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.reveal-fade-in.revealed {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 1.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+                visibility 0s linear;
+    pointer-events: auto;
+}
+
+.reveal-slide-left {
+    opacity: 0;
+    transform: translateX(-70px);
+    transition: opacity 1.2s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+                visibility 0s linear 1.2s;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.reveal-slide-left.revealed {
+    opacity: 1;
+    transform: translateX(0);
+    visibility: visible;
+    transition: opacity 1.2s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+                visibility 0s linear;
+    pointer-events: auto;
+}
+
+.reveal-slide-right {
+    opacity: 0;
+    transform: translateX(70px);
+    transition: opacity 1.2s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+                visibility 0s linear 1.2s;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.reveal-slide-right.revealed {
+    opacity: 1;
+    transform: translateX(0);
+    visibility: visible;
+    transition: opacity 1.2s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+                visibility 0s linear;
+    pointer-events: auto;
+}
+
+.reveal-scale {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 1.2s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+                visibility 0s linear 1.2s;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.reveal-scale.revealed {
+    opacity: 1;
+    transform: scale(1);
+    visibility: visible;
+    transition: opacity 1.2s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+                visibility 0s linear;
+    pointer-events: auto;
+}
+
+.reveal-rotate {
+    opacity: 0;
+    transform: rotate(-5deg) scale(0.9);
+    transition: opacity 1.2s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+                visibility 0s linear 1.2s;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.reveal-rotate.revealed {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+    visibility: visible;
+    transition: opacity 1.2s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+                visibility 0s linear;
+    pointer-events: auto;
+}
+
+.reveal-flip {
+    opacity: 0;
+    transform: perspective(1000px) rotateY(20deg);
+    transition: opacity 1.2s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+                visibility 0s linear 1.2s;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.reveal-flip.revealed {
+    opacity: 1;
+    transform: perspective(1000px) rotateY(0);
+    visibility: visible;
+    transition: opacity 1.2s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+                visibility 0s linear;
+    pointer-events: auto;
+}
+
+/* Enhanced hover reveal effects for interactive elements */
+.hover-reveal {
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                box-shadow 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                background-color 0.5s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.hover-reveal:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+
+.hover-reveal::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(79, 172, 254, 0.1), rgba(0, 242, 254, 0.1));
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    border-radius: inherit;
+    z-index: -1;
+}
+
+.hover-reveal:hover::after {
+    opacity: 1;
+}
+
+/* Specific animations for different section types */
+.section-header.reveal-element {
+    transform: translateY(-30px);
+}
+
+.feature-card.reveal-element,
+.constellation-card.reveal-element,
+.category-card.reveal-element,
+.testimonial-card.reveal-element {
+    transform: translateY(60px);
+}
+
+/* Apply reveal animations to all major content sections */
+.hero-section,
+.features-section,
+.how-it-works-section,
+.popular-constellations-section,
+.testimonials-section,
+.cta-section,
+.upload-section,
+.results-section,
+.library-controls,
+.constellation-grid,
+.constellation-details,
+.learning-categories,
+.content-section,
+.faq-section,
+.team-section,
+.contact-section,
+.analysis-section,
+.chart-container,
+.data-section {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+.hero-section.revealed,
+.features-section.revealed,
+.how-it-works-section.revealed,
+.popular-constellations-section.revealed,
+.testimonials-section.revealed,
+.cta-section.revealed,
+.upload-section.revealed,
+.results-section.revealed,
+.library-controls.revealed,
+.constellation-grid.revealed,
+.constellation-details.revealed,
+.learning-categories.revealed,
+.content-section.revealed,
+.faq-section.revealed,
+.team-section.revealed,
+.contact-section.revealed,
+.analysis-section.revealed,
+.chart-container.revealed,
+.data-section.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Special effects for specific elements */
+.logo {
+    position: relative;
+    overflow: hidden;
+}
+
+.logo::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+
+.logo:hover::after {
+    left: 100%;
+}
+
+/* Parallax effect for stars */
+.stars-background {
+    transition: transform 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* Staggered animation for grid items */
+.feature-card:nth-child(1),
+.constellation-card:nth-child(1),
+.category-card:nth-child(1),
+.testimonial-card:nth-child(1),
+.faq-item:nth-child(1),
+.team-member:nth-child(1) {
+    transition-delay: 0.1s;
+}
+
+.feature-card:nth-child(2),
+.constellation-card:nth-child(2),
+.category-card:nth-child(2),
+.testimonial-card:nth-child(2),
+.faq-item:nth-child(2),
+.team-member:nth-child(2) {
+    transition-delay: 0.2s;
+}
+
+.feature-card:nth-child(3),
+.constellation-card:nth-child(3),
+.category-card:nth-child(3),
+.testimonial-card:nth-child(3),
+.faq-item:nth-child(3),
+.team-member:nth-child(3) {
+    transition-delay: 0.3s;
+}
+
+.feature-card:nth-child(4),
+.constellation-card:nth-child(4),
+.category-card:nth-child(4),
+.testimonial-card:nth-child(4),
+.faq-item:nth-child(4),
+.team-member:nth-child(4) {
+    transition-delay: 0.4s;
+}
+
+.feature-card:nth-child(5),
+.constellation-card:nth-child(5),
+.category-card:nth-child(5),
+.testimonial-card:nth-child(5),
+.faq-item:nth-child(5),
+.team-member:nth-child(5) {
+    transition-delay: 0.5s;
+}
+
+.feature-card:nth-child(6),
+.constellation-card:nth-child(6),
+.category-card:nth-child(6),
+.testimonial-card:nth-child(6),
+.faq-item:nth-child(6),
+.team-member:nth-child(6) {
+    transition-delay: 0.6s;
+}
+
+/* Bidirectional animation support */
+[data-scroll-direction="up"] .reveal-element:not(.revealed) {
+    /* When scrolling up, elements should animate from their original positions */
+    transform: translateY(-50px);
+}
+
+[data-scroll-direction="up"] .reveal-slide-left:not(.revealed) {
+    transform: translateX(70px);
+}
+
+[data-scroll-direction="up"] .reveal-slide-right:not(.revealed) {
+    transform: translateX(-70px);
+}
+
+[data-scroll-direction="up"] .reveal-scale:not(.revealed) {
+    transform: scale(1.2);
+}
+
+[data-scroll-direction="up"] .reveal-rotate:not(.revealed) {
+    transform: rotate(5deg) scale(1.1);
+}
+
+[data-scroll-direction="up"] .reveal-flip:not(.revealed) {
+    transform: perspective(1000px) rotateY(-20deg);
+}
+
+/* Ensure transitions are smooth in both directions */
+.reveal-element {
+    transition-duration: 1s !important;
+}
+
+/* Add a subtle pulse effect when elements are revealed */
+@keyframes reveal-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+.reveal-element.revealed {
+    animation: reveal-pulse 0.5s ease-out;
+}

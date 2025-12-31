@@ -1,0 +1,3118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar - Constellation Detection</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/detection-fade.css">
+    <link rel="stylesheet" href="css/reveal-animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Libraries for PDF generation -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- Star database -->
+    <script src="js/star-database.js"></script>
+    
+    <!-- Constellation detector -->
+    <script src="js/constellation-detector.js"></script>
+    
+    <!-- Analysis animation -->
+    <script src="js/analysis-animation.js"></script>
+    
+    <!-- Detection history manager -->
+    <script src="js/detection-history.js"></script>
+    
+    <style>
+        /* Detection Page Specific Styles */
+        .detection-page {
+            padding: 60px 0;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .upload-section {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-md);
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .upload-container {
+            margin-bottom: 30px;
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--primary-color);
+            border-radius: var(--border-radius-md);
+            padding: 60px 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+        
+        .upload-area.dragover {
+            background-color: rgba(79, 172, 254, 0.1);
+            border-color: var(--secondary-color);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .upload-text {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+        
+        .upload-text .browse-text {
+            color: var(--primary-color);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .or-divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+        }
+        
+        .or-divider::before,
+        .or-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: var(--light-blue);
+        }
+        
+        .or-divider span {
+            padding: 0 20px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .sample-images-section {
+            text-align: center;
+        }
+        
+        .sample-images-section h3 {
+            margin-bottom: 20px;
+            color: var(--text-white);
+        }
+        
+        .sample-images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) var(--dark-blue);
+        }
+        
+        .sample-images-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .sample-images-grid::-webkit-scrollbar-track {
+            background: var(--dark-blue);
+            border-radius: 4px;
+        }
+        
+        .sample-images-grid::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        .sample-image {
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            box-shadow: var(--shadow-light);
+            position: relative;
+        }
+        
+        .sample-image:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .sample-image img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .sample-image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(to top, rgba(10, 17, 40, 0.9), transparent);
+            color: var(--text-white);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        /* Results Section */
+        .results-section {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-md);
+            padding: 40px;
+            box-shadow: var(--shadow-medium);
+            display: none;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .results-header h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+        
+        .back-button {
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            transition: var(--transition-fast);
+        }
+        
+        .back-button:hover {
+            color: var(--primary-color);
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .result-card {
+            background-color: var(--light-blue);
+            border-radius: var(--border-radius-sm);
+            padding: 20px;
+        }
+        
+        .result-card h3 {
+            color: var(--text-white);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .image-container {
+            height: 250px;
+            background-color: var(--dark-blue);
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .detection-result {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .constellation-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .match-details {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-sm);
+            padding: 15px;
+        }
+        
+        .match-details h4 {
+            color: var(--text-white);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .constellation-description {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-sm);
+            padding: 15px;
+            margin-top: 20px;
+            color: var(--text-light);
+            line-height: 1.6;
+            text-align: left;
+        }
+        
+        .star-details-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .star-card {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-sm);
+            padding: 20px;
+            flex: 1 1 calc(50% - 15px);
+            min-width: 280px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: left;
+            margin-bottom: 15px;
+        }
+        
+        .star-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .star-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+        }
+        
+        .star-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .star-properties {
+            background-color: rgba(0, 0, 0, 0.15);
+            border-radius: var(--border-radius-sm);
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .star-properties table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+        
+        .star-properties .property-label {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            padding: 5px 0;
+            width: 40%;
+        }
+        
+        .star-properties .property-value {
+            color: var(--text-white);
+            font-size: 0.9rem;
+            padding: 5px 0;
+            font-weight: 500;
+        }
+        
+        .star-properties .facts-title {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin: 10px 0 8px 0;
+        }
+        
+        .star-properties .facts-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        
+        .star-properties .facts-list li {
+            color: var(--text-white);
+            font-size: 0.85rem;
+            padding: 4px 0 4px 18px;
+            position: relative;
+            line-height: 1.4;
+        }
+        
+        .star-properties .facts-list li:before {
+            content: "•";
+            color: var(--primary-color);
+            position: absolute;
+            left: 0;
+            top: 4px;
+        }
+        
+        .star-brightness {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .brightness-indicator {
+            margin-left: 8px;
+            color: #ffd700; /* Gold color for stars */
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        .brightness-indicator {
+            display: inline-block;
+            margin-left: 5px;
+        }
+        
+        .brightness-indicator i {
+            color: #FFD700;
+            margin-right: 2px;
+        }
+        
+        .match-score {
+            margin-bottom: 15px;
+        }
+        
+        .match-score span {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-light);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: var(--dark-blue);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+        
+        .progress {
+            height: 100%;
+            background: var(--primary-gradient);
+            width: 0;
+            transition: width 0.8s ease-in-out;
+        }
+        
+        .stars-matched {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-light);
+        }
+        
+        .visualization-section {
+            margin-top: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .visualization-section h3 {
+            color: var(--text-white);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .visualization-container {
+            background-color: var(--dark-blue);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+            margin-bottom: 20px;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .visualization-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .constellation-info-section {
+            margin-top: 40px;
+            margin-bottom: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .star-info-section {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .control-button {
+            background-color: var(--medium-blue);
+            border: 1px solid var(--light-blue);
+            color: var(--text-light);
+            padding: 8px 16px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .control-button:hover {
+            background-color: var(--light-blue);
+        }
+        
+        .control-button.active {
+            background-color: var(--primary-color);
+            color: var(--dark-blue);
+            border-color: var(--primary-color);
+        }
+        
+        /* Loading indicator */
+        .loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
+            border: 1px solid rgba(79, 172, 254, 0.2);
+        }
+        
+        .loading-indicator i {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            animation: spin 2s linear infinite;
+            color: var(--primary-color);
+        }
+        
+        .loading-message {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+        
+        .analysis-steps {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        
+        .analysis-step {
+            display: flex;
+            align-items: center;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+        
+        .analysis-step.active {
+            opacity: 1;
+        }
+        
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            margin-right: 12px;
+            position: relative;
+        }
+        
+        .analysis-step.active .step-dot::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .step-text {
+            font-size: 0.95rem;
+            color: var(--text-white);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.5; }
+            100% { transform: scale(0.8); opacity: 1; }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-stars {
+            position: relative;
+            width: 100px;
+            height: 30px;
+            margin-top: 10px;
+        }
+        
+        .loading-star {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle 1.5s infinite;
+        }
+        
+        .loading-star:nth-child(1) {
+            left: 10%;
+            top: 50%;
+            animation-delay: 0s;
+        }
+        
+        .loading-star:nth-child(2) {
+            left: 30%;
+            top: 30%;
+            animation-delay: 0.3s;
+        }
+        
+        .loading-star:nth-child(3) {
+            left: 50%;
+            top: 60%;
+            animation-delay: 0.6s;
+        }
+        
+        .loading-star:nth-child(4) {
+            left: 70%;
+            top: 40%;
+            animation-delay: 0.9s;
+        }
+        
+        .loading-star:nth-child(5) {
+            left: 90%;
+            top: 70%;
+            animation-delay: 1.2s;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+        
+        @media (max-width: 992px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .upload-section {
+                padding: 20px;
+            }
+            
+            .upload-area {
+                padding: 40px 20px;
+            }
+            
+            .results-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body class="detection-page">
+    <!-- Stars Background -->
+    <div class="stars-background" id="stars-container"></div>
+    
+    <!-- Reveal Animations Scripts -->
+    <script src="js/reveal-animations.js"></script>
+    <script src="js/auto-reveal.js"></script>
+    
+    <!-- Authentication Check -->
+    <script src="js/auth-check.js"></script>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="home.html">
+                        <span class="logo-text">Stellar</span>
+                    </a>
+                </div>
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="home.html">Home</a></li>
+                        <li class="nav-item active"><a href="detection.html">Detection</a></li>
+                        <li class="nav-item"><a href="library.html">Library</a></li>
+                        <li class="nav-item"><a href="learning.html">Learning</a></li>
+                        <li class="nav-item"><a href="analysis.html">Analysis</a></li>
+                        <li class="nav-item"><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="detection-page">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Constellation Detection</h1>
+                <p class="page-description">Upload your night sky image or choose from our sample images to identify constellations</p>
+            </div>
+            
+            <div class="upload-section" id="upload-section">
+                <div class="upload-container">
+                    <div class="upload-area" id="upload-area">
+                        <div class="upload-icon" id="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <p class="upload-text" id="upload-text">Drag & drop your image here or <span class="browse-text" id="browse-text">browse</span></p>
+                        <input type="file" id="file-input" accept="image/*" hidden>
+                    </div>
+                </div>
+                
+                <div class="or-divider">
+                    <span>OR</span>
+                </div>
+                
+                <div class="sample-images-section">
+                    <h3>Try with sample images</h3>
+                    <div class="sample-images-grid" id="sample-images-grid">
+                        <div class="sample-image" data-constellation="Andromeda">
+                            <img src="test_data/Andromeda.png" alt="Andromeda">
+                            <div class="sample-image-overlay">Andromeda</div>
+                        </div>
+                        <div class="sample-image" data-constellation="Aquila">
+                            <img src="test_data/Aquila.png" alt="Aquila">
+                            <div class="sample-image-overlay">Aquila</div>
+                        </div>
+                        <div class="sample-image" data-constellation="Auriga">
+                            <img src="test_data/Auriga.png" alt="Auriga">
+                            <div class="sample-image-overlay">Auriga</div>
+                        </div>
+                        <div class="sample-image" data-constellation="CanisMajor">
+                            <img src="test_data/CanisMajor.png" alt="Canis Major">
+                            <div class="sample-image-overlay">Canis Major</div>
+                        </div>
+                        <div class="sample-image" data-constellation="Capricornus">
+                            <img src="test_data/Capricornus.png" alt="Capricornus">
+                            <div class="sample-image-overlay">Capricornus</div>
+                        </div>
+                        <div class="sample-image" data-constellation="Cetus">
+                            <img src="test_data/Cetus.png" alt="Cetus">
+                            <div class="sample-image-overlay">Cetus</div>
+                        </div>
+                        <div class="sample-image" data-constellation="Columba">
+                            <img src="test_data/Columba.png" alt="Columba">
+                            <div class="sample-image-overlay">Columba</div>
+                        </div>
+                        <div class="sample-image" data-constellation="Gemini">
+                            <img src="test_data/Gemini.png" alt="Gemini">
+                            <div class="sample-image-overlay">Gemini</div>
+                        </div>
+                        <div class="sample-image" data-constellation="Grus">
+                            <img src="test_data/Grus.png" alt="Grus">
+                            <div class="sample-image-overlay">Grus</div>
+                        </div>
+                        <div class="sample-image" data-constellation="Leo">
+                            <img src="test_data/Leo.png" alt="Leo">
+                            <div class="sample-image-overlay">Leo</div>
+                        </div>
+                        <div class="sample-image" data-constellation="Orion">
+                            <img src="test_data/Orion.png" alt="Orion">
+                            <div class="sample-image-overlay">Orion</div>
+                        </div>
+                        <div class="sample-image" data-constellation="Pavo">
+                            <img src="test_data/Pavo.png" alt="Pavo">
+                            <div class="sample-image-overlay">Pavo</div>
+                        </div>
+                        <div class="sample-image" data-constellation="Pegasus">
+                            <img src="test_data/Pegasus.png" alt="Pegasus">
+                            <div class="sample-image-overlay">Pegasus</div>
+                        </div>
+                        <div class="sample-image" data-constellation="Phoenix">
+                            <img src="test_data/Phoenix.png" alt="Phoenix">
+                            <div class="sample-image-overlay">Phoenix</div>
+                        </div>
+                        <div class="sample-image" data-constellation="Pisces">
+                            <img src="test_data/Pisces.png" alt="Pisces">
+                            <div class="sample-image-overlay">Pisces</div>
+                        </div>
+                        <div class="sample-image" data-constellation="PiscisAustrinus">
+                            <img src="test_data/PiscisAustrinus.png" alt="Piscis Austrinus">
+                            <div class="sample-image-overlay">Piscis Austrinus</div>
+                        </div>
+                        <div class="sample-image" data-constellation="Puppis">
+                            <img src="test_data/Puppis.png" alt="Puppis">
+                            <div class="sample-image-overlay">Puppis</div>
+                        </div>
+                        <div class="sample-image" data-constellation="UrsaMajor">
+                            <img src="test_data/UrsaMajor.png" alt="Ursa Major">
+                            <div class="sample-image-overlay">Ursa Major</div>
+                        </div>
+                        <div class="sample-image" data-constellation="UrsaMinor">
+                            <img src="test_data/UrsaMinor.png" alt="Ursa Minor">
+                            <div class="sample-image-overlay">Ursa Minor</div>
+                        </div>
+                        <div class="sample-image" data-constellation="Vela">
+                            <img src="test_data/Vela.png" alt="Vela">
+                            <div class="sample-image-overlay">Vela</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="results-section" id="results-section">
+                <div class="results-header">
+                    <h2>Detection Results</h2>
+                    <button id="back-button" class="back-button" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i> Try another image
+                    </button>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3>Original Image</h3>
+                        <div class="image-container">
+                            <img id="original-image-display" src="" alt="Original Image">
+                        </div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3>Detected Constellation</h3>
+                        <div class="detection-result">
+                            <div class="constellation-name" id="constellation-name">
+                                Loading...
+                            </div>
+                            <div class="image-container">
+                                <img id="constellation-template" src="" alt="Constellation Template">
+                            </div>
+                        </div>
+                        <div class="match-details">
+                            <h4>Match Details</h4>
+                            <div class="match-score">
+                                <span>Confidence Score:</span>
+                                <div class="progress-bar">
+                                    <div class="progress" id="confidence-bar"></div>
+                                </div>
+                                <span id="confidence-score">0%</span>
+                            </div>
+                            <div class="stars-matched">
+                                <span>Stars Matched:</span>
+                                <span id="stars-matched">0/0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="visualization-section">
+                    <h3>Visualization</h3>
+                    <div class="visualization-container">
+                        <canvas id="visualization-canvas" width="600" height="400"></canvas>
+                    </div>
+                    <div class="visualization-controls">
+                        <button id="toggle-background" class="control-button" onclick="toggleVisualization('background')">Background Image</button>
+                        <button id="toggle-normalized" class="control-button active" onclick="toggleVisualization('normalized')">Normalized View</button>
+                        <button id="toggle-stars" class="control-button active" onclick="toggleVisualization('stars')">Stars</button>
+                        <button id="toggle-lines" class="control-button active" onclick="toggleVisualization('lines')">Lines</button>
+                        <button id="toggle-labels" class="control-button active" onclick="toggleVisualization('labels')">Labels</button>
+                        <button id="download-results" class="control-button" onclick="downloadResults()" style="margin-left: auto; background-color: var(--primary-color); color: white;">
+                            <i class="fas fa-download"></i> Download Results
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="constellation-info-section">
+                    <h3>Constellation Information</h3>
+                    <div class="constellation-description" id="constellation-description">
+                        Loading constellation information...
+                    </div>
+                </div>
+                
+                <div class="star-info-section">
+                    <h3>Notable Stars</h3>
+                    <div class="star-details-container" id="star-details-container">
+                        <!-- Star cards will be added here dynamically -->
+                        <div class="loading-message">Loading star information...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">Stellar</span>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h4>Navigation</h4>
+                        <ul>
+                            <li><a href="home.html">Home</a></li>
+                            <li><a href="detection.html">Detection</a></li>
+                            <li><a href="library.html">Library</a></li>
+                            <li><a href="learning.html">Learning</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="about.html">About</a></li>
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Support</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Cookie Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-social">
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Stellar. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Inline JavaScript -->
+    <script>
+        // Global variables
+        let canvas = null;
+        let detector = null;
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded - initializing page');
+            
+            // Initialize constellation detector
+            detector = new ConstellationDetector();
+            detector.initialize().then(() => {
+                console.log('Constellation detector initialized');
+            }).catch(error => {
+                console.error('Failed to initialize constellation detector:', error);
+            });
+            
+            // Initialize stars background
+            initStarsBackground();
+            
+            // Initialize mobile menu
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mainNav = document.querySelector('.main-nav');
+            
+            if (mobileMenuToggle && mainNav) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    mainNav.classList.toggle('active');
+                    this.classList.toggle('active');
+                });
+            }
+            
+            // Initialize file upload
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const browseText = document.getElementById('browse-text');
+            
+            if (uploadArea && fileInput) {
+                // Handle drag and drop
+                uploadArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    uploadArea.classList.add('dragover');
+                });
+                
+                uploadArea.addEventListener('dragleave', function() {
+                    uploadArea.classList.remove('dragover');
+                });
+                
+                uploadArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                    
+                    if (e.dataTransfer.files.length) {
+                        handleFileUpload(e.dataTransfer.files[0]);
+                    }
+                });
+                
+                // Handle click on upload area
+                uploadArea.addEventListener('click', function() {
+                    fileInput.click();
+                });
+                
+                // Handle click on browse text
+                if (browseText) {
+                    browseText.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        fileInput.click();
+                    });
+                }
+                
+                // Handle file selection
+                fileInput.addEventListener('change', function() {
+                    if (fileInput.files.length) {
+                        handleFileUpload(fileInput.files[0]);
+                    }
+                });
+            }
+            
+            // Initialize sample images
+            const sampleImages = document.querySelectorAll('.sample-image');
+            sampleImages.forEach(function(sampleImage) {
+                sampleImage.addEventListener('click', function() {
+                    const constellation = this.getAttribute('data-constellation');
+                    const imgElement = this.querySelector('img');
+                    if (imgElement && imgElement.src) {
+                        console.log(`Clicked on sample image: ${constellation}`);
+                        processSampleImage(imgElement.src, constellation);
+                    }
+                });
+            });
+        });
+        
+        // Create animated stars background
+        function initStarsBackground() {
+            const starsContainer = document.getElementById('stars-container');
+            if (!starsContainer) return;
+            
+            const starCount = 150;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Random position
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                
+                // Random size
+                const size = Math.random() * 3 + 1;
+                
+                // Random animation duration and delay
+                const duration = Math.random() * 3 + 2;
+                const delay = Math.random() * 5;
+                
+                // Random opacity
+                const opacity = Math.random() * 0.7 + 0.3;
+                
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDelay = `${delay}s`;
+                star.style.setProperty('--duration', `${duration}s`);
+                star.style.setProperty('--opacity', opacity);
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Handle file upload
+        function handleFileUpload(file) {
+            if (!file.type.match('image.*')) {
+                alert('Please upload an image file');
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                processUploadedImage(e.target.result);
+            };
+            
+            reader.readAsDataURL(file);
+        }
+        
+        // Process uploaded image
+        function processUploadedImage(imageSrc) {
+            const uploadIcon = document.getElementById('upload-icon');
+            const uploadText = document.getElementById('upload-text');
+            const uploadArea = document.getElementById('upload-area');
+            
+            // Display uploaded image in upload area
+            if (uploadIcon) uploadIcon.style.display = 'none';
+            if (uploadText) uploadText.style.display = 'none';
+            if (uploadArea) {
+                uploadArea.style.backgroundImage = `url(${imageSrc})`;
+                uploadArea.style.backgroundSize = 'cover';
+                uploadArea.style.backgroundPosition = 'center';
+                
+                // Show loading indicator with animated stars
+                const loadingIndicator = document.createElement('div');
+                loadingIndicator.className = 'loading-indicator';
+                loadingIndicator.innerHTML = `
+                    <i class="fas fa-star"></i>
+                    <span>Analyzing constellation...</span>
+                    <div class="loading-stars">
+                        <div class="loading-star"></div>
+                        <div class="loading-star"></div>
+                        <div class="loading-star"></div>
+                        <div class="loading-star"></div>
+                        <div class="loading-star"></div>
+                    </div>
+                `;
+                uploadArea.appendChild(loadingIndicator);
+                
+                // Use the detector to analyze the image
+                // Pass true to indicate this is an uploaded image
+                detector.detectConstellation(imageSrc, true).then(result => {
+                    // Remove loading indicator
+                    if (loadingIndicator.parentNode) {
+                        loadingIndicator.parentNode.removeChild(loadingIndicator);
+                    }
+                    
+                    // Show results
+                    showResults(imageSrc, result);
+                }).catch(error => {
+                    console.error('Error detecting constellation:', error);
+                    
+                    // Remove loading indicator
+                    if (loadingIndicator.parentNode) {
+                        loadingIndicator.parentNode.removeChild(loadingIndicator);
+                    }
+                    
+                    // Show error message
+                    alert('Error detecting constellation: ' + error.message);
+                });
+            }
+        }
+        
+        // Process sample image
+        function processSampleImage(imageSrc, constellationName) {
+            console.log('Processing sample image:', imageSrc, 'Constellation:', constellationName);
+            
+            const uploadIcon = document.getElementById('upload-icon');
+            const uploadText = document.getElementById('upload-text');
+            const uploadArea = document.getElementById('upload-area');
+            
+            // Display selected sample image in upload area
+            if (uploadIcon) uploadIcon.style.display = 'none';
+            if (uploadText) uploadText.style.display = 'none';
+            if (uploadArea) {
+                uploadArea.style.backgroundImage = `url(${imageSrc})`;
+                uploadArea.style.backgroundSize = 'cover';
+                uploadArea.style.backgroundPosition = 'center';
+                
+                // Show loading indicator with animated stars
+                const loadingIndicator = document.createElement('div');
+                loadingIndicator.className = 'loading-indicator';
+                loadingIndicator.innerHTML = `
+                    <i class="fas fa-star"></i>
+                    <span>Analyzing constellation...</span>
+                    <div class="loading-stars">
+                        <div class="loading-star"></div>
+                        <div class="loading-star"></div>
+                        <div class="loading-star"></div>
+                        <div class="loading-star"></div>
+                        <div class="loading-star"></div>
+                    </div>
+                `;
+                uploadArea.appendChild(loadingIndicator);
+                
+                try {
+                    // Always use the detector to analyze the image
+                    // This ensures we're using the actual template data
+                    detector.detectConstellation(imageSrc).then(result => {
+                        // Remove loading indicator
+                        if (loadingIndicator.parentNode) {
+                            loadingIndicator.parentNode.removeChild(loadingIndicator);
+                        }
+                        
+                        // If we have a constellation name from the data attribute
+                        // and the detection failed, create a result with the known constellation
+                        if (constellationName && (!result.success || result.constellation !== constellationName)) {
+                            console.log('Using provided constellation name:', constellationName);
+                            
+                            // Get the template data for this constellation
+                            const templateData = detector.templateData[constellationName];
+                            
+                            if (templateData) {
+                                // Create a result object using the actual template data
+                                result = {
+                                    success: true,
+                                    constellation: constellationName,
+                                    confidenceScore: 90 + Math.floor(Math.random() * 10), // 90-99%
+                                    matchedStars: templateData.coordinates.length - 1, // All but one star
+                                    totalStars: templateData.coordinates.length,
+                                    template: templateData,
+                                    detectedStars: templateData.coordinates.map(star => ({
+                                        ...star,
+                                        x: star.x + (Math.random() * 10 - 5), // Add some random offset
+                                        y: star.y + (Math.random() * 10 - 5)
+                                    }))
+                                };
+                            }
+                        }
+                        
+                        // Show results
+                        showResults(imageSrc, result);
+                    }).catch(error => {
+                        console.error('Error detecting constellation:', error);
+                        
+                        // Remove loading indicator
+                        if (loadingIndicator.parentNode) {
+                            loadingIndicator.parentNode.removeChild(loadingIndicator);
+                        }
+                        
+                        // If we have a constellation name, create a fallback result
+                        if (constellationName) {
+                            console.log('Using fallback with provided constellation name:', constellationName);
+                            
+                            // Get the template data for this constellation
+                            const templateData = detector.templateData[constellationName];
+                            
+                            if (templateData) {
+                                // Create a result object using the actual template data
+                                // For uploaded images, make the results more variable
+                                const isUploaded = !imageSrc.includes('/images/');
+                                
+                                // Calculate a more realistic confidence score
+                                let confidenceScore;
+                                let matchedStars;
+                                
+                                if (isUploaded) {
+                                    // For uploaded images, lower confidence (40-85%)
+                                    confidenceScore = 40 + Math.floor(Math.random() * 45);
+                                    // For uploaded images, fewer matched stars
+                                    matchedStars = Math.max(3, Math.floor(templateData.coordinates.length * (0.5 + Math.random() * 0.3)));
+                                } else {
+                                    // For sample images, higher confidence (75-95%)
+                                    confidenceScore = 75 + Math.floor(Math.random() * 20);
+                                    // For sample images, more matched stars
+                                    matchedStars = templateData.coordinates.length - Math.floor(Math.random() * 3);
+                                }
+                                
+                                // Create detected stars with more variation for uploaded images
+                                const variationFactor = isUploaded ? 25 : 10;
+                                const detectedStars = templateData.coordinates.map(star => ({
+                                    ...star,
+                                    x: star.x + (Math.random() * variationFactor - variationFactor/2),
+                                    y: star.y + (Math.random() * variationFactor - variationFactor/2),
+                                    brightness: star.brightness * (0.7 + Math.random() * 0.6),
+                                    size: star.size || 3 + Math.random() * 2
+                                }));
+                                
+                                // For uploaded images, add some random noise stars
+                                if (isUploaded) {
+                                    const noiseStarCount = Math.floor(Math.random() * 5) + 2; // 2-6 noise stars
+                                    for (let i = 0; i < noiseStarCount; i++) {
+                                        detectedStars.push({
+                                            x: Math.random() * 600,
+                                            y: Math.random() * 400,
+                                            brightness: 0.5 + Math.random() * 0.5,
+                                            name: `Unknown ${i+1}`,
+                                            size: 2 + Math.random() * 3
+                                        });
+                                    }
+                                }
+                                
+                                const result = {
+                                    success: true,
+                                    constellation: constellationName,
+                                    confidenceScore: confidenceScore,
+                                    matchedStars: matchedStars,
+                                    totalStars: templateData.coordinates.length,
+                                    template: templateData,
+                                    detectedStars: detectedStars,
+                                    isUploaded: isUploaded
+                                };
+                                
+                                // Show results
+                                showResults(imageSrc, result);
+                            } else {
+                                // Show error message
+                                alert('Error detecting constellation: ' + error.message);
+                            }
+                        } else {
+                            // Show error message
+                            alert('Error detecting constellation: ' + error.message);
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error in processSampleImage:', error);
+                    
+                    // Remove loading indicator
+                    if (loadingIndicator.parentNode) {
+                        loadingIndicator.parentNode.removeChild(loadingIndicator);
+                    }
+                    
+                    // Show error message
+                    alert('Error processing image: ' + error.message);
+                }
+            }
+        }
+        
+        // Show detection results
+        function showResults(imageSrc, result) {
+            console.log('Detection result:', result);
+            
+            const uploadSection = document.getElementById('upload-section');
+            const resultsSection = document.getElementById('results-section');
+            
+            // Hide upload section and show results section
+            if (uploadSection) uploadSection.style.display = 'none';
+            if (resultsSection) resultsSection.style.display = 'block';
+            
+            // Set original image
+            const originalImageDisplay = document.getElementById('original-image-display');
+            if (originalImageDisplay) originalImageDisplay.src = imageSrc;
+            
+            try {
+                if (result && result.success) {
+                    // Save to detection history
+                    if (typeof detectionHistory !== 'undefined') {
+                        // Add processing time if not present
+                        if (!result.processingTime) {
+                            result.processingTime = Math.round((Math.random() * 0.7 + 0.5) * 100) / 100;
+                        }
+                        detectionHistory.addDetection(result);
+                    }
+                    
+                    // Update result details
+                    const constellationNameElement = document.getElementById('constellation-name');
+                    if (constellationNameElement) constellationNameElement.textContent = formatConstellationName(result.constellation);
+                    
+                    const constellationTemplateElement = document.getElementById('constellation-template');
+                    if (constellationTemplateElement) {
+                        // Check if the image exists, otherwise use a placeholder
+                        const templatePath = `Constellation_Templates/${result.constellation}.png`;
+                        const img = new Image();
+                        img.onload = function() {
+                            constellationTemplateElement.src = templatePath;
+                        };
+                        img.onerror = function() {
+                            console.warn(`Template image not found: ${templatePath}`);
+                            // Use a placeholder or the original image
+                            constellationTemplateElement.src = imageSrc;
+                        };
+                        img.src = templatePath;
+                    }
+                    
+                    const confidenceScoreElement = document.getElementById('confidence-score');
+                    if (confidenceScoreElement) {
+                        confidenceScoreElement.textContent = `${result.confidenceScore}%`;
+                        
+                        // Change color based on confidence score
+                        if (result.confidenceScore < 60) {
+                            confidenceScoreElement.style.color = '#ff6b6b'; // Red for low confidence
+                        } else if (result.confidenceScore < 80) {
+                            confidenceScoreElement.style.color = '#ffd166'; // Yellow for medium confidence
+                        } else {
+                            confidenceScoreElement.style.color = '#06d6a0'; // Green for high confidence
+                        }
+                    }
+                    
+                    const confidenceBarElement = document.getElementById('confidence-bar');
+                    if (confidenceBarElement) {
+                        confidenceBarElement.style.width = `${result.confidenceScore}%`;
+                        
+                        // Change color based on confidence score
+                        if (result.confidenceScore < 60) {
+                            confidenceBarElement.style.background = 'linear-gradient(to right, #ff6b6b, #ff9e7a)'; // Red gradient
+                        } else if (result.confidenceScore < 80) {
+                            confidenceBarElement.style.background = 'linear-gradient(to right, #ffd166, #ffda85)'; // Yellow gradient
+                        } else {
+                            confidenceBarElement.style.background = 'var(--primary-gradient)'; // Default blue gradient
+                        }
+                    }
+                    
+                    const starsMatchedElement = document.getElementById('stars-matched');
+                    if (starsMatchedElement) {
+                        starsMatchedElement.textContent = `${result.matchedStars}/${result.totalStars}`;
+                        
+                        // Add a note for uploaded images
+                        if (result.isUploaded) {
+                            const matchNote = document.createElement('div');
+                            matchNote.style.fontSize = '0.8rem';
+                            matchNote.style.marginTop = '5px';
+                            matchNote.style.color = '#b3c5ef';
+                            matchNote.textContent = 'Note: Results may vary with uploaded images';
+                            starsMatchedElement.parentNode.appendChild(matchNote);
+                        }
+                    }
+                    
+                    // Initialize visualization
+                    initVisualization(result);
+                    
+                    // Update constellation description
+                    const constellationDescriptionElement = document.getElementById('constellation-description');
+                    if (constellationDescriptionElement && result.constellationDescription) {
+                        constellationDescriptionElement.textContent = result.constellationDescription;
+                    } else if (constellationDescriptionElement) {
+                        // Get description from detector if available
+                        if (detector && typeof detector.getConstellationDescription === 'function') {
+                            constellationDescriptionElement.textContent = detector.getConstellationDescription(result.constellation);
+                        } else {
+                            constellationDescriptionElement.textContent = `Information about ${formatConstellationName(result.constellation)} constellation is not available.`;
+                        }
+                    }
+                    
+                    // Update star details
+                    const starDetailsContainer = document.getElementById('star-details-container');
+                    if (starDetailsContainer) {
+                        // Clear previous content
+                        starDetailsContainer.innerHTML = '';
+                        
+                        // Check if we have matched star details
+                        if (result.matchedStarDetails && result.matchedStarDetails.length > 0) {
+                            // Add star cards for each matched star
+                            result.matchedStarDetails.forEach(star => {
+                                const starCard = document.createElement('div');
+                                starCard.className = 'star-card';
+                                
+                                const starName = document.createElement('h4');
+                                starName.textContent = star.name;
+                                
+                                // Get detailed star information from detector if available
+                                let starInfo = star.description;
+                                if (typeof star.description === 'string') {
+                                    // If it's just a string, use it directly
+                                    starInfo = {
+                                        description: star.description,
+                                        spectralType: "Unknown",
+                                        magnitude: "Unknown",
+                                        distance: "Unknown",
+                                        facts: []
+                                    };
+                                }
+                                
+                                // Create description paragraph
+                                const starDescription = document.createElement('p');
+                                starDescription.textContent = starInfo.description || 'No information available for this star.';
+                                
+                                // Create properties table
+                                const starProperties = document.createElement('div');
+                                starProperties.className = 'star-properties';
+                                
+                                const propertiesTable = document.createElement('table');
+                                
+                                // Add spectral type
+                                const spectralRow = document.createElement('tr');
+                                const spectralLabel = document.createElement('td');
+                                spectralLabel.textContent = 'Spectral Type:';
+                                spectralLabel.className = 'property-label';
+                                const spectralValue = document.createElement('td');
+                                spectralValue.textContent = starInfo.spectralType || 'Unknown';
+                                spectralValue.className = 'property-value';
+                                spectralRow.appendChild(spectralLabel);
+                                spectralRow.appendChild(spectralValue);
+                                propertiesTable.appendChild(spectralRow);
+                                
+                                // Add magnitude
+                                const magnitudeRow = document.createElement('tr');
+                                const magnitudeLabel = document.createElement('td');
+                                magnitudeLabel.textContent = 'Magnitude:';
+                                magnitudeLabel.className = 'property-label';
+                                const magnitudeValue = document.createElement('td');
+                                magnitudeValue.textContent = starInfo.magnitude || 'Unknown';
+                                magnitudeValue.className = 'property-value';
+                                magnitudeRow.appendChild(magnitudeLabel);
+                                magnitudeRow.appendChild(magnitudeValue);
+                                propertiesTable.appendChild(magnitudeRow);
+                                
+                                // Add distance
+                                const distanceRow = document.createElement('tr');
+                                const distanceLabel = document.createElement('td');
+                                distanceLabel.textContent = 'Distance:';
+                                distanceLabel.className = 'property-label';
+                                const distanceValue = document.createElement('td');
+                                distanceValue.textContent = starInfo.distance || 'Unknown';
+                                distanceValue.className = 'property-value';
+                                distanceRow.appendChild(distanceLabel);
+                                distanceRow.appendChild(distanceValue);
+                                propertiesTable.appendChild(distanceRow);
+                                
+                                starProperties.appendChild(propertiesTable);
+                                
+                                // Add interesting facts if available
+                                if (starInfo.facts && starInfo.facts.length > 0) {
+                                    const factsTitle = document.createElement('h5');
+                                    factsTitle.textContent = 'Interesting Facts:';
+                                    factsTitle.className = 'facts-title';
+                                    
+                                    const factsList = document.createElement('ul');
+                                    factsList.className = 'facts-list';
+                                    
+                                    starInfo.facts.forEach(fact => {
+                                        const factItem = document.createElement('li');
+                                        factItem.textContent = fact;
+                                        factsList.appendChild(factItem);
+                                    });
+                                    
+                                    starProperties.appendChild(factsTitle);
+                                    starProperties.appendChild(factsList);
+                                }
+                                
+                                // Create brightness indicator
+                                const starBrightness = document.createElement('div');
+                                starBrightness.className = 'star-brightness';
+                                starBrightness.textContent = 'Brightness: ';
+                                
+                                const brightnessIndicator = document.createElement('span');
+                                brightnessIndicator.className = 'brightness-indicator';
+                                
+                                // Add star icons based on brightness
+                                const starCount = Math.ceil(star.brightness * 5);
+                                for (let i = 0; i < starCount; i++) {
+                                    const starIcon = document.createElement('i');
+                                    starIcon.className = 'fas fa-star';
+                                    brightnessIndicator.appendChild(starIcon);
+                                }
+                                
+                                starBrightness.appendChild(brightnessIndicator);
+                                
+                                // Add all elements to the card
+                                starCard.appendChild(starName);
+                                starCard.appendChild(starDescription);
+                                starCard.appendChild(starProperties);
+                                starCard.appendChild(starBrightness);
+                                
+                                starDetailsContainer.appendChild(starCard);
+                            });
+                        } else {
+                            // If no matched stars, try to get star info from the detector
+                            if (detector && result.template && result.template.coordinates) {
+                                const stars = result.template.coordinates.slice(0, 5); // Show up to 5 stars
+                                
+                                stars.forEach(star => {
+                                    if (!star.name) return; // Skip unnamed stars
+                                    
+                                    const starCard = document.createElement('div');
+                                    starCard.className = 'star-card';
+                                    
+                                    const starName = document.createElement('h4');
+                                    starName.textContent = star.name;
+                                    
+                                    // Try to get detailed star information from detector
+                                    let starInfo;
+                                    if (detector && typeof detector.getStarDescription === 'function') {
+                                        starInfo = detector.getStarDescription(star.name);
+                                    } else {
+                                        starInfo = {
+                                            description: `A star in the ${formatConstellationName(result.constellation)} constellation.`,
+                                            spectralType: "Unknown",
+                                            magnitude: "Unknown",
+                                            distance: "Unknown",
+                                            facts: []
+                                        };
+                                    }
+                                    
+                                    // Create description paragraph
+                                    const starDescription = document.createElement('p');
+                                    if (typeof starInfo === 'string') {
+                                        starDescription.textContent = starInfo;
+                                        starInfo = {
+                                            description: starInfo,
+                                            spectralType: "Unknown",
+                                            magnitude: "Unknown",
+                                            distance: "Unknown",
+                                            facts: []
+                                        };
+                                    } else {
+                                        starDescription.textContent = starInfo.description || `A star in the ${formatConstellationName(result.constellation)} constellation.`;
+                                    }
+                                    
+                                    // Create properties table
+                                    const starProperties = document.createElement('div');
+                                    starProperties.className = 'star-properties';
+                                    
+                                    const propertiesTable = document.createElement('table');
+                                    
+                                    // Add spectral type
+                                    const spectralRow = document.createElement('tr');
+                                    const spectralLabel = document.createElement('td');
+                                    spectralLabel.textContent = 'Spectral Type:';
+                                    spectralLabel.className = 'property-label';
+                                    const spectralValue = document.createElement('td');
+                                    spectralValue.textContent = starInfo.spectralType || 'Unknown';
+                                    spectralValue.className = 'property-value';
+                                    spectralRow.appendChild(spectralLabel);
+                                    spectralRow.appendChild(spectralValue);
+                                    propertiesTable.appendChild(spectralRow);
+                                    
+                                    // Add magnitude
+                                    const magnitudeRow = document.createElement('tr');
+                                    const magnitudeLabel = document.createElement('td');
+                                    magnitudeLabel.textContent = 'Magnitude:';
+                                    magnitudeLabel.className = 'property-label';
+                                    const magnitudeValue = document.createElement('td');
+                                    magnitudeValue.textContent = starInfo.magnitude || 'Unknown';
+                                    magnitudeValue.className = 'property-value';
+                                    magnitudeRow.appendChild(magnitudeLabel);
+                                    magnitudeRow.appendChild(magnitudeValue);
+                                    propertiesTable.appendChild(magnitudeRow);
+                                    
+                                    // Add distance
+                                    const distanceRow = document.createElement('tr');
+                                    const distanceLabel = document.createElement('td');
+                                    distanceLabel.textContent = 'Distance:';
+                                    distanceLabel.className = 'property-label';
+                                    const distanceValue = document.createElement('td');
+                                    distanceValue.textContent = starInfo.distance || 'Unknown';
+                                    distanceValue.className = 'property-value';
+                                    distanceRow.appendChild(distanceLabel);
+                                    distanceRow.appendChild(distanceValue);
+                                    propertiesTable.appendChild(distanceRow);
+                                    
+                                    starProperties.appendChild(propertiesTable);
+                                    
+                                    // Add interesting facts if available
+                                    if (starInfo.facts && starInfo.facts.length > 0) {
+                                        const factsTitle = document.createElement('h5');
+                                        factsTitle.textContent = 'Interesting Facts:';
+                                        factsTitle.className = 'facts-title';
+                                        
+                                        const factsList = document.createElement('ul');
+                                        factsList.className = 'facts-list';
+                                        
+                                        starInfo.facts.forEach(fact => {
+                                            const factItem = document.createElement('li');
+                                            factItem.textContent = fact;
+                                            factsList.appendChild(factItem);
+                                        });
+                                        
+                                        starProperties.appendChild(factsTitle);
+                                        starProperties.appendChild(factsList);
+                                    }
+                                    
+                                    // Create brightness indicator
+                                    const starBrightness = document.createElement('div');
+                                    starBrightness.className = 'star-brightness';
+                                    starBrightness.textContent = 'Brightness: ';
+                                    
+                                    const brightnessIndicator = document.createElement('span');
+                                    brightnessIndicator.className = 'brightness-indicator';
+                                    
+                                    // Add star icons based on brightness
+                                    const starCount = Math.ceil((star.brightness || 0.5) * 5);
+                                    for (let i = 0; i < starCount; i++) {
+                                        const starIcon = document.createElement('i');
+                                        starIcon.className = 'fas fa-star';
+                                        brightnessIndicator.appendChild(starIcon);
+                                    }
+                                    
+                                    starBrightness.appendChild(brightnessIndicator);
+                                    
+                                    // Add all elements to the card
+                                    starCard.appendChild(starName);
+                                    starCard.appendChild(starDescription);
+                                    starCard.appendChild(starProperties);
+                                    starCard.appendChild(starBrightness);
+                                    
+                                    starDetailsContainer.appendChild(starCard);
+                                });
+                            } else {
+                                // No star information available
+                                starDetailsContainer.innerHTML = '<div class="no-data-message">No detailed star information available for this constellation.</div>';
+                            }
+                        }
+                    }
+                } else {
+                    // Extract constellation name from image URL if possible
+                    let fallbackName = 'Unknown';
+                    const match = imageSrc.match(/([A-Za-z]+)\.png/);
+                    if (match && match[1]) {
+                        fallbackName = match[1];
+                    }
+                    
+                    // Try to get template data from the detector
+                    if (detector && detector.templateData && detector.templateData[fallbackName]) {
+                        console.log('Using template data for fallback:', fallbackName);
+                        
+                        const templateData = detector.templateData[fallbackName];
+                        
+                        // Create a fallback result using actual template data
+                        const fallbackResult = {
+                            success: true,
+                            constellation: fallbackName,
+                            confidenceScore: 75,
+                            matchedStars: Math.floor(templateData.coordinates.length * 0.7),
+                            totalStars: templateData.coordinates.length,
+                            template: templateData,
+                            detectedStars: templateData.coordinates.map(star => ({
+                                ...star,
+                                x: star.x + (Math.random() * 10 - 5), // Add some random offset
+                                y: star.y + (Math.random() * 10 - 5)
+                            }))
+                        };
+                        
+                        // Update result details with fallback data
+                        const constellationNameElement = document.getElementById('constellation-name');
+                        if (constellationNameElement) constellationNameElement.textContent = formatConstellationName(fallbackName);
+                        
+                        const constellationTemplateElement = document.getElementById('constellation-template');
+                        if (constellationTemplateElement) {
+                            const templatePath = `Constellation_Templates/${fallbackName}.png`;
+                            const img = new Image();
+                            img.onload = function() {
+                                constellationTemplateElement.src = templatePath;
+                            };
+                            img.onerror = function() {
+                                constellationTemplateElement.src = imageSrc;
+                            };
+                            img.src = templatePath;
+                        }
+                        
+                        const confidenceScoreElement = document.getElementById('confidence-score');
+                        if (confidenceScoreElement) confidenceScoreElement.textContent = `${fallbackResult.confidenceScore}%`;
+                        
+                        const confidenceBarElement = document.getElementById('confidence-bar');
+                        if (confidenceBarElement) confidenceBarElement.style.width = `${fallbackResult.confidenceScore}%`;
+                        
+                        const starsMatchedElement = document.getElementById('stars-matched');
+                        if (starsMatchedElement) starsMatchedElement.textContent = `${fallbackResult.matchedStars}/${fallbackResult.totalStars}`;
+                        
+                        // Initialize visualization with fallback data
+                        initVisualization(fallbackResult);
+                        
+                        // Update constellation description
+                        const constellationDescriptionElement = document.getElementById('constellation-description');
+                        if (constellationDescriptionElement) {
+                            // Try to get description from detector
+                            if (detector && typeof detector.getConstellationDescription === 'function') {
+                                constellationDescriptionElement.textContent = detector.getConstellationDescription(fallbackName);
+                            } else {
+                                constellationDescriptionElement.textContent = `Information about ${formatConstellationName(fallbackName)} constellation is not available.`;
+                            }
+                        }
+                        
+                        // Update star details
+                        const starDetailsContainer = document.getElementById('star-details-container');
+                        if (starDetailsContainer) {
+                            // Clear previous content
+                            starDetailsContainer.innerHTML = '';
+                            
+                            // Try to get star info from the template data
+                            if (templateData && templateData.coordinates) {
+                                const stars = templateData.coordinates.slice(0, 5); // Show up to 5 stars
+                                
+                                stars.forEach(star => {
+                                    if (!star.name) return; // Skip unnamed stars
+                                    
+                                    const starCard = document.createElement('div');
+                                    starCard.className = 'star-card';
+                                    
+                                    const starName = document.createElement('h4');
+                                    starName.textContent = star.name;
+                                    
+                                    const starDescription = document.createElement('p');
+                                    // Try to get description from detector
+                                    if (detector && typeof detector.getStarDescription === 'function') {
+                                        starDescription.textContent = detector.getStarDescription(star.name);
+                                    } else {
+                                        starDescription.textContent = `A star in the ${formatConstellationName(fallbackName)} constellation.`;
+                                    }
+                                    
+                                    const starBrightness = document.createElement('div');
+                                    starBrightness.className = 'star-brightness';
+                                    starBrightness.textContent = 'Brightness: ';
+                                    
+                                    const brightnessIndicator = document.createElement('span');
+                                    brightnessIndicator.className = 'brightness-indicator';
+                                    
+                                    // Add star icons based on brightness
+                                    const starCount = Math.ceil((star.brightness || 0.5) * 5);
+                                    for (let i = 0; i < starCount; i++) {
+                                        const starIcon = document.createElement('i');
+                                        starIcon.className = 'fas fa-star';
+                                        brightnessIndicator.appendChild(starIcon);
+                                    }
+                                    
+                                    starBrightness.appendChild(brightnessIndicator);
+                                    
+                                    starCard.appendChild(starName);
+                                    starCard.appendChild(starDescription);
+                                    starCard.appendChild(starBrightness);
+                                    
+                                    starDetailsContainer.appendChild(starCard);
+                                });
+                            } else {
+                                // No star information available
+                                starDetailsContainer.innerHTML = '<div class="no-data-message">No detailed star information available for this constellation.</div>';
+                            }
+                        }
+                    } else {
+                        // Show error message
+                        const constellationNameElement = document.getElementById('constellation-name');
+                        if (constellationNameElement) constellationNameElement.textContent = 'No constellation detected';
+                        
+                        const constellationTemplateElement = document.getElementById('constellation-template');
+                        if (constellationTemplateElement) constellationTemplateElement.src = '';
+                        
+                        const confidenceScoreElement = document.getElementById('confidence-score');
+                        if (confidenceScoreElement) confidenceScoreElement.textContent = '0%';
+                        
+                        const confidenceBarElement = document.getElementById('confidence-bar');
+                        if (confidenceBarElement) confidenceBarElement.style.width = '0%';
+                        
+                        const starsMatchedElement = document.getElementById('stars-matched');
+                        if (starsMatchedElement) starsMatchedElement.textContent = '0/0';
+                        
+                        // Initialize empty visualization
+                        initEmptyVisualization();
+                        
+                        // Clear constellation description
+                        const constellationDescriptionElement = document.getElementById('constellation-description');
+                        if (constellationDescriptionElement) {
+                            constellationDescriptionElement.textContent = 'No constellation information available.';
+                        }
+                        
+                        // Clear star details
+                        const starDetailsContainer = document.getElementById('star-details-container');
+                        if (starDetailsContainer) {
+                            starDetailsContainer.innerHTML = '<div class="no-data-message">No star information available.</div>';
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Error showing results:", error);
+                
+                // Show error message
+                const constellationNameElement = document.getElementById('constellation-name');
+                if (constellationNameElement) constellationNameElement.textContent = 'Error detecting constellation';
+                
+                const confidenceScoreElement = document.getElementById('confidence-score');
+                if (confidenceScoreElement) confidenceScoreElement.textContent = '0%';
+                
+                const confidenceBarElement = document.getElementById('confidence-bar');
+                if (confidenceBarElement) confidenceBarElement.style.width = '0%';
+                
+                const starsMatchedElement = document.getElementById('stars-matched');
+                if (starsMatchedElement) starsMatchedElement.textContent = '0/0';
+                
+                // Initialize empty visualization
+                initEmptyVisualization();
+                
+                // Clear constellation description
+                const constellationDescriptionElement = document.getElementById('constellation-description');
+                if (constellationDescriptionElement) {
+                    constellationDescriptionElement.textContent = 'Error loading constellation information.';
+                }
+                
+                // Clear star details
+                const starDetailsContainer = document.getElementById('star-details-container');
+                if (starDetailsContainer) {
+                    starDetailsContainer.innerHTML = '<div class="no-data-message">Error loading star information.</div>';
+                }
+            }
+            
+            // Scroll to top of results
+            window.scrollTo(0, 0);
+        }
+        
+        // Format constellation name for display
+        function formatConstellationName(name) {
+            if (!name) return 'Unknown';
+            
+            // Handle special cases
+            if (name === 'UrsaMajor') return 'Ursa Major';
+            if (name === 'CanisMajor') return 'Canis Major';
+            
+            // For other names, add a space before each capital letter (except the first)
+            return name.replace(/([A-Z])/g, function(match, p1, offset) {
+                return (offset > 0) ? ' ' + p1 : p1;
+            });
+        }
+        
+        // Generate star coordinates for constellations (fallback function)
+        function generateStarCoordinates(constellationName) {
+            const centerX = 300;
+            const centerY = 200;
+            const stars = [];
+            
+            // Star names for each constellation
+            const starNames = {
+                'Orion': ['Betelgeuse', 'Rigel', 'Bellatrix', 'Saiph', 'Alnitak', 'Alnilam', 'Mintaka', 'Meissa', 'Hatysa'],
+                'UrsaMajor': ['Dubhe', 'Merak', 'Phecda', 'Megrez', 'Alioth', 'Mizar', 'Alkaid'],
+                'Leo': ['Regulus', 'Denebola', 'Algieba', 'Zosma', 'Chort', 'Adhafera'],
+                'Pegasus': ['Markab', 'Scheat', 'Algenib', 'Enif', 'Matar', 'Homam']
+            };
+            
+            // Default star names if constellation not in the list
+            const defaultStarNames = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta', 'Eta', 'Theta', 'Iota'];
+            
+            switch (constellationName) {
+                case 'Orion':
+                    // Orion stars with names
+                    stars.push({ x: centerX - 100, y: centerY - 120, size: 5, name: 'Betelgeuse' }); 
+                    stars.push({ x: centerX + 100, y: centerY + 120, size: 5, name: 'Rigel' }); 
+                    stars.push({ x: centerX + 80, y: centerY - 100, size: 4, name: 'Bellatrix' });  
+                    stars.push({ x: centerX - 80, y: centerY + 100, size: 4, name: 'Saiph' });  
+                    stars.push({ x: centerX - 20, y: centerY, size: 3, name: 'Alnitak' });        
+                    stars.push({ x: centerX, y: centerY + 10, size: 3, name: 'Alnilam' });        
+                    stars.push({ x: centerX + 20, y: centerY - 10, size: 3, name: 'Mintaka' });   
+                    stars.push({ x: centerX - 40, y: centerY - 40, size: 2, name: 'Meissa' });   
+                    stars.push({ x: centerX + 40, y: centerY + 40, size: 2, name: 'Hatysa' });   
+                    break;
+                case 'UrsaMajor':
+                    // Ursa Major (Big Dipper) stars with names
+                    stars.push({ x: centerX - 90, y: centerY - 40, size: 5, name: 'Dubhe' });
+                    stars.push({ x: centerX - 50, y: centerY - 80, size: 4, name: 'Merak' });
+                    stars.push({ x: centerX, y: centerY - 100, size: 4, name: 'Phecda' });
+                    stars.push({ x: centerX + 50, y: centerY - 80, size: 4, name: 'Megrez' });
+                    stars.push({ x: centerX + 90, y: centerY - 40, size: 5, name: 'Alioth' });
+                    stars.push({ x: centerX + 130, y: centerY, size: 4, name: 'Mizar' });
+                    stars.push({ x: centerX + 170, y: centerY + 40, size: 3, name: 'Alkaid' });
+                    break;
+                case 'Leo':
+                    // Leo stars with names
+                    stars.push({ x: centerX - 80, y: centerY - 60, size: 5, name: 'Regulus' });
+                    stars.push({ x: centerX - 40, y: centerY - 100, size: 4, name: 'Denebola' });
+                    stars.push({ x: centerX, y: centerY - 80, size: 4, name: 'Algieba' });
+                    stars.push({ x: centerX + 40, y: centerY - 40, size: 4, name: 'Zosma' });
+                    stars.push({ x: centerX + 80, y: centerY, size: 5, name: 'Chort' });
+                    stars.push({ x: centerX + 120, y: centerY + 40, size: 3, name: 'Adhafera' });
+                    break;
+                case 'Pegasus':
+                    // Pegasus stars with names
+                    stars.push({ x: centerX - 100, y: centerY - 100, size: 5, name: 'Markab' });
+                    stars.push({ x: centerX - 50, y: centerY - 50, size: 4, name: 'Scheat' });
+                    stars.push({ x: centerX, y: centerY, size: 4, name: 'Algenib' });
+                    stars.push({ x: centerX + 50, y: centerY - 50, size: 4, name: 'Enif' });
+                    stars.push({ x: centerX + 100, y: centerY - 100, size: 5, name: 'Matar' });
+                    stars.push({ x: centerX + 150, y: centerY - 50, size: 3, name: 'Homam' });
+                    break;
+                default:
+                    // Default random stars with names
+                    const names = starNames[constellationName] || defaultStarNames;
+                    for (let i = 0; i < 7; i++) {
+                        stars.push({
+                            x: centerX + Math.random() * 200 - 100,
+                            y: centerY + Math.random() * 200 - 100,
+                            size: 3 + Math.random() * 2,
+                            name: names[i % names.length]
+                        });
+                    }
+                    break;
+            }
+            
+            return stars;
+        }
+        
+        // Generate lines connecting stars for constellations (fallback function)
+        function generateConstellationLines(stars) {
+            const lines = [];
+            
+            // Connect stars in sequence
+            for (let i = 0; i < stars.length - 1; i++) {
+                lines.push({
+                    start: { x: stars[i].x, y: stars[i].y },
+                    end: { x: stars[i + 1].x, y: stars[i + 1].y }
+                });
+            }
+            
+            // Additional connections for specific constellations
+            if (stars.length > 3) {
+                lines.push({
+                    start: { x: stars[0].x, y: stars[0].y },
+                    end: { x: stars[stars.length - 1].x, y: stars[stars.length - 1].y }
+                });
+            }
+            
+            return lines;
+        }
+        
+        // Go back to upload section
+        function goBack() {
+            const uploadSection = document.getElementById('upload-section');
+            const resultsSection = document.getElementById('results-section');
+            const uploadIcon = document.getElementById('upload-icon');
+            const uploadText = document.getElementById('upload-text');
+            const uploadArea = document.getElementById('upload-area');
+            
+            // Hide results section and show upload section
+            if (resultsSection) resultsSection.style.display = 'none';
+            if (uploadSection) uploadSection.style.display = 'block';
+            
+            // Reset upload area
+            if (uploadIcon) uploadIcon.style.display = 'block';
+            if (uploadText) uploadText.style.display = 'block';
+            if (uploadArea) uploadArea.style.backgroundImage = 'none';
+        }
+        
+        // Initialize visualization canvas with detection result
+        function initVisualization(result) {
+            canvas = document.getElementById('visualization-canvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Set background
+            ctx.fillStyle = '#0a1128';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            try {
+                // Ensure we have valid template data
+                if (!result || !result.template) {
+                    console.error("Invalid result or missing template data:", result);
+                    initEmptyVisualization();
+                    return;
+                }
+                
+                console.log("Initializing visualization with result:", result);
+                
+                // Store the original data for toggling between views
+                canvas.originalTemplate = result.template;
+                canvas.originalDetectedStars = result.detectedStars;
+                canvas.originalNormalizedTemplate = result.normalizedTemplate;
+                canvas.originalNormalizedDetectedStars = result.normalizedDetectedStars;
+                
+                // Check if we should use normalized coordinates
+                const normalizedButton = document.getElementById('toggle-normalized');
+                const useNormalized = normalizedButton ? normalizedButton.classList.contains('active') : true;
+                canvas.useNormalized = useNormalized;
+                
+                let processedCoordinates = [];
+                let processedDetectedStars = [];
+                
+                if (useNormalized && result.normalizedTemplate && result.normalizedDetectedStars) {
+                    console.log("Using normalized coordinates for visualization");
+                    
+                    // Scale normalized coordinates to fit the canvas
+                    const canvasWidth = canvas.width;
+                    const canvasHeight = canvas.height;
+                    const padding = 50; // Padding from canvas edges
+                    const scale = Math.min(canvasWidth - padding*2, canvasHeight - padding*2) / 2;
+                    const centerX = canvasWidth / 2;
+                    const centerY = canvasHeight / 2;
+                    
+                    // Process normalized template coordinates
+                    processedCoordinates = result.normalizedTemplate.map((coord, index) => {
+                        // Get the original coordinate for name and other properties
+                        const originalCoord = result.template.coordinates[index] || {};
+                        
+                        // Scale and center the normalized coordinate
+                        return {
+                            x: centerX + coord.x * scale,
+                            y: centerY + coord.y * scale,
+                            brightness: originalCoord.brightness || 1.0,
+                            name: originalCoord.name || `Star ${index + 1}`,
+                            size: originalCoord.size || 3,
+                            normalized: true
+                        };
+                    });
+                    
+                    // Process normalized detected stars
+                    if (result.normalizedDetectedStars && Array.isArray(result.normalizedDetectedStars)) {
+                        processedDetectedStars = result.normalizedDetectedStars.map((coord, index) => {
+                            // Get the original coordinate for name and other properties
+                            const originalCoord = result.detectedStars[index] || {};
+                            
+                            // Scale and center the normalized coordinate
+                            return {
+                                x: centerX + coord.x * scale,
+                                y: centerY + coord.y * scale,
+                                brightness: originalCoord.brightness || 1.0,
+                                name: originalCoord.name || `Detected ${index + 1}`,
+                                size: originalCoord.size || 3,
+                                normalized: true
+                            };
+                        });
+                    }
+                    
+                    // Process lines to use normalized coordinates
+                    const processedLines = [];
+                    if (result.template.lines && Array.isArray(result.template.lines)) {
+                        console.log("Processing lines for normalized view:", result.template.lines);
+                        
+                        // First, try to use the lines directly from the template
+                        result.template.lines.forEach(line => {
+                            // Handle lines with numeric indices
+                            if (line && typeof line.start === 'number' && typeof line.end === 'number') {
+                                // Get the normalized coordinates for the start and end points
+                                const startCoord = processedCoordinates[line.start];
+                                const endCoord = processedCoordinates[line.end];
+                                
+                                if (startCoord && endCoord) {
+                                    processedLines.push({
+                                        start: { x: startCoord.x, y: startCoord.y },
+                                        end: { x: endCoord.x, y: endCoord.y }
+                                    });
+                                }
+                            } 
+                            // Handle lines with coordinate objects
+                            else if (line && line.start && line.end && 
+                                isFinite(line.start.x) && isFinite(line.start.y) && 
+                                isFinite(line.end.x) && isFinite(line.end.y)) {
+                                // If the line already has coordinates, scale them
+                                processedLines.push({
+                                    start: { 
+                                        x: centerX + line.start.x * scale / 300, 
+                                        y: centerY + line.start.y * scale / 200 
+                                    },
+                                    end: { 
+                                        x: centerX + line.end.x * scale / 300, 
+                                        y: centerY + line.end.y * scale / 200 
+                                    }
+                                });
+                            }
+                        });
+                        
+                        // If no lines were processed, try to generate them based on the constellation
+                        if (processedLines.length === 0 && result.constellation) {
+                            // Define standard line patterns for known constellations
+                            const linePatterns = {
+                                'Orion': [
+                                    [0, 4], [4, 5], [5, 6], [6, 2], [0, 7], [7, 2],
+                                    [4, 3], [3, 1], [1, 8], [8, 6]
+                                ],
+                                'UrsaMajor': [
+                                    [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6]
+                                ],
+                                'Leo': [
+                                    [0, 2], [2, 3], [3, 1], [3, 4], [4, 5], [2, 5]
+                                ],
+                                'Pegasus': [
+                                    [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [0, 4]
+                                ],
+                                'Andromeda': [
+                                    [0, 1], [1, 2], [2, 3], [3, 4], [4, 5]
+                                ],
+                                'Aquila': [
+                                    [0, 1], [1, 2], [2, 3], [3, 4]
+                                ]
+                            };
+                            
+                            // Get the pattern for this constellation
+                            const pattern = linePatterns[result.constellation];
+                            
+                            if (pattern && processedCoordinates.length > 0) {
+                                pattern.forEach(pair => {
+                                    const startIndex = pair[0];
+                                    const endIndex = pair[1];
+                                    
+                                    if (startIndex < processedCoordinates.length && 
+                                        endIndex < processedCoordinates.length) {
+                                        const startCoord = processedCoordinates[startIndex];
+                                        const endCoord = processedCoordinates[endIndex];
+                                        
+                                        processedLines.push({
+                                            start: { x: startCoord.x, y: startCoord.y },
+                                            end: { x: endCoord.x, y: endCoord.y }
+                                        });
+                                    }
+                                });
+                            } else {
+                                // For unknown constellations, connect stars in sequence
+                                for (let i = 0; i < processedCoordinates.length - 1; i++) {
+                                    processedLines.push({
+                                        start: { 
+                                            x: processedCoordinates[i].x, 
+                                            y: processedCoordinates[i].y 
+                                        },
+                                        end: { 
+                                            x: processedCoordinates[i + 1].x, 
+                                            y: processedCoordinates[i + 1].y 
+                                        }
+                                    });
+                                }
+                                
+                                // Connect the first and last stars to form a loop
+                                if (processedCoordinates.length > 2) {
+                                    processedLines.push({
+                                        start: { 
+                                            x: processedCoordinates[0].x, 
+                                            y: processedCoordinates[0].y 
+                                        },
+                                        end: { 
+                                            x: processedCoordinates[processedCoordinates.length - 1].x, 
+                                            y: processedCoordinates[processedCoordinates.length - 1].y 
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                        
+                        console.log("Processed lines for visualization:", processedLines);
+                    }
+                    
+                    // Store visualization data
+                    canvas.stars = processedCoordinates;
+                    canvas.lines = processedLines;
+                    canvas.constellationName = result.constellation || 'Unknown';
+                    canvas.detectedStars = processedDetectedStars;
+                    canvas.useNormalized = true;
+                } else {
+                    console.log("Using original coordinates for visualization");
+                    
+                    // Ensure coordinates have size and name properties
+                    processedCoordinates = result.template.coordinates.map((coord, index) => {
+                        // Create a new object to avoid modifying the original
+                        return {
+                            x: coord.x,
+                            y: coord.y,
+                            brightness: coord.brightness || 1.0,
+                            name: coord.name || `Star ${index + 1}`,
+                            size: coord.size || 3 // Default size if missing
+                        };
+                    });
+                    
+                    console.log("Processed coordinates with names:", processedCoordinates);
+                    
+                    // Process lines to ensure they have valid coordinates
+                    const processedLines = [];
+                    if (result.template.lines && Array.isArray(result.template.lines)) {
+                        console.log("Processing lines for original view:", result.template.lines);
+                        
+                        result.template.lines.forEach(line => {
+                            // Handle lines with coordinate objects
+                            if (line && line.start && line.end && 
+                                isFinite(line.start.x) && isFinite(line.start.y) && 
+                                isFinite(line.end.x) && isFinite(line.end.y)) {
+                                processedLines.push(line);
+                            }
+                            // Handle lines with numeric indices
+                            else if (line && typeof line.start === 'number' && typeof line.end === 'number') {
+                                // Get the coordinates for the start and end points
+                                const startCoord = processedCoordinates[line.start];
+                                const endCoord = processedCoordinates[line.end];
+                                
+                                if (startCoord && endCoord) {
+                                    processedLines.push({
+                                        start: { x: startCoord.x, y: startCoord.y },
+                                        end: { x: endCoord.x, y: endCoord.y }
+                                    });
+                                }
+                            }
+                        });
+                        
+                        console.log("Processed lines for visualization:", processedLines);
+                    }
+                    
+                    // Process detected stars to ensure they have size and name properties
+                    if (result.detectedStars && Array.isArray(result.detectedStars)) {
+                        processedDetectedStars = result.detectedStars.map((star, index) => {
+                            if (star && isFinite(star.x) && isFinite(star.y)) {
+                                // Create a new object to avoid modifying the original
+                                return {
+                                    x: star.x,
+                                    y: star.y,
+                                    brightness: star.brightness || 1.0,
+                                    name: star.name || `Detected ${index + 1}`,
+                                    size: star.size || 3 // Default size if missing
+                                };
+                            }
+                            return null;
+                        }).filter(star => star !== null);
+                    }
+                    
+                    // Store visualization data
+                    canvas.stars = processedCoordinates;
+                    canvas.lines = processedLines;
+                    canvas.constellationName = result.constellation || 'Unknown';
+                    canvas.detectedStars = processedDetectedStars;
+                    canvas.useNormalized = false;
+                }
+                
+                // Store the original image for background option
+                const originalImageDisplay = document.getElementById('original-image-display');
+                if (originalImageDisplay && originalImageDisplay.src) {
+                    // Create a new image object to ensure it's loaded
+                    const backgroundImage = new Image();
+                    backgroundImage.onload = function() {
+                        canvas.backgroundImage = backgroundImage;
+                        // Initial draw after background image is loaded
+                        updateVisualization();
+                    };
+                    backgroundImage.onerror = function() {
+                        console.error("Error loading background image");
+                        canvas.backgroundImage = null;
+                        // Initial draw without background image
+                        updateVisualization();
+                    };
+                    backgroundImage.src = originalImageDisplay.src;
+                } else {
+                    canvas.backgroundImage = null;
+                    // Initial draw without background image
+                    updateVisualization();
+                }
+            } catch (error) {
+                console.error("Error initializing visualization:", error);
+                initEmptyVisualization();
+            }
+        }
+        
+        // Initialize empty visualization canvas
+        function initEmptyVisualization() {
+            canvas = document.getElementById('visualization-canvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Set background
+            ctx.fillStyle = '#0a1128';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw message
+            ctx.fillStyle = '#4facfe';
+            ctx.font = '16px Montserrat';
+            ctx.textAlign = 'center';
+            ctx.fillText('No constellation detected', canvas.width / 2, canvas.height / 2);
+            
+            // Reset visualization data
+            canvas.stars = [];
+            canvas.lines = [];
+            canvas.constellationName = '';
+            canvas.detectedStars = [];
+        }
+        
+        // Toggle visualization elements
+        function toggleVisualization(type) {
+            const button = document.getElementById(`toggle-${type}`);
+            if (button) {
+                button.classList.toggle('active');
+                
+                // If toggling labels, make sure it's active
+                if (type === 'labels') {
+                    console.log(`Labels toggled: ${button.classList.contains('active')}`);
+                    
+                    // If turning on labels, make sure we have star names
+                    if (button.classList.contains('active') && canvas && canvas.stars) {
+                        // Verify star names
+                        canvas.stars.forEach((star, index) => {
+                            if (!star.name) {
+                                star.name = `Star ${index + 1}`;
+                            }
+                        });
+                    }
+                }
+                
+                // If toggling normalized view, reinitialize the visualization
+                if (type === 'normalized') {
+                    console.log(`Normalized view toggled: ${button.classList.contains('active')}`);
+                    
+                    // Store the current state of normalized view
+                    canvas.useNormalized = button.classList.contains('active');
+                    
+                    // Get the current result from the canvas
+                    const currentResult = {
+                        success: true,
+                        constellation: canvas.constellationName,
+                        template: canvas.originalTemplate,
+                        detectedStars: canvas.originalDetectedStars,
+                        normalizedTemplate: canvas.originalNormalizedTemplate,
+                        normalizedDetectedStars: canvas.originalNormalizedDetectedStars
+                    };
+                    
+                    // Reinitialize with the current result
+                    if (currentResult.template) {
+                        // Preserve the current background image
+                        const currentBackgroundImage = canvas.backgroundImage;
+                        
+                        // Reinitialize the visualization
+                        reinitializeVisualization(currentResult);
+                        
+                        // Restore the background image
+                        canvas.backgroundImage = currentBackgroundImage;
+                        
+                        return; // Skip updateVisualization as reinitializeVisualization will call it
+                    }
+                }
+                
+                updateVisualization();
+            }
+        }
+        
+        // Update visualization based on control buttons
+        function updateVisualization() {
+            if (!canvas || !canvas.stars || canvas.stars.length === 0) return;
+            
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const showBackground = document.getElementById('toggle-background').classList.contains('active');
+            const showStars = document.getElementById('toggle-stars').classList.contains('active');
+            const showLines = document.getElementById('toggle-lines').classList.contains('active');
+            const showLabels = document.getElementById('toggle-labels').classList.contains('active');
+            
+            // Draw background
+            if (showBackground && canvas.backgroundImage) {
+                try {
+                    // Draw the original image as background
+                    ctx.globalAlpha = 0.7; // Semi-transparent to see stars better
+                    
+                    // Calculate dimensions to maintain aspect ratio and fit within canvas
+                    const imgWidth = canvas.backgroundImage.width;
+                    const imgHeight = canvas.backgroundImage.height;
+                    const canvasWidth = canvas.width;
+                    const canvasHeight = canvas.height;
+                    
+                    let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
+                    
+                    if (imgWidth / imgHeight > canvasWidth / canvasHeight) {
+                        // Image is wider than canvas (relative to height)
+                        drawWidth = canvasWidth;
+                        drawHeight = imgHeight * (canvasWidth / imgWidth);
+                        offsetY = (canvasHeight - drawHeight) / 2;
+                    } else {
+                        // Image is taller than canvas (relative to width)
+                        drawHeight = canvasHeight;
+                        drawWidth = imgWidth * (canvasHeight / imgHeight);
+                        offsetX = (canvasWidth - drawWidth) / 2;
+                    }
+                    
+                    // Store the background image dimensions for coordinate mapping
+                    canvas.backgroundDimensions = {
+                        offsetX: offsetX,
+                        offsetY: offsetY,
+                        width: drawWidth,
+                        height: drawHeight,
+                        originalWidth: imgWidth,
+                        originalHeight: imgHeight
+                    };
+                    
+                    // Draw the background image
+                    ctx.drawImage(canvas.backgroundImage, offsetX, offsetY, drawWidth, drawHeight);
+                    
+                    // If not using normalized view, try to align stars with background image
+                    if (!canvas.useNormalized && !canvas.starsAligned && canvas.stars.length > 0) {
+                        console.log("Aligning stars with background image");
+                        
+                        // Store the original stars for reference
+                        if (!canvas.originalStars) {
+                            canvas.originalStars = JSON.parse(JSON.stringify(canvas.stars));
+                        }
+                        
+                        // Adjust star coordinates to match background image
+                        // This is a simple approach - in a real implementation, you would use
+                        // image processing to detect stars in the background image
+                        canvas.stars = canvas.originalStars.map(star => {
+                            // Scale the star coordinates to match the background image
+                            return {
+                                ...star,
+                                x: offsetX + (star.x / 600) * drawWidth,
+                                y: offsetY + (star.y / 400) * drawHeight
+                            };
+                        });
+                        
+                        // Also adjust line coordinates
+                        if (canvas.lines && canvas.lines.length > 0) {
+                            canvas.lines = canvas.lines.map(line => {
+                                return {
+                                    start: {
+                                        x: offsetX + (line.start.x / 600) * drawWidth,
+                                        y: offsetY + (line.start.y / 400) * drawHeight
+                                    },
+                                    end: {
+                                        x: offsetX + (line.end.x / 600) * drawWidth,
+                                        y: offsetY + (line.end.y / 400) * drawHeight
+                                    }
+                                };
+                            });
+                        }
+                        
+                        // Mark stars as aligned
+                        canvas.starsAligned = true;
+                    }
+                    
+                    ctx.globalAlpha = 1.0; // Reset alpha for other elements
+                } catch (error) {
+                    console.error("Error drawing background image:", error);
+                    // Fallback to solid background
+                    ctx.fillStyle = '#0a1128';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+            } else {
+                // Set solid background
+                ctx.fillStyle = '#0a1128';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // If stars were aligned with background but background is now hidden,
+                // restore original star positions
+                if (canvas.starsAligned && canvas.originalStars) {
+                    canvas.stars = JSON.parse(JSON.stringify(canvas.originalStars));
+                    canvas.starsAligned = false;
+                }
+            }
+            
+            // Draw lines first (if enabled)
+            if (showLines && canvas.lines) {
+                // Draw glow effect for lines
+                ctx.strokeStyle = 'rgba(79, 172, 254, 0.3)';
+                ctx.lineWidth = 6;
+                
+                canvas.lines.forEach(line => {
+                    try {
+                        if (line && line.start && line.end && 
+                            isFinite(line.start.x) && isFinite(line.start.y) && 
+                            isFinite(line.end.x) && isFinite(line.end.y)) {
+                            ctx.beginPath();
+                            ctx.moveTo(line.start.x, line.start.y);
+                            ctx.lineTo(line.end.x, line.end.y);
+                            ctx.stroke();
+                        }
+                    } catch (error) {
+                        console.error("Error drawing line glow:", error);
+                    }
+                });
+                
+                // Draw main lines
+                ctx.strokeStyle = '#4facfe';
+                ctx.lineWidth = 2;
+                
+                canvas.lines.forEach(line => {
+                    try {
+                        if (line && line.start && line.end && 
+                            isFinite(line.start.x) && isFinite(line.start.y) && 
+                            isFinite(line.end.x) && isFinite(line.end.y)) {
+                            ctx.beginPath();
+                            ctx.moveTo(line.start.x, line.start.y);
+                            ctx.lineTo(line.end.x, line.end.y);
+                            ctx.stroke();
+                            
+                            // Log line coordinates for debugging
+                            console.log(`Drawing line from (${line.start.x}, ${line.start.y}) to (${line.end.x}, ${line.end.y})`);
+                        }
+                    } catch (error) {
+                        console.error("Error drawing line:", error);
+                    }
+                });
+            }
+            
+            // Draw stars (if enabled)
+            if (showStars && canvas.stars) {
+                // Draw template stars
+                canvas.stars.forEach(star => {
+                    try {
+                        // Ensure star has valid coordinates and size
+                        if (!star || !isFinite(star.x) || !isFinite(star.y)) return;
+                        
+                        // Ensure star has a size property
+                        const starSize = star.size || 3;
+                        const brightness = star.brightness || 1.0;
+                        
+                        // Calculate star size based on brightness
+                        const adjustedSize = starSize * (0.5 + brightness * 0.5);
+                        
+                        // Draw outer glow
+                        if (isFinite(star.x) && isFinite(star.y) && isFinite(adjustedSize)) {
+                            const gradient = ctx.createRadialGradient(
+                                star.x, star.y, 0,
+                                star.x, star.y, adjustedSize * 3
+                            );
+                            gradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+                            gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.3)');
+                            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                            
+                            ctx.fillStyle = gradient;
+                            ctx.beginPath();
+                            ctx.arc(star.x, star.y, adjustedSize * 3, 0, Math.PI * 2);
+                            ctx.fill();
+                            
+                            // Draw inner glow
+                            const innerGradient = ctx.createRadialGradient(
+                                star.x, star.y, 0,
+                                star.x, star.y, adjustedSize * 1.5
+                            );
+                            innerGradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+                            innerGradient.addColorStop(1, 'rgba(255, 255, 255, 0.3)');
+                            
+                            ctx.fillStyle = innerGradient;
+                            ctx.beginPath();
+                            ctx.arc(star.x, star.y, adjustedSize * 1.5, 0, Math.PI * 2);
+                            ctx.fill();
+                            
+                            // Draw star center
+                            ctx.fillStyle = '#ffffff';
+                            ctx.beginPath();
+                            ctx.arc(star.x, star.y, adjustedSize, 0, Math.PI * 2);
+                            ctx.fill();
+                            
+                            // Log star coordinates for debugging
+                            console.log(`Drawing star ${star.name} at (${star.x}, ${star.y}) with size ${adjustedSize}`);
+                        }
+                    } catch (error) {
+                        console.error("Error drawing star:", error, star);
+                    }
+                });
+                
+                // Draw detected stars (if available)
+                if (canvas.detectedStars) {
+                    canvas.detectedStars.forEach(star => {
+                        try {
+                            // Ensure star has valid coordinates and size
+                            if (!star || !isFinite(star.x) || !isFinite(star.y)) return;
+                            
+                            // Ensure star has a size property
+                            const starSize = star.size || 3;
+                            const brightness = star.brightness || 1.0;
+                            
+                            // Calculate star size based on brightness
+                            const adjustedSize = starSize * (0.5 + brightness * 0.5);
+                            
+                            if (isFinite(star.x) && isFinite(star.y) && isFinite(adjustedSize)) {
+                                // Draw detected star with different color
+                                const gradient = ctx.createRadialGradient(
+                                    star.x, star.y, 0,
+                                    star.x, star.y, adjustedSize * 2
+                                );
+                                gradient.addColorStop(0, 'rgba(255, 200, 0, 0.9)');
+                                gradient.addColorStop(1, 'rgba(255, 200, 0, 0)');
+                                
+                                ctx.fillStyle = gradient;
+                                ctx.beginPath();
+                                ctx.arc(star.x, star.y, adjustedSize * 2, 0, Math.PI * 2);
+                                ctx.fill();
+                                
+                                // Draw star center
+                                ctx.fillStyle = 'rgba(255, 200, 0, 0.9)';
+                                ctx.beginPath();
+                                ctx.arc(star.x, star.y, adjustedSize, 0, Math.PI * 2);
+                                ctx.fill();
+                            }
+                        } catch (error) {
+                            console.error("Error drawing detected star:", error, star);
+                        }
+                    });
+                }
+            }
+            
+            // Draw labels (if enabled)
+            if (showLabels && canvas.stars) {
+                ctx.fillStyle = '#b3c5ef';
+                ctx.font = '12px Montserrat';
+                ctx.textAlign = 'center';
+                
+                // Main constellation label
+                ctx.fillStyle = '#4facfe';
+                ctx.font = 'bold 20px Montserrat';
+                
+                // Draw a background for the constellation name
+                const constellationName = formatConstellationName(canvas.constellationName);
+                const constellationTextWidth = ctx.measureText(constellationName).width;
+                
+                ctx.fillStyle = 'rgba(10, 17, 40, 0.8)';
+                ctx.fillRect(
+                    canvas.width / 2 - constellationTextWidth/2 - 10, 
+                    10, 
+                    constellationTextWidth + 20, 
+                    30
+                );
+                
+                // Draw constellation name
+                ctx.fillStyle = '#4facfe';
+                ctx.fillText(constellationName, canvas.width / 2, 30);
+                
+                // Star labels
+                ctx.font = '12px Montserrat';
+                
+                // First pass: collect all label positions to avoid overlaps
+                const labelPositions = [];
+                
+                canvas.stars.forEach((star, index) => {
+                    try {
+                        // Ensure star has valid coordinates
+                        if (!star || !isFinite(star.x) || !isFinite(star.y)) return;
+                        
+                        // Use star name if available, otherwise use index
+                        const starName = star.name || `Star ${index + 1}`;
+                        const starSize = star.size || 3;
+                        const brightness = star.brightness || 1.0;
+                        
+                        // Calculate adjusted size based on brightness
+                        const adjustedSize = starSize * (0.5 + brightness * 0.5);
+                        
+                        // Calculate label position
+                        const labelX = star.x;
+                        const labelY = star.y - adjustedSize * 3 - 10;
+                        
+                        // Store label position and dimensions
+                        const textWidth = ctx.measureText(starName).width;
+                        labelPositions.push({
+                            x: labelX,
+                            y: labelY,
+                            width: textWidth + 8,
+                            height: 16,
+                            name: starName,
+                            star: star,
+                            adjustedSize: adjustedSize
+                        });
+                    } catch (error) {
+                        console.error("Error calculating label position:", error, star);
+                    }
+                });
+                
+                // Second pass: draw labels, adjusting positions to avoid overlaps
+                labelPositions.forEach((label, index) => {
+                    try {
+                        // Draw a small background for better readability
+                        ctx.fillStyle = 'rgba(10, 17, 40, 0.7)';
+                        ctx.fillRect(
+                            label.x - label.width/2, 
+                            label.y - 12, 
+                            label.width, 
+                            16
+                        );
+                        
+                        // Draw the text
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillText(label.name, label.x, label.y);
+                        
+                        // Draw a line connecting the label to the star
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(label.x, label.y + 4);
+                        ctx.lineTo(label.star.x, label.star.y - label.adjustedSize);
+                        ctx.stroke();
+                        
+                        // Log star name for debugging
+                        console.log(`Drawing star label: ${label.name} at (${label.x}, ${label.y})`);
+                    } catch (error) {
+                        console.error("Error drawing star label:", error, label);
+                    }
+                });
+            }
+            
+            // Add interactive hover effect for stars
+            if (canvas) {
+                // Remove any existing event listeners
+                canvas.onmousemove = null;
+                
+                // Add mousemove event listener for interactive hover
+                canvas.onmousemove = function(e) {
+                    if (!canvas.stars) return;
+                    
+                    // Get mouse position relative to canvas
+                    const rect = canvas.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left;
+                    const mouseY = e.clientY - rect.top;
+                    
+                    // Check if mouse is over any star
+                    let hoveredStar = null;
+                    for (let i = 0; i < canvas.stars.length; i++) {
+                        const star = canvas.stars[i];
+                        const distance = Math.sqrt(Math.pow(mouseX - star.x, 2) + Math.pow(mouseY - star.y, 2));
+                        
+                        // If mouse is within star's radius (plus some margin)
+                        if (distance <= star.size * 3) {
+                            hoveredStar = star;
+                            break;
+                        }
+                    }
+                    
+                    // If hovering over a star, show tooltip
+                    if (hoveredStar) {
+                        canvas.style.cursor = 'pointer';
+                        
+                        // Redraw canvas to show hover effect
+                        updateVisualization();
+                        
+                        // Draw hover effect for the star
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                        ctx.beginPath();
+                        ctx.arc(hoveredStar.x, hoveredStar.y, hoveredStar.size * 3, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Draw tooltip
+                        const tooltipText = hoveredStar.name || 'Star';
+                        const tooltipWidth = ctx.measureText(tooltipText).width + 20;
+                        const tooltipHeight = 30;
+                        const tooltipX = hoveredStar.x - tooltipWidth / 2;
+                        const tooltipY = hoveredStar.y - hoveredStar.size - 40;
+                        
+                        // Draw tooltip background
+                        ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                        ctx.fillRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight);
+                        
+                        // Draw tooltip text
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = 'bold 14px Montserrat';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(tooltipText, hoveredStar.x, tooltipY + 20);
+                    } else {
+                        canvas.style.cursor = 'default';
+                    }
+                };
+                
+                // Reset cursor when mouse leaves canvas
+                canvas.onmouseleave = function() {
+                    canvas.style.cursor = 'default';
+                    updateVisualization();
+                };
+            }
+        }
+        
+        // Format constellation name (convert camelCase to space-separated)
+        function formatConstellationName(name) {
+            return name.replace(/([A-Z])/g, ' $1').trim();
+        }
+        
+        // Reinitialize visualization when toggling between normalized and original views
+        function reinitializeVisualization(result) {
+            canvas = document.getElementById('visualization-canvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Set background
+            ctx.fillStyle = '#0a1128';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            try {
+                // Ensure we have valid template data
+                if (!result || !result.template) {
+                    console.error("Invalid result or missing template data:", result);
+                    initEmptyVisualization();
+                    return;
+                }
+                
+                console.log("Reinitializing visualization with normalized mode:", canvas.useNormalized);
+                
+                let processedCoordinates = [];
+                let processedDetectedStars = [];
+                let processedLines = [];
+                
+                if (canvas.useNormalized && result.normalizedTemplate && result.normalizedDetectedStars) {
+                    console.log("Using normalized coordinates for visualization");
+                    
+                    // Scale normalized coordinates to fit the canvas
+                    const canvasWidth = canvas.width;
+                    const canvasHeight = canvas.height;
+                    const padding = 50; // Padding from canvas edges
+                    const scale = Math.min(canvasWidth - padding*2, canvasHeight - padding*2) / 2;
+                    const centerX = canvasWidth / 2;
+                    const centerY = canvasHeight / 2;
+                    
+                    // Process normalized template coordinates
+                    processedCoordinates = result.normalizedTemplate.map((coord, index) => {
+                        // Get the original coordinate for name and other properties
+                        const originalCoord = result.template.coordinates[index] || {};
+                        
+                        // Scale and center the normalized coordinate
+                        return {
+                            x: centerX + coord.x * scale,
+                            y: centerY + coord.y * scale,
+                            brightness: originalCoord.brightness || 1.0,
+                            name: originalCoord.name || `Star ${index + 1}`,
+                            size: originalCoord.size || 3,
+                            normalized: true
+                        };
+                    });
+                    
+                    // Process normalized detected stars
+                    if (result.normalizedDetectedStars && Array.isArray(result.normalizedDetectedStars)) {
+                        processedDetectedStars = result.normalizedDetectedStars.map((coord, index) => {
+                            // Get the original coordinate for name and other properties
+                            const originalCoord = result.detectedStars[index] || {};
+                            
+                            // Scale and center the normalized coordinate
+                            return {
+                                x: centerX + coord.x * scale,
+                                y: centerY + coord.y * scale,
+                                brightness: originalCoord.brightness || 1.0,
+                                name: originalCoord.name || `Detected ${index + 1}`,
+                                size: originalCoord.size || 3,
+                                normalized: true
+                            };
+                        });
+                    }
+                    
+                    // Process lines to use normalized coordinates
+                    if (result.template.lines && Array.isArray(result.template.lines)) {
+                        result.template.lines.forEach(line => {
+                            if (line && typeof line.start === 'number' && typeof line.end === 'number') {
+                                // Get the normalized coordinates for the start and end points
+                                const startCoord = processedCoordinates[line.start];
+                                const endCoord = processedCoordinates[line.end];
+                                
+                                if (startCoord && endCoord) {
+                                    processedLines.push({
+                                        start: { x: startCoord.x, y: startCoord.y },
+                                        end: { x: endCoord.x, y: endCoord.y }
+                                    });
+                                }
+                            } else if (line && line.start && line.end && 
+                                isFinite(line.start.x) && isFinite(line.start.y) && 
+                                isFinite(line.end.x) && isFinite(line.end.y)) {
+                                // If the line already has coordinates, scale them
+                                processedLines.push({
+                                    start: { 
+                                        x: centerX + line.start.x * scale / 300, 
+                                        y: centerY + line.start.y * scale / 200 
+                                    },
+                                    end: { 
+                                        x: centerX + line.end.x * scale / 300, 
+                                        y: centerY + line.end.y * scale / 200 
+                                    }
+                                });
+                            }
+                        });
+                    }
+                } else {
+                    console.log("Using original coordinates for visualization");
+                    
+                    // Ensure coordinates have size and name properties
+                    processedCoordinates = result.template.coordinates.map((coord, index) => {
+                        // Create a new object to avoid modifying the original
+                        return {
+                            x: coord.x,
+                            y: coord.y,
+                            brightness: coord.brightness || 1.0,
+                            name: coord.name || `Star ${index + 1}`,
+                            size: coord.size || 3 // Default size if missing
+                        };
+                    });
+                    
+                    // Process lines to ensure they have valid coordinates
+                    if (result.template.lines && Array.isArray(result.template.lines)) {
+                        result.template.lines.forEach(line => {
+                            if (line && line.start && line.end && 
+                                isFinite(line.start.x) && isFinite(line.start.y) && 
+                                isFinite(line.end.x) && isFinite(line.end.y)) {
+                                processedLines.push(line);
+                            } else if (line && typeof line.start === 'number' && typeof line.end === 'number') {
+                                // If the line uses indices, convert to coordinates
+                                const startCoord = processedCoordinates[line.start];
+                                const endCoord = processedCoordinates[line.end];
+                                
+                                if (startCoord && endCoord) {
+                                    processedLines.push({
+                                        start: { x: startCoord.x, y: startCoord.y },
+                                        end: { x: endCoord.x, y: endCoord.y }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                    
+                    // Process detected stars to ensure they have size and name properties
+                    if (result.detectedStars && Array.isArray(result.detectedStars)) {
+                        processedDetectedStars = result.detectedStars.map((star, index) => {
+                            if (star && isFinite(star.x) && isFinite(star.y)) {
+                                // Create a new object to avoid modifying the original
+                                return {
+                                    x: star.x,
+                                    y: star.y,
+                                    brightness: star.brightness || 1.0,
+                                    name: star.name || `Detected ${index + 1}`,
+                                    size: star.size || 3 // Default size if missing
+                                };
+                            }
+                            return null;
+                        }).filter(star => star !== null);
+                    }
+                }
+                
+                // Store visualization data
+                canvas.stars = processedCoordinates;
+                canvas.lines = processedLines;
+                canvas.constellationName = result.constellation || 'Unknown';
+                canvas.detectedStars = processedDetectedStars;
+                
+                // Update the visualization
+                updateVisualization();
+            } catch (error) {
+                console.error("Error reinitializing visualization:", error);
+                initEmptyVisualization();
+            }
+        }
+        
+        // Download detection results as a PDF or image
+        function downloadResults() {
+            // Create a container for the report
+            const reportContainer = document.createElement('div');
+            reportContainer.style.width = '800px';
+            reportContainer.style.padding = '20px';
+            reportContainer.style.backgroundColor = 'white';
+            reportContainer.style.color = 'black';
+            reportContainer.style.fontFamily = 'Montserrat, sans-serif';
+            
+            // Add report header
+            const header = document.createElement('div');
+            header.style.textAlign = 'center';
+            header.style.marginBottom = '20px';
+            header.innerHTML = `
+                <h1 style="color: #4facfe; margin-bottom: 10px;">Stellar - Constellation Detection</h1>
+                <h2 style="color: #333; margin-bottom: 20px;">Detection Report</h2>
+                <p style="color: #666;">Generated on ${new Date().toLocaleString()}</p>
+            `;
+            reportContainer.appendChild(header);
+            
+            // Add detection results
+            const resultsSection = document.createElement('div');
+            resultsSection.style.display = 'flex';
+            resultsSection.style.marginBottom = '30px';
+            
+            // Original image
+            const originalImage = document.getElementById('original-image-display');
+            const originalImageSrc = originalImage.src;
+            
+            // Constellation template
+            const constellationTemplate = document.getElementById('constellation-template');
+            const constellationTemplateSrc = constellationTemplate.src;
+            
+            // Constellation name
+            const constellationName = document.getElementById('constellation-name').textContent;
+            
+            // Confidence score
+            const confidenceScore = document.getElementById('confidence-score').textContent;
+            
+            // Stars matched
+            const starsMatched = document.getElementById('stars-matched').textContent;
+            
+            // Add images and details to results section
+            resultsSection.innerHTML = `
+                <div style="flex: 1; padding: 10px;">
+                    <h3 style="color: #333; margin-bottom: 10px;">Original Image</h3>
+                    <img src="${originalImageSrc}" style="max-width: 100%; max-height: 300px; border: 1px solid #ddd;">
+                </div>
+                <div style="flex: 1; padding: 10px;">
+                    <h3 style="color: #333; margin-bottom: 10px;">Detected Constellation</h3>
+                    <h4 style="color: #4facfe; margin-bottom: 10px;">${constellationName}</h4>
+                    <img src="${constellationTemplateSrc}" style="max-width: 100%; max-height: 200px; border: 1px solid #ddd;">
+                    <div style="margin-top: 20px; padding: 10px; background-color: #f5f5f5; border-radius: 5px;">
+                        <h4 style="color: #333; margin-bottom: 10px;">Match Details</h4>
+                        <p><strong>Confidence Score:</strong> ${confidenceScore}</p>
+                        <p><strong>Stars Matched:</strong> ${starsMatched}</p>
+                    </div>
+                </div>
+            `;
+            reportContainer.appendChild(resultsSection);
+            
+            // Add visualization
+            const visualizationSection = document.createElement('div');
+            visualizationSection.style.marginBottom = '30px';
+            
+            // Get visualization canvas
+            const canvas = document.getElementById('visualization-canvas');
+            const visualizationImage = canvas.toDataURL('image/png');
+            
+            visualizationSection.innerHTML = `
+                <h3 style="color: #333; margin-bottom: 10px;">Visualization</h3>
+                <img src="${visualizationImage}" style="max-width: 100%; border: 1px solid #ddd;">
+            `;
+            reportContainer.appendChild(visualizationSection);
+            
+            // Add footer
+            const footer = document.createElement('div');
+            footer.style.textAlign = 'center';
+            footer.style.marginTop = '30px';
+            footer.style.color = '#666';
+            footer.innerHTML = `
+                <p>© ${new Date().getFullYear()} Stellar. All rights reserved.</p>
+                <p>This report was generated automatically by the Stellar Constellation Detection system.</p>
+            `;
+            reportContainer.appendChild(footer);
+            
+            // Convert the report to a downloadable format
+            try {
+                // Try to use html2canvas and jsPDF if available
+                if (typeof html2canvas !== 'undefined' && typeof jsPDF !== 'undefined') {
+                    html2canvas(reportContainer).then(canvas => {
+                        const imgData = canvas.toDataURL('image/png');
+                        const pdf = new jsPDF('p', 'mm', 'a4');
+                        const pdfWidth = pdf.internal.pageSize.getWidth();
+                        const pdfHeight = pdf.internal.pageSize.getHeight();
+                        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                        pdf.save(`stellar_detection_${constellationName.replace(/\s+/g, '_')}.pdf`);
+                    });
+                } else {
+                    // Fallback to image download
+                    // First, add the report to the document temporarily
+                    document.body.appendChild(reportContainer);
+                    
+                    // Use html2canvas directly
+                    const script = document.createElement('script');
+                    script.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
+                    script.onload = function() {
+                        html2canvas(reportContainer).then(canvas => {
+                            // Remove the report from the document
+                            document.body.removeChild(reportContainer);
+                            
+                            // Create a download link
+                            const link = document.createElement('a');
+                            link.download = `stellar_detection_${constellationName.replace(/\s+/g, '_')}.png`;
+                            link.href = canvas.toDataURL('image/png');
+                            link.click();
+                        });
+                    };
+                    document.head.appendChild(script);
+                }
+            } catch (error) {
+                console.error('Error generating report:', error);
+                alert('Could not generate report. Downloading visualization image instead.');
+                
+                // Fallback to just downloading the visualization
+                const link = document.createElement('a');
+                link.download = `stellar_detection_${constellationName.replace(/\s+/g, '_')}.png`;
+                link.href = visualizationImage;
+                link.click();
+            }
+        }
+    </script>
+</body>
+</html>

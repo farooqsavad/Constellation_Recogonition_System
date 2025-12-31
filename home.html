@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar - Constellation Detection</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/reveal-animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Home Page Specific Styles */
+    </style>
+</head>
+<body>
+    <!-- Stars Background -->
+    <div class="stars-background" id="stars-container"></div>
+    
+    <!-- Reveal Animations Scripts -->
+    <script src="js/reveal-animations.js"></script>
+    <script src="js/auto-reveal.js"></script>
+    
+    <!-- Authentication Check -->
+    <script src="js/auth-check.js"></script>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="home.html">
+                        <span class="logo-text">Stellar</span>
+                    </a>
+                </div>
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item active"><a href="home.html">Home</a></li>
+                        <li class="nav-item"><a href="detection.html">Detection</a></li>
+                        <li class="nav-item"><a href="library.html">Library</a></li>
+                        <li class="nav-item"><a href="learning.html">Learning</a></li>
+                        <li class="nav-item"><a href="analysis.html">Analysis</a></li>
+                        <li class="nav-item"><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Discover the Wonders of the Night Sky</h1>
+                <p class="hero-subtitle">Upload your night sky images and identify constellations with our advanced detection technology</p>
+                <div class="hero-actions">
+                    <a href="detection.html" class="btn btn-primary btn-large">Start Detection</a>
+                    <a href="library.html" class="btn btn-secondary btn-large">Explore Library</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="assets/hero-constellation.svg" alt="Constellation" id="hero-constellation">
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Key Features</h2>
+                <p class="section-subtitle">Explore the powerful tools we offer</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3 class="feature-title">Constellation Detection</h3>
+                    <p class="feature-description">Upload your night sky images and our advanced algorithm will identify constellations with high accuracy.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3 class="feature-title">Comprehensive Library</h3>
+                    <p class="feature-description">Access our extensive library of constellations with detailed information and visualizations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3 class="feature-title">Detection History</h3>
+                    <p class="feature-description">Keep track of all your previous detections and revisit them anytime.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="feature-title">Learning Center</h3>
+                    <p class="feature-description">Enhance your knowledge about astronomy and constellations with our educational resources.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">Simple steps to identify constellations</p>
+            </div>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Upload Image</h3>
+                        <p class="step-description">Upload your night sky image or choose from our sample images.</p>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Process Image</h3>
+                        <p class="step-description">Our algorithm processes the image to identify stars and patterns.</p>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3 class="step-title">View Results</h3>
+                        <p class="step-description">Get detailed results with constellation identification and information.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Constellations Section -->
+    <section class="popular-constellations-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Popular Constellations</h2>
+                <p class="section-subtitle">Explore some of the most famous constellations</p>
+            </div>
+            <div class="constellation-grid" id="popular-constellations">
+                <!-- Constellation cards will be loaded here dynamically -->
+            </div>
+            <div class="section-footer">
+                <a href="library.html" class="btn btn-secondary">View All Constellations</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">Ready to Explore the Night Sky?</h2>
+                <p class="cta-description">Join thousands of astronomy enthusiasts and start your journey today.</p>
+                <div class="cta-actions">
+                    <a href="signup.html" class="btn btn-primary btn-large">Sign Up Now</a>
+                    <a href="detection.html" class="btn btn-outline btn-large">Try Detection</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">Stellar</span>
+                    <p>Discover the wonders of the night sky</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h3>Navigation</h3>
+                        <ul>
+                            <li><a href="home.html">Home</a></li>
+                            <li><a href="detection.html">Detection</a></li>
+                            <li><a href="library.html">Library</a></li>
+                            <li><a href="learning.html">Learning</a></li>
+                            <li><a href="analysis.html">Analysis</a></li>
+                            <li><a href="about.html">About</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Tutorials</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Legal</h3>
+                        <ul>
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Cookie Policy</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Connect</h3>
+                        <ul class="social-links">
+                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                            <li><a href="#"><i class="fab fa-github"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Stellar Constellation Detection. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create stars background
+            createStarsBackground();
+            
+            // Load popular constellations
+            loadPopularConstellations();
+            
+            // Mobile menu toggle
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mainNav = document.querySelector('.main-nav');
+            
+            mobileMenuToggle.addEventListener('click', function() {
+                mainNav.classList.toggle('active');
+                this.classList.toggle('active');
+            });
+            
+            // Function to create stars background
+            function createStarsBackground() {
+                const starsContainer = document.getElementById('stars-container');
+                const starCount = 150;
+                
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    
+                    // Random position
+                    const x = Math.random() * 100;
+                    const y = Math.random() * 100;
+                    
+                    // Random size
+                    const size = Math.random() * 3 + 1;
+                    
+                    // Random animation duration and delay
+                    const duration = Math.random() * 3 + 2;
+                    const delay = Math.random() * 5;
+                    
+                    // Random opacity
+                    const opacity = Math.random() * 0.7 + 0.3;
+                    
+                    star.style.left = `${x}%`;
+                    star.style.top = `${y}%`;
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.animationDelay = `${delay}s`;
+                    star.style.setProperty('--duration', `${duration}s`);
+                    star.style.setProperty('--opacity', opacity);
+                    
+                    starsContainer.appendChild(star);
+                }
+            }
+            
+            // Function to load popular constellations
+            function loadPopularConstellations() {
+                const constellations = [
+                    { name: 'Orion', image: 'Templates/Orion.png', description: 'One of the most recognizable constellations in the night sky.' },
+                    { name: 'Ursa Major', image: 'Templates/UrsaMajor.png', description: 'Contains the Big Dipper and is visible throughout the year in the northern hemisphere.' },
+                    { name: 'Leo', image: 'Templates/Leo.png', description: 'Represents the lion and is one of the zodiac constellations.' },
+                    { name: 'Pegasus', image: 'Templates/Pegasus.png', description: 'Named after the winged horse in Greek mythology.' }
+                ];
+                
+                const container = document.getElementById('popular-constellations');
+                
+                constellations.forEach(constellation => {
+                    const card = document.createElement('div');
+                    card.className = 'constellation-card';
+                    
+                    card.innerHTML = `
+                        <div class="constellation-image">
+                            <img src="${constellation.image}" alt="${constellation.name}" onerror="this.src='assets/placeholder-constellation.svg'">
+                        </div>
+                        <div class="constellation-content">
+                            <h3>${constellation.name}</h3>
+                            <p>${constellation.description}</p>
+                            <a href="library.html?constellation=${constellation.name}" class="btn btn-text">Learn More</a>
+                        </div>
+                    `;
+                    
+                    container.appendChild(card);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

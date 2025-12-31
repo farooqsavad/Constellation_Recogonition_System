@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar - Welcome</title>
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #0a1128;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        /* Welcome Screen */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #162552 0%, #0a1128 70%);
+            z-index: 1000;
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .welcome-screen.transitioning {
+            width: 250px;
+            left: 0;
+            justify-content: flex-start;
+            padding-top: 50px;
+            border-right: 1px solid #1e3169;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
+            background: #0f1c3f;
+        }
+        
+        .logo-container {
+            margin-bottom: 40px;
+            text-align: center;
+            transition: all 0.6s ease;
+        }
+        
+        .welcome-screen.transitioning .logo-container {
+            margin-bottom: 60px;
+            transform: scale(0.8);
+        }
+        
+        .logo {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            transition: all 0.6s ease;
+        }
+        
+        .welcome-screen.transitioning .logo {
+            font-size: 2.5rem;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            color: #b3c5ef;
+            margin-bottom: 60px;
+            text-align: center;
+            max-width: 600px;
+            transition: all 0.6s ease;
+        }
+        
+        .welcome-screen.transitioning .tagline {
+            display: none;
+        }
+        
+        .enter-button {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+        
+        .enter-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(79, 172, 254, 0.6);
+        }
+        
+        .welcome-screen.transitioning .enter-button {
+            display: none;
+        }
+        
+        /* Navigation Menu */
+        .nav-menu {
+            width: 100%;
+            padding: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s ease;
+            transition-delay: 0.3s;
+        }
+        
+        .welcome-screen.transitioning .nav-menu {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .nav-item {
+            padding: 15px 25px;
+            margin: 5px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-item:hover {
+            background-color: #1e3169;
+            border-left-color: #4facfe;
+        }
+        
+        .nav-item.active {
+            background-color: #1e3169;
+            border-left-color: #4facfe;
+        }
+        
+        .nav-icon {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            color: #4facfe;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-container {
+            position: relative;
+            min-height: 100vh;
+            padding-left: 0;
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .main-container.active {
+            padding-left: 250px;
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .content-area {
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Star animation for welcome screen */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: #ffffff;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            opacity: 0;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: var(--opacity); }
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .welcome-screen.transitioning {
+                width: 100%;
+                height: 60px;
+                padding-top: 0;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0 20px;
+                z-index: 100;
+            }
+            
+            .welcome-screen.transitioning .logo-container {
+                margin-bottom: 0;
+                transform: scale(0.6);
+            }
+            
+            .nav-menu {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background-color: #0f1c3f;
+                padding: 10px 0;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.5s ease;
+            }
+            
+            .nav-menu.open {
+                max-height: 300px;
+            }
+            
+            .main-container.active {
+                padding-left: 0;
+                padding-top: 60px;
+            }
+            
+            .content-area {
+                padding: 20px;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+                font-size: 1.5rem;
+                color: #4facfe;
+                cursor: pointer;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-menu-toggle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen / Sidebar -->
+    <div class="welcome-screen" id="welcome-screen">
+        <div class="stars" id="stars"></div>
+        
+        <div class="logo-container">
+            <div class="logo">Stellar</div>
+            <div class="tagline">Explore the night sky and discover the wonders of constellations</div>
+        </div>
+        
+        <button class="enter-button" id="enter-button">Begin Your Journey</button>
+        
+        <div class="nav-menu" id="nav-menu">
+            <div class="nav-item active" data-module="detection-module">
+                <div class="nav-icon">★</div>
+                Detection
+            </div>
+            <div class="nav-item" data-module="library-module">
+                <div class="nav-icon">📚</div>
+                Constellation Library
+            </div>
+            <div class="nav-item" data-module="history-module">
+                <div class="nav-icon">🕒</div>
+                History
+            </div>
+            <div class="nav-item" data-module="learning-module">
+                <div class="nav-icon">🔭</div>
+                Learning Center
+            </div>
+        </div>
+        
+        <div class="mobile-menu-toggle" id="mobile-menu-toggle">☰</div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-container" id="main-container">
+        <div class="content-area">
+            <h1>Main Content Area</h1>
+            <p>This is where the main content will be displayed.</p>
+            <p>Click the "Begin Your Journey" button to start.</p>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const welcomeScreen = document.getElementById('welcome-screen');
+            const enterButton = document.getElementById('enter-button');
+            const mainContainer = document.getElementById('main-container');
+            const navItems = document.querySelectorAll('.nav-item');
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const navMenu = document.getElementById('nav-menu');
+            
+            // Create stars for the welcome screen
+            createStars();
+            
+            // Enter button click
+            enterButton.addEventListener('click', function() {
+                welcomeScreen.classList.add('transitioning');
+                setTimeout(() => {
+                    mainContainer.classList.add('active');
+                }, 400);
+            });
+            
+            // Mobile menu toggle
+            mobileMenuToggle.addEventListener('click', function() {
+                navMenu.classList.toggle('open');
+            });
+            
+            // Navigation
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all items
+                    navItems.forEach(navItem => navItem.classList.remove('active'));
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Close mobile menu if open
+                    navMenu.classList.remove('open');
+                });
+            });
+            
+            // Create stars for the welcome screen
+            function createStars() {
+                const starsContainer = document.getElementById('stars');
+                const starCount = 100;
+                
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    
+                    // Random position
+                    const x = Math.random() * 100;
+                    const y = Math.random() * 100;
+                    
+                    // Random size
+                    const size = Math.random() * 3 + 1;
+                    
+                    // Random animation duration and delay
+                    const duration = Math.random() * 3 + 2;
+                    const delay = Math.random() * 5;
+                    
+                    // Random opacity
+                    const opacity = Math.random() * 0.7 + 0.3;
+                    
+                    star.style.left = `${x}%`;
+                    star.style.top = `${y}%`;
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.animationDelay = `${delay}s`;
+                    star.style.setProperty('--duration', `${duration}s`);
+                    star.style.setProperty('--opacity', opacity);
+                    
+                    starsContainer.appendChild(star);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
