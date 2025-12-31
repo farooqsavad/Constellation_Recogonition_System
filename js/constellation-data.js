@@ -1,9 +1,12 @@
 /**
  * Comprehensive constellation data
+<<<<<<< HEAD
  * Sourced from:
  * - Handbook of Stars and Constellations
  * - Space Rangers Stars and Constellations
  * - Constellation Guide
+=======
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
  */
 const constellationData = [
     {

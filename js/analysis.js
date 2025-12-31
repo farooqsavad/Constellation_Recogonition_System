@@ -33,10 +33,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize constellation select
     const constellationSelect = document.getElementById('constellation-select');
+<<<<<<< HEAD
     
     // Populate constellation select with options from detection history
     populateConstellationSelect();
     
+=======
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
     constellationSelect.addEventListener('change', function() {
         updateAnalysisData(this.value);
     });
@@ -59,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateComparisonChart(comparisonTypeSelect.value, this.value);
     });
     
+<<<<<<< HEAD
     // Initialize detection history
     if (typeof detectionHistory === 'undefined') {
         // Create a global instance if it doesn't exist
@@ -69,6 +73,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update the UI with detection history data
     updateAnalysisUI();
     
+=======
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
     // Initialize star map controls
     const toggleStarsBtn = document.getElementById('toggle-stars-btn');
     const toggleLinesBtn = document.getElementById('toggle-lines-btn');
@@ -148,6 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Comparison Tab Charts
         initComparisonChart();
         initAlgorithmImprovementChart();
+<<<<<<< HEAD
     }
     
     /**
@@ -382,6 +389,8 @@ document.addEventListener('DOMContentLoaded', function() {
             frequencyChart.update();
         }
     }
+=======
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
         
         // Environmental Factors Tab Charts
         initLightPollutionChart();
@@ -401,6 +410,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {string} timePeriod - The selected time period
      */
     function updateAnalysisData(constellation, timePeriod) {
+<<<<<<< HEAD
         if (!constellation || constellation === 'all') {
             // If no specific constellation is selected, just update the general UI
             updateAnalysisUI();
@@ -413,11 +423,14 @@ document.addEventListener('DOMContentLoaded', function() {
             performance = detectionHistory.getConstellationPerformance(constellation);
         }
         
+=======
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
         // Update info box titles
         document.querySelectorAll('.info-box h4').forEach(el => {
             el.textContent = el.textContent.replace(/- .*$/, `- ${formatConstellationName(constellation)}`);
         });
         
+<<<<<<< HEAD
         // Update constellation-specific analysis text
         const analysisTextElement = document.querySelector('.section-description');
         if (analysisTextElement && performance) {
@@ -455,6 +468,12 @@ document.addEventListener('DOMContentLoaded', function() {
         updateStarTable(constellation);
         
         // Update charts with constellation-specific data
+=======
+        // Update star detection accuracy table
+        updateStarTable(constellation);
+        
+        // Update charts
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
         updateAccuracyTimeChart(constellation, timePeriod);
         updateStarMatchChart(constellation, timePeriod);
         updateProcessingTimeChart(constellation, timePeriod);
@@ -469,6 +488,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateTimeOfDayChart(constellation, timePeriod);
         updateSeasonalChart(constellation, timePeriod);
         
+<<<<<<< HEAD
         // Update star map with constellation-specific data
         updateStarMap(constellation);
         
@@ -517,6 +537,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         recommendationsElement.textContent = recommendations;
+=======
+        // Update star map
+        updateStarMap(constellation);
+        
+        // Update environmental heatmap
+        updateEnvironmentalHeatmap(constellation);
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
     }
     
     /**
@@ -534,6 +561,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function initAccuracyChart() {
         const ctx = document.getElementById('accuracy-chart').getContext('2d');
         
+<<<<<<< HEAD
         // Check if there's an existing chart and destroy it
         const existingChart = Chart.getChart('accuracy-chart');
         if (existingChart) {
@@ -570,6 +598,13 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Detection Accuracy (%)',
                 data: chartData,
+=======
+        const data = {
+            labels: ['Orion', 'Ursa Major', 'Cassiopeia', 'Leo', 'Cygnus', 'Lyra', 'Scorpius', 'Pegasus'],
+            datasets: [{
+                label: 'Detection Accuracy (%)',
+                data: [94, 89, 92, 85, 91, 88, 83, 79],
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
                 backgroundColor: 'rgba(79, 172, 254, 0.7)',
                 borderColor: 'rgba(79, 172, 254, 1)',
                 borderWidth: 1
@@ -610,8 +645,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
         
+<<<<<<< HEAD
         // Create and return the new chart
         return new Chart(ctx, config);
+=======
+        new Chart(ctx, config);
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
     }
     
     /**
@@ -620,6 +659,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function initFrequencyChart() {
         const ctx = document.getElementById('frequency-chart').getContext('2d');
         
+<<<<<<< HEAD
         // Check if there's an existing chart and destroy it
         const existingChart = Chart.getChart('frequency-chart');
         if (existingChart) {
@@ -681,29 +721,71 @@ document.addEventListener('DOMContentLoaded', function() {
                     'rgba(206, 51, 255, 1)',
                     'rgba(255, 102, 204, 1)'
                 ],
+=======
+        const data = {
+            labels: ['Orion', 'Ursa Major', 'Cassiopeia', 'Leo', 'Cygnus', 'Lyra', 'Scorpius', 'Pegasus'],
+            datasets: [{
+                label: 'Detection Frequency',
+                data: [42, 38, 25, 18, 15, 12, 10, 8],
+                backgroundColor: 'rgba(0, 242, 254, 0.7)',
+                borderColor: 'rgba(0, 242, 254, 1)',
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
                 borderWidth: 1
             }]
         };
         
         const config = {
+<<<<<<< HEAD
             type: 'doughnut',
+=======
+            type: 'bar',
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
             data: data,
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+<<<<<<< HEAD
                 plugins: {
                     legend: {
                         position: 'right',
                         labels: {
                             color: 'rgba(255, 255, 255, 0.7)'
                         }
+=======
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
                     }
                 }
             }
         };
         
+<<<<<<< HEAD
         // Create and return the new chart
         return new Chart(ctx, config);
+=======
+        new Chart(ctx, config);
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
     }
     
     /**

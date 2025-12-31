@@ -24,10 +24,13 @@
     box-sizing: border-box;
 }
 
+<<<<<<< HEAD
 html {
     scroll-behavior: smooth;
 }
 
+=======
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
 body {
     font-family: 'Montserrat', sans-serif;
     background-color: var(--dark-blue);
@@ -167,6 +170,7 @@ img {
     box-shadow: var(--shadow-light);
 }
 
+<<<<<<< HEAD
 .main-header .header-content {
     display: flex;
     justify-content: space-between;
@@ -174,6 +178,12 @@ img {
     min-height: 70px; /* Increased height for the new button style */
     box-sizing: border-box;
     padding: 10px 0;
+=======
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
 }
 
 .logo {
@@ -188,6 +198,7 @@ img {
     background-clip: text;
 }
 
+<<<<<<< HEAD
 .main-header .main-nav .nav-list {
     display: flex;
     gap: 5px;
@@ -218,10 +229,28 @@ img {
     position: absolute;
     bottom: -2px;
     left: 50%;
+=======
+.main-nav .nav-list {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-item a {
+    font-weight: 500;
+    position: relative;
+}
+
+.nav-item a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
     width: 0;
     height: 2px;
     background: var(--primary-gradient);
     transition: var(--transition-fast);
+<<<<<<< HEAD
     transform: translateX(-50%);
 }
 
@@ -237,16 +266,26 @@ img {
     background: var(--primary-gradient);
     color: var(--dark-blue);
     box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+=======
+}
+
+.nav-item a:hover::after,
+.nav-item.active a::after {
+    width: 100%;
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
 }
 
 .header-actions {
     display: flex;
     gap: 15px;
     align-items: center;
+<<<<<<< HEAD
     min-width: 220px; /* Fixed width to ensure consistent menu bar size */
     justify-content: flex-end;
     white-space: nowrap; /* Prevent buttons from wrapping to multiple lines */
     padding-left: 15px; /* Add consistent padding */
+=======
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
 }
 
 .mobile-menu-toggle {
@@ -750,6 +789,7 @@ img {
         pointer-events: all;
     }
     
+<<<<<<< HEAD
     .main-header .main-nav .nav-list {
         flex-direction: column;
         gap: 10px;
@@ -772,6 +812,11 @@ img {
     
     .main-header .main-nav .nav-list .nav-item a::after {
         bottom: 0;
+=======
+    .main-nav .nav-list {
+        flex-direction: column;
+        gap: 15px;
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
     }
     
     .mobile-menu-toggle {

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Stellar - Constellation Detection</title>
     <style>
         body {
@@ -56,6 +57,852 @@
         setTimeout(function() {
             window.location.href = 'stellar-welcome-to-login.html';
         }, 1500);
+=======
+    <title>Constellation Detector</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Stellar</h2>
+                <button id="sidebar-toggle" class="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <img src="assets/default-avatar.svg" alt="User Avatar" id="user-avatar">
+                </div>
+                <div class="user-info">
+                    <h3 id="username">User</h3>
+                    <p id="user-role">Explorer</p>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item active" data-module="detection-module">
+                    <a href="#"><i class="fas fa-search"></i> <span>Detection</span></a>
+                </li>
+                <li class="nav-item" data-module="library-module">
+                    <a href="#"><i class="fas fa-book"></i> <span>Constellation Library</span></a>
+                </li>
+                <li class="nav-item" data-module="history-module">
+                    <a href="#"><i class="fas fa-history"></i> <span>History</span></a>
+                </li>
+                <li class="nav-item" data-module="learning-module">
+                    <a href="#"><i class="fas fa-graduation-cap"></i> <span>Learning Center</span></a>
+                </li>
+                <li class="nav-item" data-module="educational-module">
+                    <a href="#"><i class="fas fa-book-reader"></i> <span>Educational Resources</span></a>
+                </li>
+                <li class="nav-item" data-module="settings-module">
+                    <a href="#"><i class="fas fa-cog"></i> <span>Settings</span></a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <button id="logout-button" class="logout-button">
+                    <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <h1>Constellation Detector</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search constellations...">
+                        <button><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="header-actions">
+                        <button class="action-button" title="Notifications">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                        <button class="action-button" title="Help">
+                            <i class="fas fa-question-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Module Container -->
+            <div class="module-container">
+                <!-- Detection Module -->
+                <div class="module active" id="detection-module">
+                    <div class="module-header">
+                        <h2>Constellation Detection</h2>
+                        <p>Upload an image of the night sky to identify constellations</p>
+                    </div>
+
+                    <div class="upload-section">
+                        <div class="upload-container" id="upload-container">
+                            <div class="upload-area" id="upload-area">
+                                <img src="assets/upload-icon.svg" alt="Upload" id="upload-icon">
+                                <p>Drag & drop your image here or <span class="browse-text">browse</span></p>
+                                <input type="file" id="file-input" accept="image/*" hidden>
+                            </div>
+                        </div>
+                        <div class="or-divider">
+                            <span>OR</span>
+                        </div>
+                        <div class="sample-images">
+                            <h3>Try with sample images</h3>
+                            <div class="sample-grid" id="sample-grid">
+                                <!-- Sample images will be loaded here dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="results-section" id="results-section" style="display: none;">
+                        <div class="results-header">
+                            <h2>Detection Results</h2>
+                            <button id="back-button" class="back-button">← Try another image</button>
+                        </div>
+                        <div class="results-container">
+                            <div class="original-image">
+                                <h3>Original Image</h3>
+                                <div class="image-container">
+                                    <img id="original-image-display" src="" alt="Original Image">
+                                </div>
+                            </div>
+                            <div class="detected-constellation">
+                                <h3>Detected Constellation</h3>
+                                <div class="detection-result">
+                                    <div class="constellation-name" id="constellation-name">
+                                        <h2>Loading...</h2>
+                                    </div>
+                                    <div class="constellation-image">
+                                        <img id="constellation-template" src="" alt="Constellation Template">
+                                    </div>
+                                </div>
+                                <div class="match-details">
+                                    <h4>Match Details</h4>
+                                    <div class="match-score">
+                                        <span>Confidence Score:</span>
+                                        <div class="progress-bar">
+                                            <div class="progress" id="confidence-bar"></div>
+                                        </div>
+                                        <span id="confidence-score">0%</span>
+                                    </div>
+                                    <div class="stars-matched">
+                                        <span>Stars Matched:</span>
+                                        <span id="stars-matched">0/0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visualization-section">
+                            <h3>Visualization</h3>
+                            <div class="visualization-container">
+                                <canvas id="visualization-canvas" width="600" height="400"></canvas>
+                            </div>
+                            <div class="visualization-controls">
+                                <button id="toggle-stars" class="control-button active">Stars</button>
+                                <button id="toggle-lines" class="control-button active">Lines</button>
+                                <button id="toggle-labels" class="control-button">Labels</button>
+                            </div>
+                            <!-- Fallback text in case canvas doesn't work -->
+                            <div id="visualization-fallback" style="display: none; text-align: center; color: #4facfe; padding: 20px;">
+                                <p>Canvas visualization is not available. Please try using a different browser.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Constellation Library Module -->
+                <div class="module" id="library-module">
+                    <div class="module-header">
+                        <h2>Constellation Library</h2>
+                        <p>Explore and learn about different constellations</p>
+                    </div>
+                    
+                    <div class="library-filters">
+                        <div class="filter-group">
+                            <label>Filter by:</label>
+                            <select id="constellation-filter">
+                                <option value="all">All Constellations</option>
+                                <option value="northern">Northern Hemisphere</option>
+                                <option value="southern">Southern Hemisphere</option>
+                                <option value="zodiac">Zodiac</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Sort by:</label>
+                            <select id="constellation-sort">
+                                <option value="name">Name (A-Z)</option>
+                                <option value="size">Size</option>
+                                <option value="brightness">Brightness</option>
+                                <option value="popularity">Popularity</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="constellation-grid" id="constellation-grid">
+                        <!-- Constellation cards will be loaded here dynamically -->
+                    </div>
+                    
+                    <div class="constellation-details" id="constellation-details">
+                        <div class="details-header">
+                            <button class="back-to-grid"><i class="fas fa-arrow-left"></i> Back to Library</button>
+                            <h2 id="detail-constellation-name">Constellation Name</h2>
+                        </div>
+                        <div class="details-content">
+                            <div class="details-image">
+                                <img id="detail-image" src="" alt="Constellation">
+                            </div>
+                            <div class="details-info">
+                                <div class="info-item">
+                                    <h4>Classification</h4>
+                                    <p id="detail-classification">Northern Hemisphere</p>
+                                </div>
+                                <div class="info-item">
+                                    <h4>Brightest Star</h4>
+                                    <p id="detail-brightest-star">Polaris</p>
+                                </div>
+                                <div class="info-item">
+                                    <h4>Best Visibility</h4>
+                                    <p id="detail-visibility">January - March</p>
+                                </div>
+                                <div class="info-item">
+                                    <h4>Area</h4>
+                                    <p id="detail-area">1225 square degrees</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="details-description">
+                            <h3>Description</h3>
+                            <p id="detail-description">Detailed description of the constellation will appear here.</p>
+                        </div>
+                        <div class="details-mythology">
+                            <h3>Mythology</h3>
+                            <p id="detail-mythology">Mythological information about the constellation will appear here.</p>
+                        </div>
+                        <div class="details-stars">
+                            <h3>Notable Stars</h3>
+                            <ul id="detail-stars-list">
+                                <!-- Star list will be populated dynamically -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Module -->
+                <div class="module" id="history-module">
+                    <div class="module-header">
+                        <h2>Detection History</h2>
+                        <p>View your past constellation detections</p>
+                    </div>
+                    
+                    <div class="history-filters">
+                        <div class="filter-group">
+                            <label>Filter by:</label>
+                            <select id="history-filter">
+                                <option value="all">All Detections</option>
+                                <option value="high-confidence">High Confidence (>80%)</option>
+                                <option value="medium-confidence">Medium Confidence (50-80%)</option>
+                                <option value="low-confidence">Low Confidence (<50%)</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Sort by:</label>
+                            <select id="history-sort">
+                                <option value="date-desc">Date (Newest First)</option>
+                                <option value="date-asc">Date (Oldest First)</option>
+                                <option value="confidence-desc">Confidence (High to Low)</option>
+                                <option value="confidence-asc">Confidence (Low to High)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="history-list" id="history-list">
+                        <!-- History items will be loaded here dynamically -->
+                        <div class="empty-history">
+                            <img src="assets/empty-history.svg" alt="No History">
+                            <h3>No Detection History</h3>
+                            <p>Your detection history will appear here after you identify constellations.</p>
+                            <button class="primary-button" id="start-detection-btn">Start Detection</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Learning Center Module -->
+                <div class="module" id="learning-module">
+                    <div class="module-header">
+                        <h2>Learning Center</h2>
+                        <p>Expand your knowledge about astronomy and constellations</p>
+                    </div>
+                    
+                    <div class="learning-categories">
+                        <div class="category-card" data-category="basics">
+                            <div class="category-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <h3>Astronomy Basics</h3>
+                            <p>Learn the fundamentals of astronomy and stargazing</p>
+                        </div>
+                        <div class="category-card" data-category="constellations">
+                            <div class="category-icon">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <h3>Constellation Guide</h3>
+                            <p>Detailed guides to identifying constellations in the night sky</p>
+                        </div>
+                        <div class="category-card" data-category="mythology">
+                            <div class="category-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <h3>Celestial Mythology</h3>
+                            <p>Stories and legends behind the constellations</p>
+                        </div>
+                        <div class="category-card" data-category="techniques">
+                            <div class="category-icon">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <h3>Astrophotography</h3>
+                            <p>Tips and techniques for capturing the night sky</p>
+                        </div>
+                    </div>
+                    
+                    <div class="learning-content" id="learning-content">
+                        <div class="content-header">
+                            <button class="back-to-categories"><i class="fas fa-arrow-left"></i> Back to Categories</button>
+                            <h2 id="content-title">Category Title</h2>
+                        </div>
+                        <div class="content-articles" id="content-articles">
+                            <!-- Articles will be loaded here dynamically -->
+                        </div>
+                    </div>
+                    
+                    <div class="article-view" id="article-view">
+                        <div class="article-header">
+                            <button class="back-to-articles"><i class="fas fa-arrow-left"></i> Back to Articles</button>
+                            <h2 id="article-title">Article Title</h2>
+                        </div>
+                        <div class="article-content" id="article-content">
+                            <!-- Article content will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Educational Resources Module -->
+                <div class="module" id="educational-module">
+                    <div class="module-header">
+                        <h2>Educational Resources</h2>
+                        <p>Comprehensive guides and educational materials about astronomy</p>
+                    </div>
+                    
+                    <div class="educational-container">
+                        <div class="educational-tabs">
+                            <button class="tab-button active" data-tab="greek-mythology">Greek Mythology</button>
+                            <button class="tab-button" data-tab="zodiac">Zodiac Constellations</button>
+                            <button class="tab-button" data-tab="earth-sun-stars">Earth, Sun & Stars</button>
+                            <button class="tab-button" data-tab="classroom">Classroom Resources</button>
+                        </div>
+                        
+                        <div class="educational-content">
+                            <!-- Greek Mythology Tab -->
+                            <div class="tab-content active" id="greek-mythology-content">
+                                <h3>Greek Mythology in the Stars</h3>
+                                <div class="mythology-intro">
+                                    <img src="assets/article-placeholder.svg" alt="Greek Mythology" class="mythology-image">
+                                    <p>The ancient Greeks saw patterns in the stars and created stories to explain them. These stories, or myths, often featured gods, heroes, and fantastic creatures. Many of our modern constellation names come from these Greek myths.</p>
+                                </div>
+                                
+                                <div class="mythology-stories">
+                                    <div class="mythology-story">
+                                        <h4>Perseus and Andromeda</h4>
+                                        <p>One of the most famous celestial stories involves several constellations that tell a continuous narrative. Queen Cassiopeia boasted that she was more beautiful than the sea nymphs (the Nereids), which angered the sea god Poseidon. As punishment, Poseidon sent a sea monster (represented by the constellation Cetus) to ravage the coast of Ethiopia.</p>
+                                        <p>King Cepheus consulted an oracle, who told him that to appease Poseidon, he must sacrifice his daughter, Andromeda, to the monster. Andromeda was chained to a rock by the sea to await her fate. The hero Perseus, returning from slaying the Gorgon Medusa, saw Andromeda and fell in love with her. He killed the sea monster and rescued Andromeda.</p>
+                                        <p>All these characters—Perseus, Andromeda, Cepheus, Cassiopeia, and Cetus—are immortalized as neighboring constellations in the night sky.</p>
+                                    </div>
+                                    
+                                    <div class="mythology-story">
+                                        <h4>Orion the Hunter</h4>
+                                        <p>Orion was a mighty hunter in Greek mythology. There are several versions of his story, but in one common tale, he boasted that he could kill any animal on Earth. The goddess Gaia (Mother Earth), concerned for her creatures, sent a scorpion to defeat him. After both Orion and the scorpion died in their battle, Zeus placed them in the sky as the constellations Orion and Scorpius, positioned on opposite sides of the sky so they would never meet again.</p>
+                                        <p>This is why Orion and Scorpius are never visible in the night sky at the same time. When Orion sets in the west, Scorpius rises in the east, and vice versa.</p>
+                                    </div>
+                                    
+                                    <div class="mythology-story">
+                                        <h4>The Great Bear and Little Bear</h4>
+                                        <p>Ursa Major (the Great Bear) and Ursa Minor (the Little Bear) tell the story of Callisto and her son Arcas. Zeus fell in love with the nymph Callisto, which angered his wife Hera. In revenge, Hera transformed Callisto into a bear.</p>
+                                        <p>Years later, Callisto's son Arcas was hunting in the forest and nearly killed his mother, not recognizing her in bear form. To prevent this tragedy, Zeus placed both of them in the sky as bears. In some versions of the myth, Zeus grabbed Callisto by her tail as he placed her in the sky, stretching it out—which is why the Great Bear has such a long tail, unlike real bears.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mythology-resources">
+                                    <h4>Additional Resources</h4>
+                                    <ul>
+                                        <li><a href="#" class="resource-link">Complete Guide to Greek Mythology in the Stars</a></li>
+                                        <li><a href="#" class="resource-link">Interactive Map of Mythological Constellations</a></li>
+                                        <li><a href="#" class="resource-link">Printable Mythology Star Charts</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Zodiac Constellations Tab -->
+                            <div class="tab-content" id="zodiac-content">
+                                <h3>The Zodiac Constellations</h3>
+                                <div class="zodiac-intro">
+                                    <img src="assets/article-placeholder.svg" alt="Zodiac Constellations" class="zodiac-image">
+                                    <p>The zodiac is a band of twelve constellations that lie along the ecliptic, the apparent path the Sun traces across the celestial sphere over the course of a year. These constellations have been important in astronomy, navigation, and astrology for thousands of years.</p>
+                                </div>
+                                
+                                <div class="zodiac-grid">
+                                    <div class="zodiac-card">
+                                        <h4>♈ Aries (The Ram)</h4>
+                                        <p><strong>Season:</strong> Spring (March 21 - April 19)</p>
+                                        <p><strong>Element:</strong> Fire</p>
+                                        <p><strong>Mythology:</strong> In Greek mythology, Aries represents the golden ram that rescued Phrixus and Helle from being sacrificed. Phrixus later sacrificed the ram to Zeus and hung its golden fleece in a sacred grove, where it became the object of Jason and the Argonauts' quest.</p>
+                                    </div>
+                                    
+                                    <div class="zodiac-card">
+                                        <h4>♉ Taurus (The Bull)</h4>
+                                        <p><strong>Season:</strong> Spring (April 20 - May 20)</p>
+                                        <p><strong>Element:</strong> Earth</p>
+                                        <p><strong>Mythology:</strong> Taurus represents the bull form Zeus took to abduct Europa, a Phoenician princess. Zeus disguised himself as a magnificent white bull, and when Europa climbed onto his back, he swam across the sea to Crete with her.</p>
+                                    </div>
+                                    
+                                    <div class="zodiac-card">
+                                        <h4>♊ Gemini (The Twins)</h4>
+                                        <p><strong>Season:</strong> Spring (May 21 - June 20)</p>
+                                        <p><strong>Element:</strong> Air</p>
+                                        <p><strong>Mythology:</strong> Gemini represents the twins Castor and Pollux. They were the sons of Leda; however, Castor was the mortal son of Tyndareus, while Pollux was the divine son of Zeus. When Castor died, Pollux asked Zeus to let him share his immortality with his twin, so Zeus placed them both in the sky.</p>
+                                    </div>
+                                    
+                                    <div class="zodiac-card">
+                                        <h4>♋ Cancer (The Crab)</h4>
+                                        <p><strong>Season:</strong> Summer (June 21 - July 22)</p>
+                                        <p><strong>Element:</strong> Water</p>
+                                        <p><strong>Mythology:</strong> Cancer represents the crab that Hera sent to distract Heracles during his battle with the Hydra. Heracles crushed the crab under his foot, but Hera rewarded its efforts by placing it in the sky.</p>
+                                    </div>
+                                    
+                                    <div class="zodiac-card">
+                                        <h4>♌ Leo (The Lion)</h4>
+                                        <p><strong>Season:</strong> Summer (July 23 - August 22)</p>
+                                        <p><strong>Element:</strong> Fire</p>
+                                        <p><strong>Mythology:</strong> Leo represents the Nemean Lion, a beast with an impenetrable hide that terrorized the region of Nemea. It was killed by Heracles as the first of his twelve labors. After killing the lion, Heracles used its own claws to skin it and wore its hide as armor.</p>
+                                    </div>
+                                    
+                                    <div class="zodiac-card">
+                                        <h4>♍ Virgo (The Virgin)</h4>
+                                        <p><strong>Season:</strong> Summer (August 23 - September 22)</p>
+                                        <p><strong>Element:</strong> Earth</p>
+                                        <p><strong>Mythology:</strong> Virgo is often associated with Astraea, the goddess of justice, or with Demeter, the goddess of the harvest. During the Golden Age, Astraea lived among humans, but as humanity became corrupt, she was the last immortal to leave Earth for the heavens.</p>
+                                    </div>
+                                    
+                                    <div class="zodiac-card">
+                                        <h4>♎ Libra (The Scales)</h4>
+                                        <p><strong>Season:</strong> Fall (September 23 - October 22)</p>
+                                        <p><strong>Element:</strong> Air</p>
+                                        <p><strong>Mythology:</strong> Libra represents the scales of justice held by Astraea (the goddess associated with Virgo). It is the only zodiac constellation that represents an inanimate object rather than an animal or person.</p>
+                                    </div>
+                                    
+                                    <div class="zodiac-card">
+                                        <h4>♏ Scorpio (The Scorpion)</h4>
+                                        <p><strong>Season:</strong> Fall (October 23 - November 21)</p>
+                                        <p><strong>Element:</strong> Water</p>
+                                        <p><strong>Mythology:</strong> Scorpio represents the scorpion that killed Orion. In one version of the myth, the scorpion was sent by Gaia to punish Orion for boasting that he could kill any animal. In another version, it was sent by Apollo, who was concerned about his sister Artemis's affection for Orion.</p>
+                                    </div>
+                                    
+                                    <div class="zodiac-card">
+                                        <h4>♐ Sagittarius (The Archer)</h4>
+                                        <p><strong>Season:</strong> Fall (November 22 - December 21)</p>
+                                        <p><strong>Element:</strong> Fire</p>
+                                        <p><strong>Mythology:</strong> Sagittarius represents a centaur, usually identified as Chiron, who was known for his wisdom and knowledge of medicine. Unlike other centaurs who were wild and violent, Chiron was civilized and served as a tutor to many Greek heroes.</p>
+                                    </div>
+                                    
+                                    <div class="zodiac-card">
+                                        <h4>♑ Capricorn (The Sea-Goat)</h4>
+                                        <p><strong>Season:</strong> Winter (December 22 - January 19)</p>
+                                        <p><strong>Element:</strong> Earth</p>
+                                        <p><strong>Mythology:</strong> Capricorn represents the god Pan, who transformed himself into a half-goat, half-fish creature to escape the monster Typhon. In another version, it represents the goat Amalthea, who nursed the infant Zeus.</p>
+                                    </div>
+                                    
+                                    <div class="zodiac-card">
+                                        <h4>♒ Aquarius (The Water Bearer)</h4>
+                                        <p><strong>Season:</strong> Winter (January 20 - February 18)</p>
+                                        <p><strong>Element:</strong> Air</p>
+                                        <p><strong>Mythology:</strong> Aquarius is often identified with Ganymede, a beautiful youth who was abducted by Zeus (in the form of an eagle) to serve as cupbearer to the gods on Mount Olympus.</p>
+                                    </div>
+                                    
+                                    <div class="zodiac-card">
+                                        <h4>♓ Pisces (The Fish)</h4>
+                                        <p><strong>Season:</strong> Winter (February 19 - March 20)</p>
+                                        <p><strong>Element:</strong> Water</p>
+                                        <p><strong>Mythology:</strong> Pisces represents Aphrodite and her son Eros, who transformed themselves into fish to escape the monster Typhon. In some versions, they tied themselves together with a cord so they wouldn't lose each other in the water, which is why the constellation shows two fish connected by a cord.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="zodiac-resources">
+                                    <h4>Additional Resources</h4>
+                                    <ul>
+                                        <li><a href="#" class="resource-link">Astronomical vs. Astrological Zodiac</a></li>
+                                        <li><a href="#" class="resource-link">Observing the Zodiac Constellations</a></li>
+                                        <li><a href="#" class="resource-link">Historical Significance of the Zodiac</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Earth, Sun & Stars Tab -->
+                            <div class="tab-content" id="earth-sun-stars-content">
+                                <h3>Earth, Sun & Stars: Fundamentals of Astronomy</h3>
+                                <div class="ess-intro">
+                                    <img src="assets/article-placeholder.svg" alt="Earth, Sun and Stars" class="ess-image">
+                                    <p>Understanding the relationships between Earth, the Sun, and the stars is fundamental to astronomy. This section explores the basic concepts of our solar system and beyond, suitable for learners of all ages.</p>
+                                </div>
+                                
+                                <div class="ess-topics">
+                                    <div class="ess-topic">
+                                        <h4>Earth's Movements</h4>
+                                        <p><strong>Rotation:</strong> Earth rotates on its axis once every 24 hours, causing day and night. As Earth rotates, different parts face toward or away from the Sun, creating the cycle of day and night.</p>
+                                        <p><strong>Revolution:</strong> Earth revolves around the Sun once every 365.25 days (a year). This orbital motion, combined with Earth's tilted axis (23.5°), causes the seasons. When the Northern Hemisphere is tilted toward the Sun, it experiences summer while the Southern Hemisphere experiences winter, and vice versa.</p>
+                                        <p><strong>Precession:</strong> Earth's axis slowly changes direction over a 26,000-year cycle, similar to a spinning top wobbling. This affects which star serves as the North Star over millennia.</p>
+                                    </div>
+                                    
+                                    <div class="ess-topic">
+                                        <h4>The Sun: Our Star</h4>
+                                        <p><strong>Structure:</strong> The Sun is a medium-sized star composed primarily of hydrogen and helium. It has several layers: the core, radiative zone, convective zone, photosphere (visible surface), chromosphere, and corona (outer atmosphere).</p>
+                                        <p><strong>Energy Production:</strong> The Sun generates energy through nuclear fusion in its core, where hydrogen atoms combine to form helium under extreme pressure and temperature (about 15 million °C). This process releases enormous amounts of energy in the form of light and heat.</p>
+                                        <p><strong>Solar Features:</strong> Observable features of the Sun include sunspots (cooler regions on the photosphere), solar flares (sudden releases of energy), prominences (loops of plasma), and the solar wind (stream of charged particles).</p>
+                                    </div>
+                                    
+                                    <div class="ess-topic">
+                                        <h4>Stars and Their Life Cycles</h4>
+                                        <p><strong>Star Formation:</strong> Stars form from clouds of gas and dust called nebulae. Gravity causes these clouds to collapse, and as the material becomes more compressed, it heats up. When the core reaches about 10 million °C, nuclear fusion begins, and a star is born.</p>
+                                        <p><strong>Main Sequence:</strong> Most of a star's life is spent in the main sequence phase, where it maintains a balance between gravity pulling inward and the pressure from fusion pushing outward. Our Sun is currently in this phase and will remain so for about another 5 billion years.</p>
+                                        <p><strong>Stellar Evolution:</strong> When a star exhausts its hydrogen fuel, its fate depends on its mass. Small to medium-sized stars (like our Sun) will expand into red giants and eventually shed their outer layers to form planetary nebulae, leaving behind a white dwarf. Massive stars end their lives in spectacular supernova explosions, potentially leaving behind neutron stars or black holes.</p>
+                                    </div>
+                                    
+                                    <div class="ess-topic">
+                                        <h4>Observing the Night Sky</h4>
+                                        <p><strong>Celestial Sphere:</strong> From Earth, the stars appear to be fixed on a vast sphere surrounding our planet. This imaginary sphere, called the celestial sphere, helps astronomers map the positions of stars and other celestial objects.</p>
+                                        <p><strong>Constellations:</strong> Constellations are patterns of stars that form recognizable shapes. They have been used for navigation, timekeeping, and storytelling throughout human history. The International Astronomical Union recognizes 88 official constellations that cover the entire celestial sphere.</p>
+                                        <p><strong>Apparent Motion:</strong> Due to Earth's rotation, stars appear to move across the sky from east to west. Stars near the celestial poles (like Polaris in the Northern Hemisphere) appear to move in circles around the pole, while stars near the celestial equator rise in the east and set in the west.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="ess-resources">
+                                    <h4>Additional Resources</h4>
+                                    <ul>
+                                        <li><a href="#" class="resource-link">Interactive Solar System Model</a></li>
+                                        <li><a href="#" class="resource-link">Star Life Cycle Diagram</a></li>
+                                        <li><a href="#" class="resource-link">Earth's Movements Animation</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Classroom Resources Tab -->
+                            <div class="tab-content" id="classroom-content">
+                                <h3>Classroom Resources for Educators</h3>
+                                <div class="classroom-intro">
+                                    <img src="assets/article-placeholder.svg" alt="Classroom Resources" class="classroom-image">
+                                    <p>These educational resources are designed for teachers and educators to use in classroom settings. They include lesson plans, activities, worksheets, and projects that align with science curriculum standards for various grade levels.</p>
+                                </div>
+                                
+                                <div class="classroom-resources">
+                                    <div class="resource-category">
+                                        <h4>Elementary School (Grades K-5)</h4>
+                                        <div class="resource-list">
+                                            <div class="resource-item">
+                                                <h5>Day and Night Cycle</h5>
+                                                <p>Students learn about Earth's rotation and how it causes day and night through hands-on activities with a globe and flashlight.</p>
+                                                <a href="#" class="download-link">Download Lesson Plan</a>
+                                            </div>
+                                            
+                                            <div class="resource-item">
+                                                <h5>Make Your Own Constellation</h5>
+                                                <p>Students create their own constellations and stories, learning how ancient cultures connected stars to form pictures and narratives.</p>
+                                                <a href="#" class="download-link">Download Activity</a>
+                                            </div>
+                                            
+                                            <div class="resource-item">
+                                                <h5>Solar System Mobile</h5>
+                                                <p>Students create a hanging mobile of the solar system, learning about the planets and their relative sizes and distances from the Sun.</p>
+                                                <a href="#" class="download-link">Download Instructions</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="resource-category">
+                                        <h4>Middle School (Grades 6-8)</h4>
+                                        <div class="resource-list">
+                                            <div class="resource-item">
+                                                <h5>Seasons Simulation</h5>
+                                                <p>Students model Earth's revolution around the Sun to understand how the tilt of Earth's axis causes seasons.</p>
+                                                <a href="#" class="download-link">Download Lab Activity</a>
+                                            </div>
+                                            
+                                            <div class="resource-item">
+                                                <h5>Star Classification</h5>
+                                                <p>Students learn about the Hertzsprung-Russell diagram and how stars are classified by temperature, color, and brightness.</p>
+                                                <a href="#" class="download-link">Download Worksheet</a>
+                                            </div>
+                                            
+                                            <div class="resource-item">
+                                                <h5>Moon Phase Calendar</h5>
+                                                <p>Students observe and record the phases of the Moon over a month, creating a calendar and learning about the Moon's orbit around Earth.</p>
+                                                <a href="#" class="download-link">Download Project Guide</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="resource-category">
+                                        <h4>High School (Grades 9-12)</h4>
+                                        <div class="resource-list">
+                                            <div class="resource-item">
+                                                <h5>Stellar Evolution</h5>
+                                                <p>Students explore the life cycles of stars of different masses, from formation to final stages.</p>
+                                                <a href="#" class="download-link">Download Lesson Plan</a>
+                                            </div>
+                                            
+                                            <div class="resource-item">
+                                                <h5>Kepler's Laws of Planetary Motion</h5>
+                                                <p>Students investigate Kepler's three laws through mathematical problems and simulations.</p>
+                                                <a href="#" class="download-link">Download Lab Activity</a>
+                                            </div>
+                                            
+                                            <div class="resource-item">
+                                                <h5>Spectroscopy Basics</h5>
+                                                <p>Students learn how astronomers use spectroscopy to determine the composition, temperature, and motion of distant stars.</p>
+                                                <a href="#" class="download-link">Download Experiment Guide</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="classroom-contact">
+                                    <h4>Request Custom Resources</h4>
+                                    <p>Need specific astronomy resources for your classroom? Contact us at <a href="mailto:farooqsavad@gmail.com">farooqsavad@gmail.com</a> or call +91 8289850592 to discuss custom educational materials tailored to your curriculum needs.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Settings Module -->
+                <div class="module" id="settings-module">
+                    <div class="module-header">
+                        <h2>Settings</h2>
+                        <p>Customize your experience and manage your account</p>
+                    </div>
+                    
+                    <div class="settings-container">
+                        <div class="settings-section">
+                            <h3><i class="fas fa-user-circle"></i> Account Settings</h3>
+                            <div class="settings-card">
+                                <div class="profile-settings">
+                                    <div class="profile-image">
+                                        <img src="assets/default-avatar.svg" alt="Profile Picture" id="profile-image">
+                                        <button class="change-image-btn"><i class="fas fa-camera"></i></button>
+                                    </div>
+                                    <div class="profile-info">
+                                        <div class="form-group">
+                                            <label for="display-name">Display Name</label>
+                                            <input type="text" id="display-name" value="User">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email-address">Email Address</label>
+                                            <input type="email" id="email-address" value="farooqsavad@gmail.com">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="phone-number">Phone Number</label>
+                                            <input type="tel" id="phone-number" value="+91 8289850592">
+                                        </div>
+                                        <button class="save-profile-btn">Save Changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-card">
+                                <h4>Password & Security</h4>
+                                <div class="form-group">
+                                    <label for="current-password">Current Password</label>
+                                    <input type="password" id="current-password" placeholder="Enter current password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="new-password">New Password</label>
+                                    <input type="password" id="new-password" placeholder="Enter new password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirm-password">Confirm New Password</label>
+                                    <input type="password" id="confirm-password" placeholder="Confirm new password">
+                                </div>
+                                <button class="change-password-btn">Update Password</button>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-section">
+                            <h3><i class="fas fa-sliders-h"></i> Application Settings</h3>
+                            <div class="settings-card">
+                                <h4>Display Settings</h4>
+                                <div class="toggle-setting">
+                                    <span>Dark Mode</span>
+                                    <label class="switch">
+                                        <input type="checkbox" checked id="dark-mode-toggle">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="toggle-setting">
+                                    <span>Show Constellations in 3D</span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="3d-toggle">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="toggle-setting">
+                                    <span>Show Star Names</span>
+                                    <label class="switch">
+                                        <input type="checkbox" checked id="star-names-toggle">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="range-setting">
+                                    <span>Star Brightness</span>
+                                    <input type="range" min="1" max="100" value="70" id="brightness-slider">
+                                </div>
+                                <div class="range-setting">
+                                    <span>Animation Speed</span>
+                                    <input type="range" min="1" max="100" value="50" id="animation-slider">
+                                </div>
+                            </div>
+                            
+                            <div class="settings-card">
+                                <h4>Notification Settings</h4>
+                                <div class="toggle-setting">
+                                    <span>Email Notifications</span>
+                                    <label class="switch">
+                                        <input type="checkbox" checked id="email-notifications-toggle">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="toggle-setting">
+                                    <span>Celestial Event Alerts</span>
+                                    <label class="switch">
+                                        <input type="checkbox" checked id="event-alerts-toggle">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="toggle-setting">
+                                    <span>Detection Results</span>
+                                    <label class="switch">
+                                        <input type="checkbox" checked id="detection-results-toggle">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="toggle-setting">
+                                    <span>Learning Center Updates</span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="learning-updates-toggle">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-section">
+                            <h3><i class="fas fa-database"></i> Data Management</h3>
+                            <div class="settings-card">
+                                <h4>Storage & History</h4>
+                                <div class="storage-info">
+                                    <div class="storage-bar">
+                                        <div class="storage-used" style="width: 35%;"></div>
+                                    </div>
+                                    <p>35% of storage used (350MB of 1GB)</p>
+                                </div>
+                                <div class="data-actions">
+                                    <button class="clear-history-btn"><i class="fas fa-history"></i> Clear Detection History</button>
+                                    <button class="export-data-btn"><i class="fas fa-file-export"></i> Export Your Data</button>
+                                    <button class="delete-account-btn"><i class="fas fa-user-times"></i> Delete Account</button>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-card">
+                                <h4>About Constellation Detector</h4>
+                                <div class="about-info">
+                                    <p><strong>Version:</strong> 1.0.0</p>
+                                    <p><strong>Last Updated:</strong> April 28, 2025</p>
+                                    <p><strong>Developed by:</strong> Digital Image Processing Team</p>
+                                    <p><strong>Contact:</strong> farooqsavad@gmail.com | +91 8289850592</p>
+                                </div>
+                                <div class="about-actions">
+                                    <button class="check-updates-btn"><i class="fas fa-sync"></i> Check for Updates</button>
+                                    <button class="report-bug-btn"><i class="fas fa-bug"></i> Report a Bug</button>
+                                    <button class="view-licenses-btn"><i class="fas fa-file-contract"></i> View Licenses</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading-overlay" id="loading-overlay">
+                <div class="loader"></div>
+                <p>Processing image...</p>
+            </div>
+
+            <footer class="main-footer">
+                <p>Constellation Detection Project | Digital Image Processing</p>
+                <div class="footer-links">
+                    <a href="#" id="about-link">About</a>
+                    <a href="#" id="privacy-link">Privacy Policy</a>
+                    <a href="#" id="terms-link">Terms of Service</a>
+                    <a href="#" id="contact-link">Contact</a>
+                </div>
+                <div class="contact-info" id="contact-info" style="display: none;">
+                    <p><i class="fas fa-phone"></i> +91 8289850592</p>
+                    <p><i class="fas fa-envelope"></i> farooqsavad@gmail.com</p>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    
+    <!-- Additional script to ensure canvas initialization -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if canvas is supported
+            const canvas = document.getElementById('visualization-canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                    console.log("Canvas is supported and initialized");
+                    
+                    // Draw a simple pattern to verify canvas is working
+                    ctx.fillStyle = '#0a1128';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    ctx.beginPath();
+                    ctx.arc(canvas.width/2, canvas.height/2, 50, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                    ctx.fill();
+                    
+                    ctx.beginPath();
+                    ctx.arc(canvas.width/2, canvas.height/2, 20, 0, Math.PI * 2);
+                    ctx.fillStyle = 'white';
+                    ctx.fill();
+                    
+                    ctx.font = 'bold 18px Montserrat';
+                    ctx.fillStyle = '#4facfe';
+                    ctx.textAlign = 'center';
+                    ctx.fillText("Canvas Initialized", canvas.width/2, canvas.height/2 + 80);
+                } else {
+                    console.error("Canvas context not available");
+                    document.getElementById('visualization-fallback').style.display = 'block';
+                    canvas.style.display = 'none';
+                }
+            } else {
+                console.error("Canvas element not found");
+            }
+        });
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
     </script>
 </body>
 </html>

@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stellar - Login</title>
     <link rel="stylesheet" href="css/main.css">
+<<<<<<< HEAD
     <link rel="stylesheet" href="css/reveal-animations.css">
+=======
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -229,10 +232,13 @@
     <!-- Stars Background -->
     <div class="stars-background" id="stars-container"></div>
     
+<<<<<<< HEAD
     <!-- Reveal Animations Scripts -->
     <script src="js/reveal-animations.js"></script>
     <script src="js/auto-reveal.js"></script>
     
+=======
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
     <!-- Back to Home Link -->
     <a href="home.html" class="back-to-home">
         <i class="fas fa-arrow-left"></i> Back to Home
@@ -300,6 +306,7 @@
                 // In a real app, this would send the credentials to the server for authentication
                 console.log('Login attempt:', { email, password });
                 
+<<<<<<< HEAD
                 // Set authentication state
                 sessionStorage.setItem('stellarLoggedIn', 'true');
                 sessionStorage.setItem('stellarUserEmail', email);
@@ -319,6 +326,11 @@
                     } else {
                         window.location.href = 'home.html';
                     }
+=======
+                // Simulate successful login
+                setTimeout(() => {
+                    window.location.href = 'home.html';
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
                 }, 1000);
             });
             

@@ -5,11 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stellar - Constellation Library</title>
     <link rel="stylesheet" href="css/main.css">
-<<<<<<< HEAD
-    <link rel="stylesheet" href="css/reveal-animations.css">
-    <link rel="stylesheet" href="css/star-details.css">
-=======
->>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -380,21 +375,6 @@
 <body>
     <!-- Stars Background -->
     <div class="stars-background" id="stars-container"></div>
-<<<<<<< HEAD
-    
-    <!-- Reveal Animations Scripts -->
-    <script src="js/reveal-animations.js"></script>
-    <script src="js/auto-reveal.js"></script>
-    
-    <!-- Authentication Check -->
-    <script src="js/auth-check.js"></script>
-    
-    <!-- Constellation and Star Data -->
-    <script src="js/constellation-data.js"></script>
-    <script src="js/star-data.js"></script>
-    <script src="js/deep-sky-objects.js"></script>
-=======
->>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
 
     <!-- Header -->
     <header class="main-header">
@@ -411,16 +391,6 @@
                         <li class="nav-item"><a href="detection.html">Detection</a></li>
                         <li class="nav-item active"><a href="library.html">Library</a></li>
                         <li class="nav-item"><a href="learning.html">Learning</a></li>
-<<<<<<< HEAD
-                        <li class="nav-item"><a href="analysis.html">Analysis</a></li>
-                        <li class="nav-item"><a href="about.html">About</a></li>
-                    </ul>
-                </nav>
-                <div class="mobile-menu-toggle" id="mobile-menu-toggle">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-=======
                         <li class="nav-item"><a href="about.html">About</a></li>
                     </ul>
                 </nav>
@@ -430,7 +400,6 @@
                     <button class="mobile-menu-toggle" id="mobile-menu-toggle">
                         <i class="fas fa-bars"></i>
                     </button>
->>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
                 </div>
             </div>
         </div>
@@ -535,7 +504,6 @@
                         <p id="details-mythology">Mythology information goes here.</p>
                     </div>
                 </div>
-                            <li><a href="analysis.html">Analysis</a></li>
                 
                 <div class="tab-content" id="history-tab">
                     <div class="details-section">
@@ -673,11 +641,7 @@
                     
                     card.innerHTML = `
                         <div class="constellation-image">
-<<<<<<< HEAD
-<img src="Constellation_Templates/${constellation.name}.svg" alt="${formatConstellationName(constellation.name)}" onerror="this.src='assets/placeholder-constellation.svg'">
-=======
                             <img src="Templates/${constellation.name}.svg" alt="${formatConstellationName(constellation.name)}" onerror="this.src='assets/placeholder-constellation.svg'">
->>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
                         </div>
                         <div class="constellation-content">
                             <h3>${formatConstellationName(constellation.name)}</h3>
@@ -708,11 +672,7 @@
                 
                 // Update details content
                 document.getElementById('details-title').textContent = formatConstellationName(constellation.name);
-<<<<<<< HEAD
-                document.getElementById('details-image').src = `Constellation_Templates/${constellation.name}.svg`;
-=======
                 document.getElementById('details-image').src = `Templates/${constellation.name}.svg`;
->>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
                 document.getElementById('details-image').alt = formatConstellationName(constellation.name);
                 document.getElementById('details-image').onerror = function() {
                     this.src = 'assets/placeholder-constellation.svg';
@@ -724,108 +684,28 @@
                 document.getElementById('details-area').textContent = constellation.area;
                 document.getElementById('details-classification').textContent = getClassificationText(constellation.classification);
                 
-<<<<<<< HEAD
-                // Update stars list with enhanced information
-=======
                 // Update stars list
->>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
                 const starsList = document.getElementById('details-stars');
                 starsList.innerHTML = '';
                 
                 if (constellation.stars && constellation.stars.length > 0) {
                     constellation.stars.forEach(star => {
                         const li = document.createElement('li');
-<<<<<<< HEAD
-                        li.className = 'star-item';
-                        
-                        // Extract star name from the text (assuming format like "Betelgeuse (Alpha Orionis): A red supergiant...")
-                        const starName = star.split(':')[0].split('(')[0].trim();
-                        
-                        // Check if we have detailed information about this star
-                        let detailedStarInfo = null;
-                        for (const key in starData) {
-                            if (starData[key].name.toLowerCase() === starName.toLowerCase()) {
-                                detailedStarInfo = starData[key];
-                                break;
-                            }
-                        }
-                        
-                        if (detailedStarInfo) {
-                            // Create enhanced star item with detailed information
-                            li.innerHTML = `
-                                <div class="star-header">
-                                    <h4>${detailedStarInfo.name} (${detailedStarInfo.designation})</h4>
-                                    <span class="star-magnitude">Magnitude: ${detailedStarInfo.apparentMagnitude}</span>
-                                </div>
-                                <div class="star-details">
-                                    <p><strong>Color:</strong> ${detailedStarInfo.color}</p>
-                                    <p><strong>Type:</strong> ${detailedStarInfo.spectralClass}</p>
-                                    <p><strong>Distance:</strong> ${detailedStarInfo.distance} light years</p>
-                                    <p>${detailedStarInfo.description}</p>
-                                </div>
-                            `;
-                        } else {
-                            // Use the original star information
-                            li.innerHTML = star;
-                        }
-                        
-=======
                         li.innerHTML = star;
->>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
                         starsList.appendChild(li);
                     });
                 } else {
                     starsList.innerHTML = '<li>No detailed star information available.</li>';
                 }
                 
-<<<<<<< HEAD
-                // Update deep sky objects with enhanced information
-=======
                 // Update deep sky objects
->>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
                 const deepSkyList = document.getElementById('details-deep-sky');
                 deepSkyList.innerHTML = '';
                 
                 if (constellation.deepSkyObjects && constellation.deepSkyObjects.length > 0) {
                     constellation.deepSkyObjects.forEach(object => {
                         const li = document.createElement('li');
-<<<<<<< HEAD
-                        li.className = 'deep-sky-item';
-                        
-                        // Extract object name from the text (assuming format like "M42 (Orion Nebula): A diffuse nebula...")
-                        const objectName = object.split(':')[0].trim();
-                        
-                        // Check if we have detailed information about this object
-                        let detailedObjectInfo = null;
-                        for (const key in deepSkyObjectsData) {
-                            if (deepSkyObjectsData[key].name.toLowerCase().includes(objectName.toLowerCase())) {
-                                detailedObjectInfo = deepSkyObjectsData[key];
-                                break;
-                            }
-                        }
-                        
-                        if (detailedObjectInfo) {
-                            // Create enhanced object item with detailed information
-                            li.innerHTML = `
-                                <div class="object-header">
-                                    <h4>${detailedObjectInfo.name}</h4>
-                                    <span class="object-type">${detailedObjectInfo.type}</span>
-                                </div>
-                                <div class="object-details">
-                                    <p><strong>Magnitude:</strong> ${detailedObjectInfo.apparentMagnitude}</p>
-                                    <p><strong>Distance:</strong> ${detailedObjectInfo.distance.toLocaleString()} light years</p>
-                                    <p>${detailedObjectInfo.description}</p>
-                                    <p><em>${detailedObjectInfo.observationTips}</em></p>
-                                </div>
-                            `;
-                        } else {
-                            // Use the original object information
-                            li.innerHTML = object;
-                        }
-                        
-=======
                         li.innerHTML = object;
->>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
                         deepSkyList.appendChild(li);
                     });
                 } else {

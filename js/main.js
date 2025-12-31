@@ -1,13 +1,19 @@
+<<<<<<< HEAD
 console.log('js/main.js loaded');
 
+=======
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
 /**
  * Stellar - Constellation Detection
  * Main JavaScript file
  */
 
 document.addEventListener('DOMContentLoaded', function() {
+<<<<<<< HEAD
     console.log('DOM fully loaded');
     
+=======
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
     // Initialize components
     initStarsBackground();
     initMobileMenu();
@@ -15,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add event listeners for specific pages
     if (document.querySelector('.detection-page')) {
+<<<<<<< HEAD
         console.log('Detection page detected, initializing...');
         
         // Ensure all images are loaded before initializing
@@ -34,6 +41,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (document.querySelector('.library-page')) {
         console.log('Library page detected, initializing...');
+=======
+        initDetectionPage();
+    }
+    
+    if (document.querySelector('.library-page')) {
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
         initLibraryPage();
     }
 });
@@ -117,6 +130,7 @@ function initScrollAnimations() {
  * Initialize detection page functionality
  */
 function initDetectionPage() {
+<<<<<<< HEAD
     console.log('initDetectionPage called');
     
     // Prevent multiple initializations
@@ -125,6 +139,8 @@ function initDetectionPage() {
         return;
     }
     
+=======
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
     const uploadArea = document.getElementById('upload-area');
     const fileInput = document.getElementById('file-input');
     const uploadIcon = document.getElementById('upload-icon');
@@ -133,6 +149,7 @@ function initDetectionPage() {
     const backButton = document.getElementById('back-button');
     const sampleImages = document.querySelectorAll('.sample-image');
     
+<<<<<<< HEAD
     // Check if required elements exist
     if (!uploadArea) {
         console.error('upload-area element not found');
@@ -168,6 +185,9 @@ function initDetectionPage() {
     sampleImages.forEach(sample => {
         sample.setAttribute('tabindex', '-1');
     });
+=======
+    if (!uploadArea || !fileInput) return;
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
     
     // Handle file upload via drag and drop
     uploadArea.addEventListener('dragover', (e) => {
@@ -193,6 +213,7 @@ function initDetectionPage() {
         fileInput.click();
     });
     
+<<<<<<< HEAD
     // Add specific handler for the browse text
     const browseText = document.querySelector('.browse-text');
     if (browseText) {
@@ -208,11 +229,15 @@ function initDetectionPage() {
     
     fileInput.addEventListener('change', () => {
         console.log('File input changed:', fileInput.files.length ? fileInput.files[0].name : 'No file selected');
+=======
+    fileInput.addEventListener('change', () => {
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
         if (fileInput.files.length) {
             handleFileUpload(fileInput.files[0]);
         }
     });
     
+<<<<<<< HEAD
     // Handle sample images - completely rewritten for reliability
     if (sampleImages && sampleImages.length) {
         console.log('Found sample images:', sampleImages.length);
@@ -300,6 +325,19 @@ function initDetectionPage() {
     }
 
     window.addEventListener('scroll', checkScroll);
+=======
+    // Handle sample images
+    if (sampleImages.length) {
+        sampleImages.forEach(sample => {
+            sample.addEventListener('click', () => {
+                const imageSrc = sample.getAttribute('data-src');
+                if (imageSrc) {
+                    handleSampleImageSelection(imageSrc);
+                }
+            });
+        });
+    }
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
     
     // Handle back button
     if (backButton) {
@@ -348,6 +386,7 @@ function initDetectionPage() {
      * @param {string} imageSrc - The source of the selected sample image
      */
     function handleSampleImageSelection(imageSrc) {
+<<<<<<< HEAD
         console.log('handleSampleImageSelection called with:', imageSrc);
         
         // Re-fetch elements to ensure we have the latest references
@@ -374,6 +413,8 @@ function initDetectionPage() {
             return;
         }
         
+=======
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
         // Display selected sample image in upload area
         uploadIcon.style.display = 'none';
         uploadText.style.display = 'none';
@@ -381,6 +422,7 @@ function initDetectionPage() {
         uploadArea.style.backgroundSize = 'cover';
         uploadArea.style.backgroundPosition = 'center';
         
+<<<<<<< HEAD
         console.log('Set background image, now simulating processing...');
         
         // Show a loading indicator
@@ -424,6 +466,11 @@ function initDetectionPage() {
                 console.error('Error in showResults:', error);
                 alert('An error occurred while processing the image. Please try again.');
             }
+=======
+        // Simulate processing (in a real app, this would call the backend)
+        setTimeout(() => {
+            showResults(imageSrc);
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
         }, 1500);
     }
     
@@ -432,6 +479,7 @@ function initDetectionPage() {
      * @param {string} imageSrc - The source of the processed image
      */
     function showResults(imageSrc) {
+<<<<<<< HEAD
         console.log('showResults called with:', imageSrc);
         
         // Re-fetch elements to ensure we have the latest references
@@ -694,10 +742,38 @@ function updateVisualization() {
         canvas.stars.forEach((star, index) => {
             ctx.fillText(`Star ${index + 1}`, star.x, star.y - star.size - 10);
         });
+=======
+        // Hide upload section and show results section
+        uploadArea.parentElement.style.display = 'none';
+        resultsSection.style.display = 'block';
+        
+        // Set original image
+        document.getElementById('original-image-display').src = imageSrc;
+        
+        // Simulate detection result (in a real app, this would come from the backend)
+        const constellations = [
+            'Orion', 'UrsaMajor', 'Leo', 'Pegasus'
+        ];
+        
+        const randomConstellation = constellations[Math.floor(Math.random() * constellations.length)];
+        const confidenceScore = Math.floor(Math.random() * 30) + 70; // Random score between 70-99
+        
+        // Update result details
+        document.getElementById('constellation-name').textContent = formatConstellationName(randomConstellation);
+        document.getElementById('constellation-template').src = `Templates/${randomConstellation}.png`;
+        document.getElementById('confidence-score').textContent = `${confidenceScore}%`;
+        document.getElementById('confidence-bar').style.width = `${confidenceScore}%`;
+        
+        // Simulate stars matched
+        const totalStars = Math.floor(Math.random() * 5) + 5; // Random between 5-9
+        const matchedStars = Math.floor(totalStars * (confidenceScore / 100));
+        document.getElementById('stars-matched').textContent = `${matchedStars}/${totalStars}`;
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
     }
 }
 
 /**
+<<<<<<< HEAD
  * Generate star coordinates for constellations
  * @param {string} constellationName
  * @returns {Array} stars with x, y, size
@@ -791,6 +867,8 @@ function generateConstellationLines(stars) {
 }
 
 /**
+=======
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
  * Initialize library page functionality
  */
 function initLibraryPage() {
@@ -841,7 +919,11 @@ function initLibraryPage() {
         
         // Update details content (in a real app, this would fetch data from the backend)
         document.getElementById('detail-constellation-name').textContent = formatConstellationName(constellationName);
+<<<<<<< HEAD
         document.getElementById('detail-image').src = `Constellation_Templates/${constellationName}.png`;
+=======
+        document.getElementById('detail-image').src = `Templates/${constellationName}.png`;
+>>>>>>> a9775c7ec2fdaa3f1fe649755e261170760b8fcc
         
         // Simulate constellation details (in a real app, this would come from the backend)
         const classifications = ['Northern Hemisphere', 'Southern Hemisphere', 'Zodiac'];
