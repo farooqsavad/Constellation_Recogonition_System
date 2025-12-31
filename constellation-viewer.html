@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constellation Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        h1, h2 {
+            color: #4facfe;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .constellation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .constellation-card {
+            background-color: #1a2a6c;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .constellation-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .constellation-image {
+            width: 100%;
+            height: 200px;
+            background-color: #0a1128;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .constellation-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .constellation-info {
+            padding: 15px;
+        }
+        
+        .constellation-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .constellation-details {
+            font-size: 14px;
+            color: #b3c5ef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Constellation Viewer</h1>
+        <p style="text-align: center;">This page displays all constellation templates from the Templates directory.</p>
+        
+        <div class="constellation-grid" id="constellation-grid">
+            <!-- Constellation cards will be generated here -->
+        </div>
+    </div>
+    
+    <script>
+        // List of constellations
+        const constellations = [
+            'Andromeda', 'Aquila', 'Auriga', 'CanisMajor', 'Capricornus',
+            'Cetus', 'Columba', 'Gemini', 'Grus', 'Leo', 'Orion', 'Pavo',
+            'Pegasus', 'Phoenix', 'Pisces', 'PiscisAustrinus', 'Puppis',
+            'UrsaMajor', 'UrsaMinor', 'Vela'
+        ];
+        
+        // Format constellation name
+        function formatConstellationName(name) {
+            // Handle camel case (e.g., UrsaMajor -> Ursa Major)
+            return name.replace(/([A-Z])/g, ' $1').trim();
+        }
+        
+        // Generate constellation cards
+        function generateConstellationCards() {
+            const grid = document.getElementById('constellation-grid');
+            
+            constellations.forEach(constellation => {
+                const card = document.createElement('div');
+                card.className = 'constellation-card';
+                
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'constellation-image';
+                
+                const img = document.createElement('img');
+                img.src = `Templates/${constellation}.png`;
+                img.alt = formatConstellationName(constellation);
+                img.onerror = function() {
+                    this.src = 'assets/placeholder-constellation.svg';
+                };
+                
+                imageContainer.appendChild(img);
+                
+                const info = document.createElement('div');
+                info.className = 'constellation-info';
+                
+                const name = document.createElement('div');
+                name.className = 'constellation-name';
+                name.textContent = formatConstellationName(constellation);
+                
+                const details = document.createElement('div');
+                details.className = 'constellation-details';
+                details.textContent = 'Click to view details';
+                
+                info.appendChild(name);
+                info.appendChild(details);
+                
+                card.appendChild(imageContainer);
+                card.appendChild(info);
+                
+                // Add click event to view full image
+                card.addEventListener('click', () => {
+                    window.open(`Templates/${constellation}.png`, '_blank');
+                });
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        // Initialize when the page loads
+        window.addEventListener('load', generateConstellationCards);
+    </script>
+</body>
+</html>

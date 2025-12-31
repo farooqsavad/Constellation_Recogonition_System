@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="#0a1128"/>
+  
+  <!-- Stars -->
+  <!-- Big Dipper / Plough -->
+  <circle cx="100" cy="150" r="6" fill="#ffffff" opacity="0.8"/> <!-- Dubhe -->
+  <circle cx="130" cy="180" r="5" fill="#ffffff" opacity="0.7"/> <!-- Merak -->
+  <circle cx="180" cy="200" r="5" fill="#ffffff" opacity="0.7"/> <!-- Phecda -->
+  <circle cx="220" cy="220" r="6" fill="#ffffff" opacity="0.8"/> <!-- Megrez -->
+  <circle cx="260" cy="200" r="7" fill="#ffffff" opacity="0.9"/> <!-- Alioth -->
+  <circle cx="300" cy="180" r="6" fill="#ffffff" opacity="0.8"/> <!-- Mizar/Alcor -->
+  <circle cx="340" cy="150" r="5" fill="#ffffff" opacity="0.7"/> <!-- Alkaid -->
+  
+  <!-- Additional stars in Ursa Major -->
+  <circle cx="80" cy="100" r="4" fill="#ffffff" opacity="0.6"/>
+  <circle cx="120" cy="80" r="4" fill="#ffffff" opacity="0.6"/>
+  <circle cx="180" cy="100" r="4" fill="#ffffff" opacity="0.6"/>
+  <circle cx="150" cy="250" r="4" fill="#ffffff" opacity="0.6"/>
+  <circle cx="200" cy="280" r="4" fill="#ffffff" opacity="0.6"/>
+  <circle cx="250" cy="250" r="4" fill="#ffffff" opacity="0.6"/>
+  
+  <!-- Constellation Lines -->
+  <g stroke="#4facfe" stroke-width="2" opacity="0.8">
+    <!-- Big Dipper / Plough -->
+    <line x1="100" y1="150" x2="130" y2="180"/> <!-- Dubhe to Merak -->
+    <line x1="130" y1="180" x2="180" y2="200"/> <!-- Merak to Phecda -->
+    <line x1="180" y1="200" x2="220" y2="220"/> <!-- Phecda to Megrez -->
+    <line x1="220" y1="220" x2="260" y2="200"/> <!-- Megrez to Alioth -->
+    <line x1="260" y1="200" x2="300" y2="180"/> <!-- Alioth to Mizar/Alcor -->
+    <line x1="300" y1="180" x2="340" y2="150"/> <!-- Mizar/Alcor to Alkaid -->
+    
+    <!-- Additional lines to form the bear -->
+    <line x1="100" y1="150" x2="80" y2="100"/> <!-- Dubhe to head -->
+    <line x1="80" y1="100" x2="120" y2="80"/> <!-- Head outline -->
+    <line x1="120" y1="80" x2="180" y2="100"/> <!-- Head outline -->
+    <line x1="180" y1="100" x2="100" y2="150"/> <!-- Head to Dubhe -->
+    
+    <line x1="180" y1="200" x2="150" y2="250"/> <!-- Phecda to front leg -->
+    <line x1="220" y1="220" x2="200" y2="280"/> <!-- Megrez to back leg -->
+    <line x1="260" y1="200" x2="250" y2="250"/> <!-- Alioth to back leg -->
+  </g>
+  
+  <!-- Labels -->
+  <text x="100" y="135" font-family="Montserrat, sans-serif" font-size="10" fill="#b3c5ef" text-anchor="middle">Dubhe</text>
+  <text x="130" y="165" font-family="Montserrat, sans-serif" font-size="10" fill="#b3c5ef" text-anchor="middle">Merak</text>
+  <text x="180" y="185" font-family="Montserrat, sans-serif" font-size="10" fill="#b3c5ef" text-anchor="middle">Phecda</text>
+  <text x="220" y="205" font-family="Montserrat, sans-serif" font-size="10" fill="#b3c5ef" text-anchor="middle">Megrez</text>
+  <text x="260" y="185" font-family="Montserrat, sans-serif" font-size="10" fill="#b3c5ef" text-anchor="middle">Alioth</text>
+  <text x="300" y="165" font-family="Montserrat, sans-serif" font-size="10" fill="#b3c5ef" text-anchor="middle">Mizar</text>
+  <text x="340" y="135" font-family="Montserrat, sans-serif" font-size="10" fill="#b3c5ef" text-anchor="middle">Alkaid</text>
+  
+  <!-- Constellation Name -->
+  <text x="200" y="370" font-family="Montserrat, sans-serif" font-size="20" fill="#4facfe" text-anchor="middle">Ursa Major</text>
+</svg>

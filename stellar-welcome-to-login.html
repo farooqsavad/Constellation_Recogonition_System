@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar - Welcome</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/reveal-animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+            background-color: #0a1128;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        /* Welcome Screen */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #162552 0%, #0a1128 70%);
+            z-index: 1000;
+            transition: all 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .welcome-screen.transitioning {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+        
+        .logo-container {
+            margin-bottom: 40px;
+            text-align: center;
+            transition: all 0.8s ease;
+        }
+        
+        .welcome-screen.transitioning .logo-container {
+            transform: translateY(-50px) scale(0.8);
+            opacity: 0;
+        }
+        
+        .logo {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            transition: all 0.8s ease;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            color: #b3c5ef;
+            margin-bottom: 60px;
+            text-align: center;
+            max-width: 600px;
+            transition: all 0.6s ease;
+        }
+        
+        .enter-button {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+        
+        .enter-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(79, 172, 254, 0.6);
+        }
+        
+        /* Star animation for welcome screen */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: #ffffff;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            opacity: 0;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: var(--opacity); }
+        }
+        
+        /* Login Page Styles */
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 0;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1.2s ease, transform 1.2s ease;
+            transition-delay: 0.5s;
+        }
+        
+        .login-page.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 2rem;
+            z-index: 1;
+        }
+        
+        .login-card {
+            background-color: rgba(15, 28, 63, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(79, 172, 254, 0.2);
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 1s ease, transform 1s ease;
+            transition-delay: 0.8s;
+        }
+        
+        .login-card.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .login-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .login-header p {
+            color: #b3c5ef;
+            font-size: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .form-group.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .form-group:nth-child(1) {
+            transition-delay: 1s;
+        }
+        
+        .form-group:nth-child(2) {
+            transition-delay: 1.2s;
+        }
+        
+        .form-group:nth-child(3) {
+            transition-delay: 1.4s;
+        }
+        
+        .form-group:nth-child(4) {
+            transition-delay: 1.6s;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #b3c5ef;
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: rgba(30, 49, 105, 0.5);
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.2);
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+        
+        .remember-me input {
+            margin-right: 8px;
+        }
+        
+        .forgot-password {
+            color: #4facfe;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .forgot-password:hover {
+            color: #00f2fe;
+            text-decoration: underline;
+        }
+        
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+        
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(79, 172, 254, 0.6);
+        }
+        
+        .login-footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #b3c5ef;
+        }
+        
+        .signup-link {
+            color: #4facfe;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .signup-link:hover {
+            color: #00f2fe;
+            text-decoration: underline;
+        }
+        
+        /* Stars Background */
+        .stars-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars Background -->
+    <div class="stars-background" id="stars-container"></div>
+    
+    <!-- Reveal Animations Scripts -->
+    <script src="js/reveal-animations.js"></script>
+    <script src="js/auto-reveal.js"></script>
+    
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcome-screen">
+        <div class="stars" id="stars"></div>
+        
+        <div class="logo-container" id="logo-container">
+            <div class="logo">Stellar</div>
+            <div class="tagline">Explore the night sky and discover the wonders of constellations</div>
+        </div>
+        
+        <button class="enter-button" id="enter-button">Begin Your Journey</button>
+    </div>
+    
+    <!-- Login Page -->
+    <div class="login-page" id="login-page">
+        <div class="login-container">
+            <div class="login-card" id="login-card">
+                <div class="login-header">
+                    <h1>Welcome Back</h1>
+                    <p>Sign in to continue your stellar journey</p>
+                </div>
+                
+                <form id="login-form">
+                    <div class="form-group" id="form-group-1">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group" id="form-group-2">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <div class="form-group form-options" id="form-group-3">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember-me">
+                            <label for="remember-me">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+                    
+                    <div class="form-group" id="form-group-4">
+                        <button type="submit" class="login-button">Sign In</button>
+                    </div>
+                </form>
+                
+                <div class="login-footer">
+                    Don't have an account? <a href="#" id="signup-link" class="signup-link">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const welcomeScreen = document.getElementById('welcome-screen');
+            const logoContainer = document.getElementById('logo-container');
+            const enterButton = document.getElementById('enter-button');
+            const loginPage = document.getElementById('login-page');
+            const loginCard = document.getElementById('login-card');
+            const formGroups = document.querySelectorAll('.form-group');
+            const signupLink = document.getElementById('signup-link');
+            
+            // Check if user is already logged in
+            const isLoggedIn = sessionStorage.getItem('stellarLoggedIn') === 'true';
+            const lastVisitedPage = sessionStorage.getItem('stellarLastPage') || 'home.html';
+            
+            // If user is already logged in, redirect to last visited page
+            if (isLoggedIn && !window.location.href.includes('?showWelcome=true')) {
+                window.location.href = lastVisitedPage;
+                return;
+            }
+            
+            // Create stars for the welcome screen
+            createStars();
+            
+            // Create stars for the background
+            createStarsBackground();
+            
+            // Enter button click - transition to login page
+            enterButton.addEventListener('click', function() {
+                // Start the transition
+                welcomeScreen.classList.add('transitioning');
+                
+                // After welcome screen transitions out, show login page
+                setTimeout(() => {
+                    loginPage.classList.add('active');
+                    loginCard.classList.add('active');
+                    
+                    // Activate form groups with staggered delay
+                    formGroups.forEach(group => {
+                        group.classList.add('active');
+                    });
+                }, 800);
+            });
+            
+            // Handle signup link click
+            signupLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Store that we're in signup mode
+                sessionStorage.setItem('stellarSignupMode', 'true');
+                
+                // Redirect to signup page
+                window.location.href = 'signup.html';
+            });
+            
+            // Create stars for the welcome screen
+            function createStars() {
+                const starsContainer = document.getElementById('stars');
+                const starCount = 100;
+                
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    
+                    // Random position
+                    const x = Math.random() * 100;
+                    const y = Math.random() * 100;
+                    
+                    // Random size
+                    const size = Math.random() * 3 + 1;
+                    
+                    // Random animation duration and delay
+                    const duration = Math.random() * 3 + 2;
+                    const delay = Math.random() * 5;
+                    
+                    // Random opacity
+                    const opacity = Math.random() * 0.7 + 0.3;
+                    
+                    star.style.left = `${x}%`;
+                    star.style.top = `${y}%`;
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.animationDelay = `${delay}s`;
+                    star.style.setProperty('--duration', `${duration}s`);
+                    star.style.setProperty('--opacity', opacity);
+                    
+                    starsContainer.appendChild(star);
+                }
+            }
+            
+            // Create stars for the background
+            function createStarsBackground() {
+                const starsContainer = document.getElementById('stars-container');
+                const starCount = 200;
+                
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    
+                    // Random position
+                    const x = Math.random() * 100;
+                    const y = Math.random() * 100;
+                    
+                    // Random size
+                    const size = Math.random() * 2 + 0.5;
+                    
+                    // Random animation duration and delay
+                    const duration = Math.random() * 3 + 2;
+                    const delay = Math.random() * 5;
+                    
+                    // Random opacity
+                    const opacity = Math.random() * 0.5 + 0.1;
+                    
+                    star.style.left = `${x}%`;
+                    star.style.top = `${y}%`;
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.animationDelay = `${delay}s`;
+                    star.style.setProperty('--duration', `${duration}s`);
+                    star.style.setProperty('--opacity', opacity);
+                    
+                    starsContainer.appendChild(star);
+                }
+            }
+            
+            // Handle form submission
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const rememberMe = document.getElementById('remember-me').checked;
+                
+                // Simple validation
+                if (!email || !password) {
+                    alert('Please enter both email and password');
+                    return;
+                }
+                
+                // In a real application, you would validate credentials with a server
+                // For demo purposes, we'll just set the user as logged in
+                
+                // Set login status in session storage
+                sessionStorage.setItem('stellarLoggedIn', 'true');
+                sessionStorage.setItem('stellarUserEmail', email);
+                
+                // If remember me is checked, also store in local storage for persistence
+                if (rememberMe) {
+                    localStorage.setItem('stellarLoggedIn', 'true');
+                    localStorage.setItem('stellarUserEmail', email);
+                }
+                
+                // Redirect to home page
+                window.location.href = 'home.html';
+            });
+            
+            // Check for URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const showLogin = urlParams.get('showLogin');
+            
+            // If showLogin parameter is present, skip welcome screen and show login directly
+            if (showLogin === 'true') {
+                welcomeScreen.classList.add('transitioning');
+                
+                setTimeout(() => {
+                    loginPage.classList.add('active');
+                    loginCard.classList.add('active');
+                    
+                    // Activate form groups with staggered delay
+                    formGroups.forEach(group => {
+                        group.classList.add('active');
+                    });
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar - About Us</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/reveal-animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* About Page Specific Styles */
+        .about-page {
+            padding: 60px 0;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .about-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+            align-items: center;
+        }
+        
+        .about-image {
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .about-content h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .about-content p {
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        
+        .mission-vision {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .mission-card, .vision-card {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-md);
+            padding: 30px;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .mission-card h2, .vision-card h2 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .mission-card h2 i, .vision-card h2 i {
+            font-size: 1.5rem;
+        }
+        
+        .mission-card p, .vision-card p {
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+        
+        .team-section {
+            margin-bottom: 60px;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .section-header h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .section-header p {
+            color: var(--text-light);
+            font-size: 1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .team-card {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition-fast);
+        }
+        
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .team-image {
+            height: 250px;
+            overflow: hidden;
+        }
+        
+        .team-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .team-content {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .team-content h3 {
+            font-size: 1.3rem;
+            color: var(--text-white);
+            margin-bottom: 5px;
+        }
+        
+        .team-content .position {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .team-content p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .social-links a {
+            color: var(--text-light);
+            transition: var(--transition-fast);
+        }
+        
+        .social-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        .tech-section {
+            margin-bottom: 60px;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .tech-card {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-md);
+            padding: 30px;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition-fast);
+        }
+        
+        .tech-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .tech-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .tech-card h3 {
+            font-size: 1.3rem;
+            color: var(--text-white);
+            margin-bottom: 15px;
+        }
+        
+        .tech-card p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .contact-section {
+            background-color: var(--medium-blue);
+            border-radius: var(--border-radius-md);
+            padding: 40px;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .contact-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .contact-header h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .contact-header p {
+            color: var(--text-light);
+            font-size: 1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-group label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .form-group input, .form-group textarea {
+            padding: 12px 15px;
+            background-color: var(--light-blue);
+            border: 1px solid var(--light-blue);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-white);
+            font-family: 'Montserrat', sans-serif;
+            transition: var(--transition-fast);
+        }
+        
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-button {
+            padding: 12px 20px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: var(--border-radius-sm);
+            color: var(--dark-blue);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .submit-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .info-item {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .info-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            flex-shrink: 0;
+            width: 30px;
+            text-align: center;
+        }
+        
+        .info-content h3 {
+            color: var(--text-white);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .info-content p, .info-content a {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .info-content a {
+            transition: var(--transition-fast);
+        }
+        
+        .info-content a:hover {
+            color: var(--primary-color);
+        }
+        
+        @media (max-width: 992px) {
+            .about-section, .mission-vision, .contact-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .about-image {
+                order: -1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .contact-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars Background -->
+    <div class="stars-background" id="stars-container"></div>
+    
+    <!-- Reveal Animations Scripts -->
+    <script src="js/reveal-animations.js"></script>
+    <script src="js/auto-reveal.js"></script>
+    
+    <!-- Authentication Check -->
+    <script src="js/auth-check.js"></script>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="home.html">
+                        <span class="logo-text">Stellar</span>
+                    </a>
+                </div>
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="home.html">Home</a></li>
+                        <li class="nav-item"><a href="detection.html">Detection</a></li>
+                        <li class="nav-item"><a href="library.html">Library</a></li>
+                        <li class="nav-item"><a href="learning.html">Learning</a></li>
+                        <li class="nav-item"><a href="analysis.html">Analysis</a></li>
+                        <li class="nav-item active"><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="about-page">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">About Stellar</h1>
+                <p class="page-description">Learn about our mission, team, and the technology behind our constellation detection platform</p>
+            </div>
+            
+            <div class="about-section">
+                <div class="about-content">
+                    <h2>The Story</h2>
+                    <p>This project leverages the rich information about constellations and stars to develop a constellation detection system. By using star positions, brightness, and constellation boundaries, the system can identify constellations in the night sky or in images. The guide's detailed star data, constellation diagrams, and helpful alignments provide essential reference points for accurate detection..</p>
+                    <p>Additionally, the project benefits from the mythology and cultural stories behind constellations, which can be used to create engaging educational content alongside the detection functionality.</p>
+                    <p>Overall, this project combines astronomical data and cultural knowledge to build a tool that helps users explore and learn about the night sky through constellation detection.</p>
+                </div>
+                <div class="about-image">
+                    <img src="assets/hero-constellation.svg" alt="About Stellar">
+                </div>
+            </div>
+            
+            <div class="mission-vision">
+                <div class="mission-card">
+                    <h2><i class="fas fa-rocket"></i> Our Mission</h2>
+                    <p>To democratize astronomy by making constellation identification accessible to everyone, regardless of their prior knowledge or equipment. We strive to combine advanced technology with educational content to create an engaging platform that inspires curiosity about the cosmos.</p>
+                </div>
+                <div class="vision-card">
+                    <h2><i class="fas fa-eye"></i> Our Vision</h2>
+                    <p>A world where anyone can look up at the night sky and understand what they're seeing. We envision Stellar becoming the go-to platform for constellation identification and astronomical learning, bridging the gap between casual observation and scientific understanding.</p>
+                </div>
+            </div>
+            
+           
+            
+            <div class="tech-section">
+                <div class="section-header">
+                    <h2>Our Technology</h2>
+                    <p>The innovative technologies powering our constellation detection platform</p>
+                </div>
+                
+                <div class="tech-grid">
+                    <div class="tech-card">
+                        <div class="tech-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Machine Learning</h3>
+                        <p>Our advanced machine learning algorithms are trained on thousands of astronomical images to accurately identify star patterns and constellations in user-uploaded photos.</p>
+                    </div>
+                    
+                    <div class="tech-card">
+                        <div class="tech-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3>Computer Vision</h3>
+                        <p>We use state-of-the-art computer vision techniques to process and analyze night sky images, detecting stars and their relative positions with high precision.</p>
+                    </div>
+                    
+                    <div class="tech-card">
+                        <div class="tech-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3>Astronomical Database</h3>
+                        <p>Our comprehensive database contains detailed information about all 88 officially recognized constellations, including star maps, mythology, and scientific data.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="contact-section">
+                <div class="contact-header">
+                    <h2>Get In Touch</h2>
+                    <p>Have questions or feedback? We'd love to hear from you!</p>
+                </div>
+                
+                <div class="contact-content">
+                    <form class="contact-form">
+                        <div class="form-group">
+                            <label for="name">Your Name</label>
+                            <input type="text" id="name" placeholder="Enter your name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" placeholder="Enter your email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" placeholder="Enter subject" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" placeholder="Enter your message" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="submit-button">Send Message</button>
+                    </form>
+                    
+                    <div class="contact-info">
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="info-content">
+                                <h3>Location</h3>
+                                <p>hkbk college , nagavara , Bangalore<br>Karnataka<br>India</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="info-content">
+                                <h3>Email</h3>
+                                <p><a href="mailto:info@stellarapp.com">farooqsavad@gmail.com</a></p>
+                                <p><a href="mailto:support@stellarapp.com">farooqsavad@gmail.com</a></p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div class="info-content">
+                                <h3>Phone</h3>
+                                <p><a href="tel:8289850592">+91 8289850592</a></p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="info-content">
+                                <h3>Hours</h3>
+                                <p>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 10:00 AM - 4:00 PM<br>Sunday: Closed</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">Stellar</span>
+                    <p>Discover the wonders of the night sky</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h3>Navigation</h3>
+                        <ul>
+                            <li><a href="home.html">Home</a></li>
+                            <li><a href="detection.html">Detection</a></li>
+                            <li><a href="library.html">Library</a></li>
+                            <li><a href="learning.html">Learning</a></li>
+                            <li><a href="about.html">About</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Tutorials</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Legal</h3>
+                        <ul>
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Cookie Policy</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Connect</h3>
+                        <ul class="social-links">
+                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                            <li><a href="#"><i class="fab fa-github"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Stellar Constellation Detection. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add about-page class to body
+            document.body.classList.add('about-page');
+            
+            // Initialize stars background
+            initStarsBackground();
+            
+            // Initialize mobile menu
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mainNav = document.querySelector('.main-nav');
+            
+            mobileMenuToggle.addEventListener('click', function() {
+                mainNav.classList.toggle('active');
+                this.classList.toggle('active');
+            });
+            
+            // Handle contact form submission
+            const contactForm = document.querySelector('.contact-form');
+            
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const subject = document.getElementById('subject').value;
+                const message = document.getElementById('message').value;
+                
+                // In a real app, this would send the form data to the server
+                console.log('Form submission:', { name, email, subject, message });
+                
+                // Show success message
+                alert('Thank you for your message! We will get back to you soon.');
+                
+                // Reset form
+                contactForm.reset();
+            });
+            
+            /**
+             * Create stars background
+             */
+            function initStarsBackground() {
+                const starsContainer = document.getElementById('stars-container');
+                const starCount = 150;
+                
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    
+                    // Random position
+                    const x = Math.random() * 100;
+                    const y = Math.random() * 100;
+                    
+                    // Random size
+                    const size = Math.random() * 3 + 1;
+                    
+                    // Random animation duration and delay
+                    const duration = Math.random() * 3 + 2;
+                    const delay = Math.random() * 5;
+                    
+                    // Random opacity
+                    const opacity = Math.random() * 0.7 + 0.3;
+                    
+                    star.style.left = `${x}%`;
+                    star.style.top = `${y}%`;
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.animationDelay = `${delay}s`;
+                    star.style.setProperty('--duration', `${duration}s`);
+                    star.style.setProperty('--opacity', opacity);
+                    
+                    starsContainer.appendChild(star);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
